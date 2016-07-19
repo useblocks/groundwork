@@ -1,0 +1,3 @@
+class PluginAttributeMissing(Exception):
+    pass
+
