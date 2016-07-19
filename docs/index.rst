@@ -9,7 +9,7 @@ Content:
 .. toctree::
    :maxdepth: 2
 
-   foreward
+   foreword
    installation
    quickstart
    tutorial

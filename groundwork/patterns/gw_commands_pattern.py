@@ -34,8 +34,7 @@ class GwCommandsPattern(GwPluginPattern):
 
     Argument: https://github.com/pallets/click/blob/c8e21105ebeb824c06c929bdd74c41eed776e956/click/core.py#L1687
 
-    Usage inside your own App
-    *************************
+    *Usage inside your own App*
 
     Groundwork does not start automatically the command line interface. This step must be done by the application
     developer. Example ::
