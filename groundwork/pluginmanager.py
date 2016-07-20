@@ -233,17 +233,16 @@ class PluginManager:
 
             if plugin_name in self.plugins.keys():
                 self.log.debug("Activating plugin %s" % plugin_name)
-                if self.plugins[plugin_name]["initialised"] == False:
+                if not self.plugins[plugin_name]["initialised"]:
                     try:
                         self.initialise([plugin_name])
-                    except Exception:
+                    except Exception as e:
                         self.log.error("Couldn't initialise plugin %s" % plugin_name)
                         if self.strict:
-                            raise Exception("Couldn't initialise plugin %s" % plugin_name)
+                            raise Exception("Couldn't initialise plugin %s" % plugin_name) from e
                         else:
                             continue
-                if self.plugins[plugin_name]["initialised"] == True and \
-                                self.plugins[plugin_name]["active"] == False:
+                if self.plugins[plugin_name]["initialised"] and not self.plugins[plugin_name]["active"]:
                     try:
                         self.plugins[plugin_name]["instance"].activate()
                     except Exception as e:
@@ -255,6 +254,8 @@ class PluginManager:
                         plugins_activated.append(plugin_name)
                 else:
                     self.log.warning("Plugin %s got already activated." % plugin_name)
+                    if self.strict:
+                        raise PluginNotInitialisable()
             else:
                 self.log.warn("Plugin %s not found" % plugin_name)
         self.log.info("Plugins activated: %s" % ", ".join(plugins_activated))

@@ -28,7 +28,7 @@ def test_app_initialisation_with_config2():
         app.config.PLUGINS != ["PluginA", "PluginB", "NoPlugin"]
 
 
-def test_app_initialisation_with_plugins(test_apps):
+def test_app_initialisation_with_plugins(test_plugins):
     # Tries to import, but doesn't stop on problems
     app = groundwork.App(plugins=["TestPluginA", "TestPluginB", "NoPlugin"])
 
@@ -36,16 +36,25 @@ def test_app_initialisation_with_plugins(test_apps):
     with pytest.raises(AttributeError):
         app = groundwork.App(plugins=["TestPluginA", "TestPluginB", "NoPlugin"], strict=True)
 
-    from basicapp.plugins import TestPlugin
-    app = groundwork.App(plugins=[TestPlugin])
-    app.plugins.activate(["MyPlugin"])
+    from plugins import BasicPlugin
+
+    app = groundwork.App(plugins=[BasicPlugin])
+    app.plugins.activate(["BasicPlugin"])
 
 
-def test_app_plugin(test_apps):
-    from basicapp.plugins import TestPlugin
-    app = groundwork.App(plugins=[TestPlugin])
-    app.plugins.activate(["MyPlugin"])
-    plugins = app.plugins.get()
+def test_app_plugin(test_plugins):
+    from plugins import BasicPlugin
+
+    app = groundwork.App(plugins=[BasicPlugin], strict=True)
+    plugin = app.plugins.get("BasicPlugin")
+    assert plugin is not None
+    assert plugin["active"] is None
+
+    app.plugins.activate(["BasicPlugin"])
+    plugin = app.plugins.get("BasicPlugin")
+    assert plugin is not None
+    assert plugin["active"] == True
+
 
 
 

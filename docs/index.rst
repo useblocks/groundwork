@@ -17,14 +17,14 @@ Therefore groundwork supports developers with time-saving out-of-the box solutio
 Example
 -------
 
-The following code creates a groundwork app and a single plugin.::
+The following code defines a plugin and activates it on a newly created application: ::
 
     from groundwork import App
     from groundwork.patterns import GwCommandsPattern, GwSignalsPattern
 
     class MyPlugin(GwCommandsPattern, GwSignalsPattern):
         def _init_(self, *args, **kwargs):
-            self.name = "My first plugin"
+            self.name = "My Plugin"
             super().__init__(*args, **kwargs)
 
         def activate(self):
@@ -44,10 +44,10 @@ The following code creates a groundwork app and a single plugin.::
             print("Hello world")
 
     if __name__ == "__main__":
-        my_app = GwApp('my_config.py')  # Creates the app and loads the config
-        my_app.load_plugins(MyPlugin)   # Loads and activates 'MyPlugin'
-        my_app.signals.send('hi')       # Will print 'Hello world'
-        my_app.cli()                    # Starts the command line interface
+        my_app = App(plugins=[MyPlugin])       # Creates application and registers MyPlugin
+        my_app.plugins.activate("My Plugin")   # Initialise and activates 'My Plugin'
+        my_app.signals.send('hi')              # Will print 'Hello world'
+        my_app.commands.start_cli()            # Starts the command line interface
 
 On a command line the following commands may be used: ::
 
