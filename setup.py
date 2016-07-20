@@ -18,6 +18,8 @@ setup(
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
     include_package_data=True,
     platforms='any',
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
     install_requires=["click", "blinker"],
     classifiers=[
         'Development Status :: 4 - Beta',

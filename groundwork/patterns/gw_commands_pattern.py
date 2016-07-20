@@ -64,8 +64,8 @@ class CommandsListPlugin:
         self.app.commands = CommandsListApplication(plugin.app)
         self.log.info("Plugin commands initialised")
 
-    def register(self, name, description, function, params=[]):
-        return self.app.commands.register(name, description, function, params, self.plugin)
+    def register(self, command, description, function, params=[]):
+        return self.app.commands.register(command, description, function, params, self.plugin)
 
     def get(self, name=None):
         return self.app.commands.get(name, self.plugin)
@@ -116,26 +116,26 @@ class CommandsListApplication(metaclass=Singleton):
                 else:
                     return None
 
-    def register(self, name, description, function, params=[], plugin=None):
-        if name in self._commands.keys():
-            raise CommandExistException("Command %s already registered by %s" % (name,
-                                                                                 self._commands[name].plugin.name))
+    def register(self, command, description, function, params=[], plugin=None):
+        if command in self._commands.keys():
+            raise CommandExistException("Command %s already registered by %s" % (command,
+                                                                                 self._commands[command].plugin.name))
 
-        new_command = Command(name, description, params, function, plugin)
-        self._commands[name] = new_command
+        new_command = Command(command, description, params, function, plugin)
+        self._commands[command] = new_command
         self._click_root_command.add_command(new_command.click_command)
-        self.log.debug("Command registered: %s" % name)
+        self.log.debug("Command registered: %s" % command)
         return new_command
 
 
 class Command:
-    def __init__(self, name, description, parameters, function, plugin):
-        self.name = name
+    def __init__(self, command, description, parameters, function, plugin):
+        self.command = command
         self.description = description
         self.parameters = parameters
         self.plugin = plugin
         self.function = function
-        self.click_command = click.Command(name, callback=function, help=description, params=parameters)
+        self.click_command = click.Command(command, callback=function, help=description, params=parameters)
 
 
 class CommandExistException(BaseException):

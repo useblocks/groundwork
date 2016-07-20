@@ -5,7 +5,7 @@ Application Object
 ------------------
 .. currentmodule:: groundwork
 
-.. autoclass:: GwApp
+.. autoclass:: App
    :members:
    :inherited-members:
    :undoc-members:
