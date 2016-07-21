@@ -3,12 +3,13 @@ import logging
 from groundwork.patterns.gw_plugin_pattern import GwPluginPattern
 
 from groundwork.sharedobject import SharedObject
-from groundwork.utilities import Singleton
 
 
 class GwExchangePattern(GwPluginPattern):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if not hasattr(self.app, "exchange"):
+            self.app.exchange = ExchangeListApplication(self.app)
         self.exchange = ExchangeListPlugin(self)
 
     def activate(self):
@@ -23,7 +24,6 @@ class ExchangeListPlugin:
         self.plugin = plugin
         self.app = plugin.app
         self.log = plugin.log
-        self.app.exchange = ExchangeListApplication(plugin.app)
         self.log.info("Plugin exchange initialised")
 
     def register(self, name, description, obj):
@@ -46,7 +46,7 @@ class ExchangeListPlugin:
         return method
 
 
-class ExchangeListApplication(metaclass=Singleton):
+class ExchangeListApplication():
     def __init__(self, app):
         self.app = app
         self.log = app.log

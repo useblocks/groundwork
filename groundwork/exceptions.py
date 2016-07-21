@@ -1,11 +1,14 @@
-class PluginNotInitialisable(Exception):
+class PluginNotInitialisableException(BaseException):
     pass
 
 
-class PluginNotActivatable(Exception):
+class PluginNotActivatableException(BaseException):
     pass
 
 
-class PluginAttributeMissing(Exception):
+class PluginAttributeMissingException(BaseException):
     pass
 
+
+class PluginRegistrationException(BaseException):
+    pass

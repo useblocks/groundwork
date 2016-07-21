@@ -2,10 +2,10 @@
 Groundwork documentation support module.
 """
 
+import os
 import logging
 
 from groundwork.patterns.gw_plugin_pattern import GwPluginPattern
-from groundwork.utilities import Singleton
 
 
 class GwDocumentsPattern(GwPluginPattern):
@@ -15,6 +15,9 @@ class GwDocumentsPattern(GwPluginPattern):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        if not hasattr(self.app, "documents"):
+            self.app.documents = DocumentsListApplication(self.app)
         self.documents = DocumentsListPlugin(self)
 
     def activate(self):
@@ -36,7 +39,6 @@ class DocumentsListPlugin:
         self._plugin = plugin
         self.__app = plugin.app
         self.__log = plugin.log
-        self.__app.documents = DocumentsListApplication(plugin.app)
         self.__log.info("Plugin messages initialised")
 
     def register(self, name, file_path, alias=None):
@@ -51,7 +53,7 @@ class DocumentsListPlugin:
         return self.__app.documents.register(name, file_path, alias, self._plugin)
 
     def get(self, name=None):
-        return self.__app.documents.get(name, self.__plugin)
+        return self.__app.documents.get(name, self._plugin)
 
     def __getattr__(self, item):
         """
@@ -62,12 +64,12 @@ class DocumentsListPlugin:
             func = getattr(self.__app.documents, item, None)
             if func is None:
                 raise AttributeError("DocumentsListApplication does not have an attribute called %s" % item)
-            return func(*args, plugin=self.__plugin, **kwargs)
+            return func(*args, plugin=self._plugin, **kwargs)
 
         return method
 
 
-class DocumentsListApplication(metaclass=Singleton):
+class DocumentsListApplication():
     """
 
     """
@@ -84,14 +86,18 @@ class DocumentsListApplication(metaclass=Singleton):
         .. warning: You can not use any relative links inside a given document.
                     For instance, sphinx's toctree, image, figure or include statements do not work.
 
-        :param name:
-        :param file_path:
-        :param alias:
-        :param plugin:
+        :param file_path: Absolute path of the document location
+        :param name: Unique name of the document for documentation purposes.
+        :param alias: Alias of the document. May be used as file name, if documents are copied or restructured.
+               (Optional)
+        :param plugin: Plugin object, under which the signals where registered
+        :type plugin: GwPluginPattern
         """
         if name in self.documents.keys():
             raise Exception("Document %s was already registered by %s" % (name, self.documents[name].plugin.name))
 
+        if not os.path.isabs(file_path):
+            raise NoAbsolutePathException("file_path %s is not absolute" % file_path)
         self.documents[name] = Document(name, file_path, alias, plugin)
         self.__log.debug("Document %s registered by %s" % (name, plugin.name))
         return self.documents[name]
@@ -151,3 +157,7 @@ class Document:
         self.alias = alias
         self.plugin = plugin
         self.__log = logging.getLogger(__name__)
+
+
+class NoAbsolutePathException(BaseException):
+    pass

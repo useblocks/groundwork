@@ -7,10 +7,9 @@ Functionality is based on the library `blinker <http://pythonhosted.org/blinker/
 """
 
 import logging
-from blinker import signal as blinker_signal
+from blinker import Namespace
 
 from groundwork.patterns.gw_plugin_pattern import GwPluginPattern
-from groundwork.utilities import Singleton
 
 
 class GwSignalsPattern(GwPluginPattern):
@@ -39,6 +38,8 @@ class GwSignalsPattern(GwPluginPattern):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if not hasattr(self.app, "signals"):
+            self.app.signals = SignalsListApplication(self.app)
         self.signals = SignalListPlugin(self)
 
     def activate(self):
@@ -63,7 +64,6 @@ class SignalListPlugin:
         self._plugin = plugin
         self.__app = plugin.app
         self.__log = plugin.log
-        self.__app.signals = SignalsListApplication(plugin.app)
         self.__log.info("Plugin messages initialised")
 
     def register(self, signal, description):
@@ -110,7 +110,7 @@ class SignalListPlugin:
         return self.__app.signals.send(signal, plugin=self._plugin, **kwargs)
 
     def get(self, signal=None):
-        return self.__app.signals.get(signal, self.__plugin)
+        return self.__app.signals.get(signal, self._plugin)
 
     def __getattr__(self, item):
         """
@@ -121,12 +121,12 @@ class SignalListPlugin:
             func = getattr(self.__app.signals, item, None)
             if func is None:
                 raise AttributeError("SignalsListApplication does not have an attribute called %s" % item)
-            return func(*args, plugin=self.__plugin, **kwargs)
+            return func(*args, plugin=self._plugin, **kwargs)
 
         return method
 
 
-class SignalsListApplication(metaclass=Singleton):
+class SignalsListApplication():
     """
     Signal and Receiver management class on application level.
     This class can only be instantiated once (Singleton)
@@ -143,6 +143,15 @@ class SignalsListApplication(metaclass=Singleton):
         self.signals = {}
         self.receivers = {}
 
+        # We must use an unique namespace for our signals. Otherwise we get problems with multiple applications or
+        # application recreation, because blinker throws every signal to a "singleton container", which stays
+        # the same for the whole runtime of the python interpreter . No cleanup or anything else.
+        # So registered signals and receivers keep registered, whatever you do with the app.
+        # How to use namespace in blinker? See:
+        # http://flask.pocoo.org/docs/0.11/signals/#creating-signals for blinker namespace usage
+        # https://github.com/jek/blinker/blob/master/blinker/base.py#L432
+        self.namespace = Namespace()
+
         self.__log.info("Application signals initialised")
 
     def register(self, signal, plugin, description=""):
@@ -157,7 +166,7 @@ class SignalsListApplication(metaclass=Singleton):
         if signal in self.signals.keys():
             raise Exception("Signal %s was already registered by %s" % (signal, self.signals[signal].plugin.name))
 
-        self.signals[signal] = Signal(signal, plugin, description)
+        self.signals[signal] = Signal(signal, plugin, self.namespace, description)
         self.__log.debug("Signal %s registered by %s" % (signal, plugin.name))
         return self.signals[signal]
 
@@ -177,7 +186,7 @@ class SignalsListApplication(metaclass=Singleton):
         """
         if receiver in self.receivers.keys():
             raise Exception("Receiver %s was already registered by %s" % (receiver, self.receiver[receiver].plugin.name))
-        self.receivers[receiver] = Receiver(receiver, signal, function, plugin, description)
+        self.receivers[receiver] = Receiver(receiver, signal, function, plugin, self.namespace, description)
         self.__log.debug("Receiver %s registered for signal %s" % (receiver, signal))
         return self.receivers[receiver]
 
@@ -205,7 +214,8 @@ class SignalsListApplication(metaclass=Singleton):
         if signal not in self.signals.keys():
             raise Exception("Unknown signal %s" % signal)
         self.__log.debug("Sending signal %s for %s" % (signal, plugin.name))
-        self.signals[signal].send(plugin, **kwargs)
+        rv = self.signals[signal].send(plugin, text="test")
+        return rv
 
     def get(self, signal=None, plugin=None):
         """
@@ -249,16 +259,17 @@ class Signal:
 
     :param name: Name of the signal
     :type name: str
+    :param namespace: Namespace of the signal. There is one per groundwork app.
     :param description: Additional description for the signal
     :type description: str
     :param plugin: The plugin, which registered this signal
     :type plugin: GwPluginPattern
     """
-    def __init__(self, name, plugin, description=""):
+    def __init__(self, name, plugin, namespace, description=""):
         self.name = name
         self.description = description
         self.plugin = plugin
-        self._signal = blinker_signal(name, doc=description)
+        self._signal = namespace.signal(name, doc=description)
         self.__log = logging.getLogger(__name__)
 
     def send(self, plugin, **kwargs):
@@ -273,19 +284,21 @@ class Receiver:
     :type name: str
     :param signal: Signal name(s)
     :type signal: str
+    :param namespace: Namespace of the signal. There is one per groundwork app.
     :param function: Callable function, which gets executed, if signal is sent.
     :param plugin: Plugin object, which registered the subscriber
     :type plugin: GwPluginPattern
     :param description: Additional description about the subscriber.
     :type description: str
     """
-    def __init__(self, name, signal, function, plugin, description=""):
+    def __init__(self, name, signal, function, plugin, namespace, description=""):
         self.name = name
         self.plugin = plugin
         self.function = function
         self.description = description
         self.signal = signal
         self.__log = logging.getLogger(__name__)
+        self.namespace = namespace
         self.connect()
 
     def connect(self):
@@ -293,9 +306,9 @@ class Receiver:
             self.__log.error("Given function object for signal %s is not a function" % self.signal)
         else:
             if isinstance(self.signal, str):
-                blinker_signal(self.signal).connect(self.function)
+                self.namespace.signal(self.signal).connect(self.function)
             else:
                 self.__log.error("Given signal object is not a string.")
 
     def disconnect(self):
-        blinker_signal(self.signal).disconnect(self.function)
+        self.namespace.signal(self.signal).disconnect(self.function)

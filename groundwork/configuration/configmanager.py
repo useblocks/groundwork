@@ -3,8 +3,8 @@ import errno
 from pathlib import Path
 import logging
 
-from .exceptions import InvalidParameter
-from .config import Config
+from groundwork.configuration.exceptions import InvalidParameter
+from groundwork.configuration.config import Config
 
 
 class ConfigManager:

@@ -2,8 +2,6 @@ import logging
 import click
 
 from groundwork.patterns.gw_plugin_pattern import GwPluginPattern
-from groundwork.sharedobject import SharedObject
-from groundwork.utilities import Singleton
 
 
 class GwCommandsPattern(GwPluginPattern):
@@ -47,6 +45,8 @@ class GwCommandsPattern(GwPluginPattern):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if not hasattr(self.app, "commands"):
+            self.app.commands = CommandsListApplication(self.app)
         self.commands = CommandsListPlugin(self)
 
     def activate(self):
@@ -61,7 +61,6 @@ class CommandsListPlugin:
         self.plugin = plugin
         self.app = plugin.app
         self.log = plugin.log
-        self.app.commands = CommandsListApplication(plugin.app)
         self.log.info("Plugin commands initialised")
 
     def register(self, command, description, function, params=[]):
@@ -82,7 +81,7 @@ class CommandsListPlugin:
         return method
 
 
-class CommandsListApplication(metaclass=Singleton):
+class CommandsListApplication():
     def __init__(self, app):
         self.app = app
         self.log = logging.getLogger(__name__)

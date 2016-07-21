@@ -3,9 +3,9 @@ import logging.config
 import sys
 import os
 
-from .configuration import ConfigManager as ConfigManager
-from .pluginmanager import PluginManager
-from .sharedobject import SharedObjectManager
+from groundwork.configuration import ConfigManager
+from groundwork.pluginmanager import PluginManager
+from groundwork.sharedobject import SharedObjectManager
 
 
 class App:
@@ -29,7 +29,7 @@ class App:
         self.config = ConfigManager(config_files).load()
         self._configure_logging(self.config.get("GROUNDWORK_LOGGING"))
         self.path = os.path.abspath(self.config.get("BASE_PATH", None) or os.getcwd())
-
+        self.name = self.config.get("APP_NAME", None) or "NoName App"
         self.plugins = PluginManager(app=self, plugins=plugins, strict=strict)
         self.shared_objects = SharedObjectManager()
 

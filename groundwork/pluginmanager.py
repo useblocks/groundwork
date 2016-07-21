@@ -4,7 +4,8 @@ import sys
 import inspect
 
 from groundwork.patterns.gw_plugin_pattern import GwPluginPattern
-from groundwork.exceptions import PluginNotActivatable, PluginNotInitialisable
+from groundwork.exceptions import PluginNotActivatableException, PluginNotInitialisableException, \
+    PluginRegistrationException
 
 
 class PluginManager:
@@ -121,8 +122,15 @@ class PluginManager:
                     continue
                 else:
                     raise Exception("Given plugin %s is already initialised. Please provide a class not an instance.")
-
             plugin_name = plugin.__name__
+
+            if plugin_name in self.plugins.keys():
+                self.log.warning("Plugin %s already registered" % plugin_name)
+                if not self.strict:
+                    continue
+                else:
+                    raise PluginRegistrationException("Plugin %s already registered" % plugin_name)
+
             self.plugins[plugin_name] = {
                 "name": plugin_name,
                 "entry_point": None,
@@ -194,7 +202,7 @@ class PluginManager:
                         plugin_instance.path = self.plugins[plugin_name]["path"]
                     except Exception as e:
                         self.plugins[plugin_name]["initialised"] = False
-                        raise PluginNotInitialisable("Plugin %s could not be initialised" % plugin_name) from e
+                        raise PluginNotInitialisableException("Plugin %s could not be initialised" % plugin_name) from e
                     else:
                         self.plugins[plugin_name]["initialised"] = True
                         self.plugins[plugin_name]["instance"] = plugin_instance
@@ -247,7 +255,7 @@ class PluginManager:
                         self.plugins[plugin_name]["instance"].activate()
                     except Exception as e:
                         self.plugins[plugin_name]["active"] = False
-                        raise PluginNotActivatable("Plugin %s could not be activated" % plugin_name) from e
+                        raise PluginNotActivatableException("Plugin %s could not be activated" % plugin_name) from e
                     else:
                         self.plugins[plugin_name]["active"] = True
                         self.log.debug("Plugin %s activated" % plugin_name)
@@ -255,7 +263,7 @@ class PluginManager:
                 else:
                     self.log.warning("Plugin %s got already activated." % plugin_name)
                     if self.strict:
-                        raise PluginNotInitialisable()
+                        raise PluginNotInitialisableException()
             else:
                 self.log.warn("Plugin %s not found" % plugin_name)
         self.log.info("Plugins activated: %s" % ", ".join(plugins_activated))

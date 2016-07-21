@@ -17,12 +17,13 @@ Therefore groundwork supports developers with time-saving out-of-the box solutio
 Example
 -------
 
-The following code defines a plugin and activates it on a newly created application: ::
+The following code defines a plugin with command line support and creates a groundwork application, which loads
+this plugin: ::
 
     from groundwork import App
-    from groundwork.patterns import GwCommandsPattern, GwSignalsPattern
+    from groundwork.patterns import GwCommandsPattern
 
-    class MyPlugin(GwCommandsPattern, GwSignalsPattern):
+    class MyPlugin(GwCommandsPattern):
         def _init_(self, *args, **kwargs):
             self.name = "My Plugin"
             super().__init__(*args, **kwargs)
@@ -32,24 +33,15 @@ The following code defines a plugin and activates it on a newly created applicat
                                    description='prints "hello world"',
                                    function=self.greetings)
 
-            self.signals.register(signal='hi',
-                                  description='Say "hi" to all interested plugins')
-
-            self.signals.connect(receiver='hi receiver',
-                                 signal='hi',
-                                 function=self.greetings,
-                                 description='prints "Hello world"')
-
         def greetings(self):
             print("Hello world")
 
     if __name__ == "__main__":
-        my_app = App(plugins=[MyPlugin])       # Creates application and registers MyPlugin
-        my_app.plugins.activate("My Plugin")   # Initialise and activates 'My Plugin'
-        my_app.signals.send('hi')              # Will print 'Hello world'
-        my_app.commands.start_cli()            # Starts the command line interface
+        my_app = App(plugins=[MyPlugin])        # Creates application and registers MyPlugin
+        my_app.plugins.activate(["My Plugin"])  # Initialise and activates 'My Plugin'
+        my_app.commands.start_cli()             # Starts the command line interface
 
-On a command line the following commands may be used: ::
+On a command line the following commands can be used: ::
 
     python my_app.py hello      # Prints 'Hello world'
     python my_app.py            # Prints a list of available commands

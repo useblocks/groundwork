@@ -1,1 +1,1 @@
-from .configmanager import ConfigManager
+from groundwork.configuration.configmanager import ConfigManager
