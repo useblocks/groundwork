@@ -7,7 +7,7 @@ Functionality is based on the library `blinker <http://pythonhosted.org/blinker/
 """
 
 import logging
-from blinker import Namespace
+from blinker import WeakNamespace
 
 from groundwork.patterns.gw_plugin_pattern import GwPluginPattern
 
@@ -150,7 +150,9 @@ class SignalsListApplication():
         # How to use namespace in blinker? See:
         # http://flask.pocoo.org/docs/0.11/signals/#creating-signals for blinker namespace usage
         # https://github.com/jek/blinker/blob/master/blinker/base.py#L432
-        self.namespace = Namespace()
+        # Used WeakNamespace could also be Namespace.
+        # But doc says, Weaknamespace get clean up, if no reference exists anymore.
+        self.namespace = WeakNamespace()
 
         self.__log.info("Application signals initialised")
 
