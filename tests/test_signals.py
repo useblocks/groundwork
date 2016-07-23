@@ -1,18 +1,5 @@
-import os
-import pytest
-
-
-def test_signal_plugin_activation(basicApp):
-    plugin = basicApp.plugins.get("SignalPlugin")
-    assert plugin is not None
-    assert plugin["initialised"] == True
-    assert plugin["active"] == True
-
-
 def test_signal_registration(basicApp):
-    plugin_meta = basicApp.plugins.get("SignalPlugin")
-    plugin = plugin_meta["instance"]
-
+    plugin = basicApp.plugins.get("BasicPlugin")
     signals = plugin.signals.get()
     assert len(signals.keys()) == 1
     assert "test" in signals.keys()
@@ -32,8 +19,7 @@ def test_signal_connect(basicApp):
     def _test_command(plugin, **kwargs):
         return "12345"
 
-    plugin_meta = basicApp.plugins.get("SignalPlugin")
-    plugin = plugin_meta["instance"]
+    plugin = basicApp.plugins.get("BasicPlugin")
     plugin.signals.connect("12345 receiver", "test", _test_command, "receiver 12345 for test")
     answers = plugin.signals.send("test")
     assert len(answers) == 2
@@ -43,12 +29,10 @@ def test_signal_connect(basicApp):
 
 
 def test_signal_disconnect(basicApp):
-
     def _test_command(plugin, **kwargs):
         return "12345"
 
-    plugin_meta = basicApp.plugins.get("SignalPlugin")
-    plugin = plugin_meta["instance"]
+    plugin = basicApp.plugins.get("BasicPlugin")
     plugin.signals.connect("12345 receiver", "test", _test_command, "receiver 12345 for test")
     answers = plugin.signals.send("test")
     assert len(answers) == 2
@@ -61,11 +45,19 @@ def test_signal_disconnect(basicApp):
     assert len(answers) == 1
 
 
+def test_receiver_get(basicApp):
+    def _test_command(plugin, **kwargs):
+        return "12345"
 
-
-
-
-
+    plugin = basicApp.plugins.get("BasicPlugin")
+    receivers = plugin.signals.get_receiver()
+    assert len(receivers) == 1  # test receiver
+    plugin.signals.connect("12345 receiver", "test", _test_command, "receiver 12345 for test")
+    receivers = plugin.signals.get_receiver()
+    assert len(receivers) == 2
+    plugin.deactivate()
+    receivers = plugin.signals.get_receiver()
+    assert len(receivers) == 0
 
 
 

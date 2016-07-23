@@ -7,13 +7,11 @@ from groundwork.exceptions import PluginRegistrationException
 def test_document_plugin_activation(basicApp):
     plugin = basicApp.plugins.get("DocumentPlugin")
     assert plugin is not None
-    assert plugin["initialised"] == True
-    assert plugin["active"] == True
+    assert plugin.active == True
 
 
 def test_document_registration(basicApp):
-    plugin_meta = basicApp.plugins.get("DocumentPlugin")
-    plugin = plugin_meta["instance"]
+    plugin = basicApp.plugins.get("DocumentPlugin")
     with pytest.raises(NoAbsolutePathException):
         plugin.documents.register("new_document", "static/document.txt")
     plugin.documents.register("new_document", os.path.abspath("static/document.txt"))

@@ -1,10 +1,10 @@
 import os
 import inspect
 
-from groundwork.patterns import GwCommandsPattern, GwSignalsPattern, GwDocumentsPattern
+from groundwork.patterns import GwCommandsPattern, GwDocumentsPattern
 
 
-class GwCommandInfo(GwSignalsPattern, GwDocumentsPattern):
+class GwCommandInfo(GwDocumentsPattern):
     def __init__(self, *args, **kwargs):
         self.name = self.__class__.__name__
         super().__init__(*args, **kwargs)

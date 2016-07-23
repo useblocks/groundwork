@@ -26,10 +26,10 @@ def basicApp():
     :return: app
     """
     from groundwork import App
-    from tests.test_plugins import BasicPlugin, CommandPlugin, DocumentPlugin, SignalPlugin
+    from tests.test_plugins import BasicPlugin, CommandPlugin, DocumentPlugin
 
-    app = App(plugins=[BasicPlugin, CommandPlugin, DocumentPlugin, SignalPlugin], strict=True)
-    app.plugins.activate(["BasicPlugin", "CommandPlugin", "DocumentPlugin", "SignalPlugin"])
+    app = App(plugins=[BasicPlugin, CommandPlugin, DocumentPlugin], strict=True)
+    app.plugins.activate(["BasicPlugin", "CommandPlugin", "DocumentPlugin"])
     return app
 
 

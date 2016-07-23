@@ -1,9 +1,9 @@
 import inspect
 
-from groundwork.patterns import GwPluginPattern, GwCommandsPattern, GwSignalsPattern
+from groundwork.patterns import GwPluginPattern, GwCommandsPattern
 
 
-class GwPluginInfo(GwCommandsPattern, GwSignalsPattern):
+class GwPluginInfo(GwCommandsPattern):
 
     def __init__(self, *args, **kwargs):
         self.name = self.__class__.__name__

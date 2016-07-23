@@ -43,17 +43,12 @@ class GwCommandsPattern(GwPluginPattern):
         gw_app.load_plugins(gw_app.config.get("PLUGINS"))
         gw_app.commands.start_cli()
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if not hasattr(self.app, "commands"):
             self.app.commands = CommandsListApplication(self.app)
         self.commands = CommandsListPlugin(self)
-
-    def activate(self):
-        pass
-
-    def deactivate(self):
-        pass
 
 
 class CommandsListPlugin:
@@ -63,8 +58,24 @@ class CommandsListPlugin:
         self.log = plugin.log
         self.log.info("Plugin commands initialised")
 
+        # Let's register a receiver, which cares about the deactivation process of commands for this plugin.
+        # We do it after the original plugin deactivation, so we can be sure that the registered function is the last
+        # one which cares about commands for this plugin.
+        self.plugin.signals.connect(receiver="%s_command_deactivation" % self.plugin.name,
+                                    signal="plugin_deactivate_post",
+                                    function=self.__deactivate_commands,
+                                    description="Deactivate commands for %s" % self.plugin.name)
+
+    def __deactivate_commands(self, plugin, *args, **kwargs):
+        commands = self.get()
+        for command in commands.keys():
+            self.unregister(command)
+
     def register(self, command, description, function, params=[]):
         return self.app.commands.register(command, description, function, params, self.plugin)
+
+    def unregister(self, command):
+        return self.app.commands.unregister(command)
 
     def get(self, name=None):
         return self.app.commands.get(name, self.plugin)
@@ -73,11 +84,13 @@ class CommandsListPlugin:
         """
         Catches unknown function/attribute calls and delegates them to CommandsListApplication
         """
+
         def method(*args, **kwargs):
             func = getattr(self.app.commands, item, None)
             if func is None:
                 raise AttributeError("CommandsList does not have an attribute called %s" % item)
             return func(*args, plugin=self.plugin, **kwargs)
+
         return method
 
 
@@ -116,6 +129,16 @@ class CommandsListApplication():
                     return None
 
     def register(self, command, description, function, params=[], plugin=None):
+        """
+        Registers a new command, which can be used on a command line interface (cli).
+
+        :param command: Name of the command
+        :param description: Description of the command. Is used as help message on cli
+        :param function: function reference, which gets invoked if command gets called.
+        :param params: list of click options and arguments
+        :param plugin: the plugin, which registered this command
+        :return: command object
+        """
         if command in self._commands.keys():
             raise CommandExistException("Command %s already registered by %s" % (command,
                                                                                  self._commands[command].plugin.name))
@@ -125,6 +148,25 @@ class CommandsListApplication():
         self._click_root_command.add_command(new_command.click_command)
         self.log.debug("Command registered: %s" % command)
         return new_command
+
+    def unregister(self, command):
+        """
+        Unregisters an existing command, so that this command is no longer available on the command line interface.
+
+        This function is mainly used during plugin deactivation.
+
+        :param command: Name of the command
+        """
+        if command not in self._commands.keys():
+            self.log.warning("Can not unregister command %s" % command)
+        else:
+            # Click does not have any kind of a function to unregister/remove/deactivate already added commands.
+            # So we need to delete the related objects manually from the click internal commands dictionary for
+            # our root command.
+            del (self._click_root_command.commands[command])
+            # Finally lets delete the command from our internal dictionary too.
+            del (self._commands[command])
+            self.log.debug("Command %s got unregistered" % command)
 
 
 class Command:

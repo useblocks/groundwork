@@ -41,34 +41,65 @@ def test_app_initialisation_with_plugins(BasicPlugin):
     app.plugins.activate(["BasicPlugin"])
 
 
-def test_app_plugin(BasicPlugin):
+def test_app_plugin_registration(BasicPlugin):
     app = groundwork.App(plugins=[BasicPlugin], strict=True)
-    plugin = app.plugins.get("BasicPlugin")
-    assert plugin is not None
-    assert plugin["active"] is None
+    plugin_class = app.plugins.classes.get("BasicPlugin")
+    assert plugin_class is not None
 
+
+def test_app_plugin_activation(BasicPlugin):
+    app = groundwork.App(plugins=[BasicPlugin], strict=True)
     app.plugins.activate(["BasicPlugin"])
     plugin = app.plugins.get("BasicPlugin")
     assert plugin is not None
-    assert plugin["active"] == True
+    assert plugin.active == True
 
+
+def test_app_plugin_deactivation(BasicPlugin):
+    app = groundwork.App(plugins=[BasicPlugin], strict=True)
+    app.plugins.activate(["BasicPlugin"])
+    plugin = app.plugins.get("BasicPlugin")
+    assert plugin is not None
+    assert plugin.active == True
+    app.plugins.deactivate(["BasicPlugin"])
+    assert plugin.active == False
+
+
+def test_app_plugin_multi_status_change(BasicPlugin):
+    app = groundwork.App(plugins=[BasicPlugin], strict=True)
+
+    # De/Activation via app
+    app.plugins.activate(["BasicPlugin"])
+    plugin = app.plugins.get("BasicPlugin")
+    assert plugin.active == True
+    app.plugins.deactivate(["BasicPlugin"])
+    assert plugin.active == False
+    app.plugins.activate(["BasicPlugin"])
+    assert plugin.active == True
+    # De/Activation via plugin itself
+    plugin = app.plugins.get("BasicPlugin")
+    plugin.deactivate()
+    assert plugin.active == False
 
 def test_app_multi_repeating_registration(BasicPlugin, basicApp):
     with pytest.raises(PluginRegistrationException):
-        basicApp.plugins.register([BasicPlugin])
+        basicApp.plugins.classes.register([BasicPlugin])
 
 
 def test_multi_app(BasicPlugin):
     app = groundwork.App(plugins=[BasicPlugin], strict=True)
-    plugin = app.plugins.get("BasicPlugin")
+    plugin_class = app.plugins.classes.get("BasicPlugin")
 
     app2 = groundwork.App(plugins=[BasicPlugin], strict=True)
-    plugin2 = app2.plugins.get("BasicPlugin")
+    plugin2_class = app2.plugins.classes.get("BasicPlugin")
 
     assert app is not app2
-    assert plugin == plugin2  # Checks, if content is the same
-    assert plugin is not plugin2  # Checks, if reference is not the same
+    assert plugin_class is not plugin2_class  # Checks, if reference is not the same
 
     app.plugins.activate(["BasicPlugin"])
+    plugin = app.plugins.get("BasicPlugin")
+
     app2.plugins.activate(["BasicPlugin"])
-    assert plugin != plugin2  # Content should be different, because plugin instance was added.
+    plugin2 = app2.plugins.get("BasicPlugin")
+
+    assert plugin is not plugin2

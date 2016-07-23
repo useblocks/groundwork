@@ -1,132 +1,8 @@
-"""
-Groudnwork signal support module.
-
-Provides a pattern to allow plugins to register and send signals and to connect their own functions to signals.
-
-Functionality is based on the library `blinker <http://pythonhosted.org/blinker/>`_
-"""
-
 import logging
 from blinker import WeakNamespace
 
-from groundwork.patterns.gw_plugin_pattern import GwPluginPattern
 
-
-class GwSignalsPattern(GwPluginPattern):
-    """
-    Pattern for activating signals and receivers inside a plugin.
-
-    To register a signal::
-
-        self.signals.register("my_signal", "Just a test signal")
-
-    To connect to a signal::
-
-        def test_func(plugin, **kwargs)
-            self.log.debug("My connected signal was called by %s" % plugin.name)
-
-        self.signals.connect("My_test_Connection", "my_signal", test_func, "Just a test connection to my_test")
-
-    To send a signal::
-
-        self.signals.send("my_signal", argument="test", additional_argument="test_2")
-
-    To disconnect from a signal::
-
-        self.signals.disconnect("My_test_Connection")
-
-    """
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if not hasattr(self.app, "signals"):
-            self.app.signals = SignalsListApplication(self.app)
-        self.signals = SignalListPlugin(self)
-
-    def activate(self):
-        pass
-
-    def deactivate(self):
-        pass
-
-
-class SignalListPlugin:
-    """
-    Signal and Receiver management class on plugin level.
-    This class gets initiated once per plugin.
-
-    Mostly delegates function calls to the SingnalListApplication instance on application level.
-
-    :param plugin: The plugin, which wants to use signals
-    :type plugin: GwPluginPattern
-    """
-
-    def __init__(self, plugin):
-        self._plugin = plugin
-        self.__app = plugin.app
-        self.__log = plugin.log
-        self.__log.info("Plugin messages initialised")
-
-    def register(self, signal, description):
-        """
-        Registers a new signal.
-        Only registered signals are allowed to be send.
-
-        :param signal: Unique name of the signal
-        :param description: Description of the reason or use case, why this signal is needed.
-                            Used for documentation.
-        """
-        return self.__app.signals.register(signal, self._plugin, description)
-
-    def connect(self, receiver, signal, function, description):
-        """
-        Connect a receiver to a signal
-
-        :param receiver: Name of the receiver
-        :type receiver: str
-        :param signal: Name of the signal. Must already be registered!
-        :type signal: str
-        :param function: Callable functions, which shall be executed, of signal is send.
-        :param description: Description of the reason or use case, why this connection is needed.
-                            Used for documentation.
-        """
-        return self.__app.signals.connect(receiver, signal, function, self._plugin, description)
-
-    def disconnect(self, receiver):
-        """
-        Disconnect a receiver from a signal.
-        Receiver must exist, otherwise an exception is thrown.
-
-        :param receiver: Name of the receiver
-        """
-        return self.__app.signals.disconnect(receiver)
-
-    def send(self, signal, **kwargs):
-        """
-        Sends a signal for the given plugin.
-
-        :param signal: Name of the signal
-        :type signal: str
-        """
-        return self.__app.signals.send(signal, plugin=self._plugin, **kwargs)
-
-    def get(self, signal=None):
-        return self.__app.signals.get(signal, self._plugin)
-
-    def __getattr__(self, item):
-        """
-        Catches unknown function/attribute calls and delegates them to SignalsListApplication
-        """
-
-        def method(*args, **kwargs):
-            func = getattr(self.__app.signals, item, None)
-            if func is None:
-                raise AttributeError("SignalsListApplication does not have an attribute called %s" % item)
-            return func(*args, plugin=self._plugin, **kwargs)
-
-        return method
-
-
-class SignalsListApplication():
+class SignalsApplication():
     """
     Signal and Receiver management class on application level.
     This class can only be instantiated once (Singleton)
@@ -172,6 +48,18 @@ class SignalsListApplication():
         self.__log.debug("Signal %s registered by %s" % (signal, plugin.name))
         return self.signals[signal]
 
+    def unregister(self, signal):
+        """
+        Unregisters an existing signal
+
+        :param signal: Name of the signal
+        """
+        if signal in self.signals.keys():
+            del(self.signals[signal])
+            self.__log.debug("Signal %s unregisterd" % signal)
+        else:
+            self.__log.debug("Signal %s does not exist and could not be unregistered.")
+
     def connect(self, receiver, signal, function, plugin, description=""):
         """
         Connect a receiver to a signal
@@ -202,6 +90,7 @@ class SignalsListApplication():
         if receiver not in self.receivers.keys():
             raise Exception("No receiver %s was registered" % receiver)
         self.receivers[receiver].disconnect()
+        del(self.receivers[receiver])
         self.__log.debug("Receiver %s disconnected" % receiver)
 
     def send(self, signal, plugin, **kwargs):
@@ -249,6 +138,39 @@ class SignalsListApplication():
             else:
                 if signal in self.signals.keys():
                     return self.signals[signal]
+                else:
+                    return None
+
+    def get_receiver(self, receiver=None, plugin=None):
+        """
+        Get one or more signals.
+
+        :param receiver: Name of the signal
+        :type receiver: str
+        :param plugin: Plugin object, under which the signals where registered
+        :type plugin: GwPluginPattern
+        """
+        if plugin is not None:
+            if receiver is None:
+                receiver_list = {}
+                for key in self.receivers.keys():
+                    if self.receivers[key].plugin == plugin:
+                        receiver_list[key] = self.receivers[key]
+                return receiver_list
+            else:
+                if receiver in self.receivers.keys():
+                    if self.receivers[receiver].plugin == plugin:
+                        return self.receivers[receiver]
+                    else:
+                        return None
+                else:
+                    return None
+        else:
+            if receiver is None:
+                return self.receivers
+            else:
+                if receiver in self.receivers.keys():
+                    return self.receivers[receiver]
                 else:
                     return None
 

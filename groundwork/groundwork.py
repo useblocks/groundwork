@@ -6,6 +6,7 @@ import os
 from groundwork.configuration import ConfigManager
 from groundwork.pluginmanager import PluginManager
 from groundwork.sharedobject import SharedObjectManager
+from groundwork.signals import SignalsApplication
 
 
 class App:
@@ -21,16 +22,32 @@ class App:
       4. activate configured plugins
     """
 
-    def __init__(self, config_files=[], plugins=[], strict=False):
+    def __init__(self, config_files=[], plugins=None, strict=False):
         self.log = logging.getLogger("groundwork")
         self._configure_logging()
         self.log.info("Initializing groundwork")
         self.log.info("Reading configuration")
         self.config = ConfigManager(config_files).load()
         self._configure_logging(self.config.get("GROUNDWORK_LOGGING"))
-        self.path = os.path.abspath(self.config.get("BASE_PATH", None) or os.getcwd())
         self.name = self.config.get("APP_NAME", None) or "NoName App"
-        self.plugins = PluginManager(app=self, plugins=plugins, strict=strict)
+        self.path = os.path.abspath(self.config.get("BASE_PATH", None) or os.getcwd())
+
+        self.signals = SignalsApplication(app=self)
+
+        self.signals.register("plugin_activate_pre", self,
+                              "Gets send right before activation routine of a plugins will be executed")
+        self.signals.register("plugin_activate_post", self,
+                              "Gets send right after activation routine of a plugins was executed")
+        self.signals.register("plugin_deactivate_pre", self,
+                              "Gets send right before deactivation routine of a plugins will be executed")
+        self.signals.register("plugin_deactivate_post", self,
+                              "Gets send right after deactivation routine of a plugins was executed")
+
+        self.plugins = PluginManager(app=self, strict=strict)
+
+        if plugins is not None:
+            self.plugins.classes.register(plugins)
+
         self.shared_objects = SharedObjectManager()
 
     def _configure_logging(self, logger_dict=None):
@@ -47,9 +64,6 @@ class App:
             self.log.debug("Logger dictionary defined. Loading dictConfig for logging")
             logging.config.dictConfig(logger_dict)
             self.log.debug("dictConfig loaded")
-
-    def load_plugins(self, plugins=[]):
-        self.plugins.load(plugins)
 
 
 

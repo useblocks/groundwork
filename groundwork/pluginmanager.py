@@ -5,27 +5,16 @@ import inspect
 
 from groundwork.patterns.gw_plugin_pattern import GwPluginPattern
 from groundwork.exceptions import PluginNotActivatableException, PluginNotInitialisableException, \
-    PluginRegistrationException
+    PluginRegistrationException, PluginNotDeactivatableException
 
 
 class PluginManager:
     """
     PluginManager for searching, initialising, activating and deactivating groundwork plugins.
-
-    groundwork plugins are heavily based on classes and multi-inheritances.
-
-    The implemented class handling is based on solutions/hints/tips of the following online sources:
-
-     * https://rhettinger.wordpress.com/2011/05/26/super-considered-super/
-     * https://www.python.org/download/releases/2.3/mro/
-     * http://stackoverflow.com/questions/5033903/python-super-method-and-calling-alternatives
-     * https://fuhm.org/super-harmful/
     """
-
-    def __init__(self, app, plugins=[], strict=False):
+    def __init__(self, app, strict=False):
         """
-        Initialises the plugin manager and registers plugins, which are in sys.path and have an entry_point called
-        'groundwork.plugin'.
+        Initialises the plugin manager.
 
         Additional plugins can be registered by adding their class via the plugins argument.
 
@@ -33,119 +22,13 @@ class PluginManager:
         :param plugins: List of plugin classes to registration
         :param strict: If True, problems during plugin registration/initialisation or activation will throw an exception
         """
-        self.log = logging.getLogger(__name__)
-        self.log.debug("***************************************")
-        self.log.debug("Plugins Detection started")
-        self.log.debug("***************************************")
-        self.app = app
-        self.plugins = {}
-        self.strict = strict
+        self._log = logging.getLogger(__name__)
+        self._strict = strict
+        self._app = app
+        self._plugins = {}
+        self.classes = PluginClassManager(self._app, self._strict)
 
-        #######################
-        # PLUGIN Registration #
-        #######################
-
-        # Let's find and register every plugin, which is in sys.path and has defined a entry_point 'groundwork.plugin'
-        # in it's setup.py
-        entry_points = []
-        for entry_point in iter_entry_points(group='groundwork.plugin', name=None):
-            entry_points.append(entry_point)
-
-        for entry_point in entry_points:
-            try:
-                entry_point_object = entry_point.load()
-            except Exception as e:
-                self.log.warning("Couldn't load entry_point %s. Reason: %s" % (entry_point.name, e))
-                if self.app.config.get("PLUGIN_INIT_CHECK", False) or strict:
-                    raise Exception from e
-                continue
-
-            if not issubclass(entry_point_object, GwPluginPattern):
-                self.log.warning("entry_point  %s is not a subclass of groundworkPlugin" % entry_point.name)
-                continue
-            plugin_name = entry_point_object.__name__
-
-            self.plugins[plugin_name] = {
-                "name": plugin_name,
-                "entry_point": entry_point.name,
-                "path": entry_point.dist.location,
-                "class": entry_point.load(),
-                "distribution": {
-                    "key": entry_point.dist.key,
-                    "version": entry_point.dist.version
-                },
-                "initialised": None,
-                "active": None,
-            }
-            self.log.debug("Found plugin: %s at entry_point %s of package %s (%s)" % (plugin_name, entry_point.name,
-                                                                                      entry_point.dist.key,
-                                                                                      entry_point.dist.version))
-
-        if len(plugins) > 0:
-            self.register(plugins)
-
-    def load(self, plugins=[]):
-        if plugins is None or len(plugins) == 0:
-            self.log.warn("Get no plugins to load")
-            return
-        self.initialise(plugins)
-        self.activate(plugins)
-
-    def register(self, plugins=[]):
-        """
-        Registers new plugins.
-
-        The registration only creates a new entry for a plugin inside the plugin dictionary.
-        It does not activate or even initialise the plugin.
-
-        A plugin must be a class, which inherits directly or indirectly from GwPluginPattern.
-
-        :param plugins: List of plugins
-        :type plugins: lit of classes
-        """
-        if not isinstance(plugins, list):
-            raise AttributeError("plugins must be a list, not %s." % type(plugins))
-
-        plugin_registered = []
-
-        for plugin in plugins:
-            if not inspect.isclass(plugin) or not issubclass(plugin, GwPluginPattern):
-                self.log.error("Given plugin is not a subclass of groundworkPlugin.")
-                if not self.strict:
-                    continue
-                else:
-                    raise AttributeError("Given plugin is not a subclass of groundworkPlugin.")
-
-            if isinstance(plugin, GwPluginPattern):
-                self.log.error("Given plugin %s is already initialised. Please provide a class not an instance.")
-                if not self.strict:
-                    continue
-                else:
-                    raise Exception("Given plugin %s is already initialised. Please provide a class not an instance.")
-            plugin_name = plugin.__name__
-
-            if plugin_name in self.plugins.keys():
-                self.log.warning("Plugin %s already registered" % plugin_name)
-                if not self.strict:
-                    continue
-                else:
-                    raise PluginRegistrationException("Plugin %s already registered" % plugin_name)
-
-            self.plugins[plugin_name] = {
-                "name": plugin_name,
-                "entry_point": None,
-                "path": None,
-                "class": plugin,
-                "distribution": None,
-                "initialised": None,
-                "active": None,
-            }
-            self.log.debug("Plugin %s registered" % plugin_name)
-            plugin_registered.append(plugin_name)
-
-        self.log.info("Plugins registered: %s" % ", ".join(plugin_registered))
-
-    def initialise(self, plugins=[]):
+    def _load(self, plugins=[]):
         """
         Initialises given plugins, but does not activate them.
 
@@ -155,63 +38,57 @@ class PluginManager:
         Also the groundwork application object is ready and contains functions and objects, which were added
         by patterns, like app.commands from GwCommandsPattern.
 
-        Given plugins must already be registered.
+        The class of a given plugin must already be registered in the :class:`.PluginClassManager`.
 
         :param plugins: List of plugin names
         :type plugins: list of strings
         """
-        self.log.debug("***************************************")
-        self.log.debug("Plugins Initialisation started")
-        self.log.debug("***************************************")
-
+        self._log.debug("Plugins Initialisation started")
         if not isinstance(plugins, list):
             raise AttributeError("plugins must be a list, not %s" % type(plugins))
 
-        self.log.debug("Plugins to initialise: %s" % ", ".join(plugins))
-
+        self._log.debug("Plugins to initialise: %s" % ", ".join(plugins))
         plugin_initialised = []
-
         for plugin_name in plugins:
             if not isinstance(plugin_name, str):
                 raise AttributeError("plugin name must be a str, not %s" % type(plugin_name))
 
-            plugin_instance = None
-
-            if plugin_name in self.plugins.keys():
-                plugin_class = self.plugins[plugin_name]["class"]
-
-                # for base in plugin_class.__bases__:
-
-                if not issubclass(plugin_class, GwPluginPattern):
-                    self.log.warn("Can not load %s. Plugin is not based on groundwork.Plugin." % plugin_name)
-                    if self.strict:
-                        raise Exception("Can not load %s. Plugin is not based on groundwork.Plugin." % plugin_name)
-                else:
-                    self.log.debug("Initialising plugin %s" % plugin_name)
-                    try:
-                        plugin_instance = plugin_class(app=self.app)
-                        if not hasattr(plugin_instance, "plugin_base_initialised") or \
-                                        plugin_instance.plugin_base_initialised is not True:
-                            self.log.error("GwPluginPattern.__init__() was not called during initialisation. "
-                                           "Please add 'super(*args, **kwargs).__init__()' to the top of all involved "
-                                           "plugin/pattern init routines."
-                                           "Activate logging debug-output to see all involved classes.")
-                            for mro_class in plugin_class.__mro__:
-                                self.log.debug(mro_class)
-                            raise Exception("GwPluginPattern.__init()__ was not called during initialisation.")
-                        plugin_instance.path = self.plugins[plugin_name]["path"]
-                    except Exception as e:
-                        self.plugins[plugin_name]["initialised"] = False
+            plugin_class = self.classes.get(plugin_name)
+            if plugin_class is not None and issubclass(plugin_class["class"], GwPluginPattern):
+                try:
+                    # Plugin Initialisation
+                    plugin_instance = plugin_class["class"](app=self._app)
+                except Exception as e:
+                    self._log.warning("Plugin %s could not be initialised" % plugin_name)
+                    if self._strict:
                         raise PluginNotInitialisableException("Plugin %s could not be initialised" % plugin_name) from e
-                    else:
-                        self.plugins[plugin_name]["initialised"] = True
-                        self.plugins[plugin_name]["instance"] = plugin_instance
-                        plugin_initialised.append(plugin_name)
-                        self.log.debug("Plugin %s initialised" % plugin_name)
-            else:
-                self.log.warn("Plugin %s not found" % plugin_name)
+                    continue
 
-        self.log.info("Plugins initialised: %s" % ", ".join(plugin_initialised))
+                # Let's be sure, that GwPluginPattern got called
+                if not hasattr(plugin_instance, "_plugin_base_initialised") or \
+                                plugin_instance._plugin_base_initialised is not True:
+                    self._log.error("GwPluginPattern.__init__() was not called during initialisation. "
+                                    "Please add 'super(*args, **kwargs).__init__()' to the top of all involved "
+                                    "plugin/pattern init routines."
+                                    "Activate logging debug-output to see all involved classes.")
+                    for mro_class in plugin_class.__mro__:
+                        self._log.debug(mro_class)
+                    raise Exception("GwPluginPattern.__init()__ was not called during initialisation.")
+                self._register_load(plugin_instance)
+                plugin_initialised.append(plugin_name)
+                self._log.debug("Plugin %s initialised" % plugin_name)
+            else:
+                if plugin_class is None:
+                    self._log.warn("Plugin %s not found" % plugin_name)
+                elif not issubclass(plugin_class, GwPluginPattern):
+                    self._log.warn("Can not load %s. Plugin is not based on groundwork.Plugin." % plugin_name)
+                    if self._strict:
+                        raise Exception("Can not load %s. Plugin is not based on groundwork.Plugin." % plugin_name)
+
+        self._log.info("Plugins initialised: %s" % ", ".join(plugin_initialised))
+
+    def _register_load(self, plugin_instance):
+        self._plugins[plugin_instance.name] = plugin_instance
 
     def activate(self, plugins=[]):
         """
@@ -220,56 +97,92 @@ class PluginManager:
         This calls mainly plugin.activate() and plugins register needed resources like commands, signals or
         documents.
 
-        Given plugins must already be initialised.
+        If given plugins have not been initialised, this is also done via :func:`_load`.
 
         :param plugins: List of plugin names
         :type plugins: list of strings
         """
-        self.log.debug("***************************************")
-        self.log.debug("Plugins Activation started")
-        self.log.debug("***************************************")
+        self._log.debug("Plugins Activation started")
 
         if not isinstance(plugins, list):
             raise AttributeError("plugins must be a list, not %s" % type(plugins))
 
-        self.log.debug("Plugins to activate: %s" % ", ".join(plugins))
+        self._log.debug("Plugins to activate: %s" % ", ".join(plugins))
 
         plugins_activated = []
         for plugin_name in plugins:
             if not isinstance(plugin_name, str):
                 raise AttributeError("plugin name must be a str, not %s" % type(plugin_name))
 
-            if plugin_name in self.plugins.keys():
-                self.log.debug("Activating plugin %s" % plugin_name)
-                if not self.plugins[plugin_name]["initialised"]:
+            if plugin_name not in self._plugins.keys() and plugin_name in self.classes._classes.keys():
+                self._log.debug("Initialisation needed before activation.")
+                try:
+                    self._load([plugin_name])
+                except Exception as e:
+                    self._log.error("Couldn't initialise plugin %s" % plugin_name)
+                    if self._strict:
+                        raise Exception("Couldn't initialise plugin %s" % plugin_name) from e
+                    else:
+                        continue
+            if plugin_name in self._plugins.keys():
+                self._log.debug("Activating plugin %s" % plugin_name)
+                if not self._plugins[plugin_name].active:
                     try:
-                        self.initialise([plugin_name])
+                        self._plugins[plugin_name].activate()
                     except Exception as e:
-                        self.log.error("Couldn't initialise plugin %s" % plugin_name)
-                        if self.strict:
-                            raise Exception("Couldn't initialise plugin %s" % plugin_name) from e
-                        else:
-                            continue
-                if self.plugins[plugin_name]["initialised"] and not self.plugins[plugin_name]["active"]:
-                    try:
-                        self.plugins[plugin_name]["instance"].activate()
-                    except Exception as e:
-                        self.plugins[plugin_name]["active"] = False
                         raise PluginNotActivatableException("Plugin %s could not be activated" % plugin_name) from e
                     else:
-                        self.plugins[plugin_name]["active"] = True
-                        self.log.debug("Plugin %s activated" % plugin_name)
+                        self._log.debug("Plugin %s activated" % plugin_name)
                         plugins_activated.append(plugin_name)
                 else:
-                    self.log.warning("Plugin %s got already activated." % plugin_name)
-                    if self.strict:
+                    self._log.warning("Plugin %s got already activated." % plugin_name)
+                    if self._strict:
                         raise PluginNotInitialisableException()
-            else:
-                self.log.warn("Plugin %s not found" % plugin_name)
-        self.log.info("Plugins activated: %s" % ", ".join(plugins_activated))
+
+        self._log.info("Plugins activated: %s" % ", ".join(plugins_activated))
 
     def deactivate(self, plugins=[]):
-        pass
+        """
+        Deactivates given plugins.
+
+        A given plugin must be activated, otherwise it is ignored and no action takes place (no signals are fired,
+        no deactivate functions are called.)
+
+        A deactivated plugin is still loaded and initialised and can be reactivated by calling :func:`activate` again.
+        It is also still registered in the :class:`.PluginManager` and can be requested via :func:`get`.
+
+        :param plugins: List of plugin names
+        :type plugins: list of strings
+        """
+        self._log.debug("Plugins Deactivation started")
+
+        if not isinstance(plugins, list):
+            raise AttributeError("plugins must be a list, not %s" % type(plugins))
+
+        self._log.debug("Plugins to deactivate: %s" % ", ".join(plugins))
+
+        plugins_deactivated = []
+        for plugin_name in plugins:
+            if not isinstance(plugin_name, str):
+                raise AttributeError("plugin name must be a str, not %s" % type(plugin_name))
+
+            if plugin_name not in self._plugins.keys():
+                self._log.info("Unknown activated plugin %s" % plugin_name)
+                continue
+            else:
+                self._log.debug("Deactivating plugin %s" % plugin_name)
+                if not self._plugins[plugin_name].active:
+                    self._log.warning("Plugin %s seems to be already deactivated" % plugin_name)
+                else:
+                    try:
+                        self._plugins[plugin_name].deactivate()
+                    except Exception as e:
+                        raise PluginNotDeactivatableException("Plugin %s could not be deactivated" % plugin_name) from e
+                    else:
+                        self._log.debug("Plugin %s deactivated" % plugin_name)
+                        plugins_deactivated.append(plugin_name)
+
+        self._log.info("Plugins deactivated: %s" % ", ".join(plugins_deactivated))
 
     def get(self, name=None):
         """
@@ -280,10 +193,165 @@ class PluginManager:
         :return: None, single plugin or dictionary of plugins
         """
         if name is None:
-            return self.plugins
+            return self._plugins
         else:
-            if name not in self.plugins.keys():
+            if name not in self._plugins.keys():
                 return None
             else:
-                return self.plugins[name]
+                return self._plugins[name]
 
+    def exist(self, name):
+        """
+        Returns True if plugin exists.
+        :param name: plugin name
+        :return: boolean
+        """
+        if name in self._plugins.keys():
+            return True
+        return False
+
+    def is_active(self, name):
+        """
+        Returns True if plugin exists and is active.
+        If plugin does not exist, it returns None
+
+        :param name: plugin name
+        :return: boolean or None
+        """
+        if name in self._plugins.keys():
+            return self._plugins["name"].active
+        return None
+
+
+class PluginClassManager:
+    """
+    Manages the plugin classes, which can be used to initialise and activate new plugins.
+
+    Loads all plugin classes from entry_point "groundwork.plugin" automatically during own initialisation.
+    Provides functions to register new plugin classes during runtime.
+    """
+
+    def __init__(self, app, strict=False):
+        self._log = logging.getLogger(__name__)
+        self._app = app
+        self._strict = strict
+        self._classes = self._get_plugins_by_entry_points()
+
+    def _get_plugins_by_entry_points(self):
+        """
+        Registers plugin classes, which are in sys.path and have an entry_point called 'groundwork.plugin'.
+        :return: dict of plugin classes
+        """
+        # Let's find and register every plugin, which is in sys.path and has defined a entry_point 'groundwork.plugin'
+        # in it's setup.py
+        entry_points = []
+        classes = {}
+        for entry_point in iter_entry_points(group='groundwork.plugin', name=None):
+            entry_points.append(entry_point)
+
+        for entry_point in entry_points:
+            try:
+                entry_point_object = entry_point.load()
+            except Exception as e:
+                self._log.warning("Couldn't load entry_point %s. Reason: %s" % (entry_point.name, e))
+                if self._app.config.get("PLUGIN_INIT_CHECK", False) or self._strict:
+                    raise Exception from e
+                continue
+
+            if not issubclass(entry_point_object, GwPluginPattern):
+                self._log.warning("entry_point  %s is not a subclass of groundworkPlugin" % entry_point.name)
+                continue
+            plugin_name = entry_point_object.__name__
+
+            classes[plugin_name] = {
+                "name": plugin_name,
+                "entry_point": entry_point.name,
+                "path": entry_point.dist.location,
+                "class": entry_point_object,
+                "distribution": {
+                    "key": entry_point.dist.key,
+                    "version": entry_point.dist.version
+                },
+            }
+            self._log.debug("Found plugin: %s at entry_point %s of package %s (%s)" % (plugin_name, entry_point.name,
+                                                                                       entry_point.dist.key,
+                                                                                       entry_point.dist.version))
+        return classes
+
+    def register(self, classes=[]):
+        """
+        Registers new plugins.
+
+        The registration only creates a new entry for a plugin inside the _classes dictionary.
+        It does not activate or even initialise the plugin.
+
+        A plugin must be a class, which inherits directly or indirectly from GwPluginPattern.
+
+        :param classes: List of plugin classes
+        :type classes: list
+        """
+        if not isinstance(classes, list):
+            raise AttributeError("plugins must be a list, not %s." % type(classes))
+
+        plugin_registered = []
+
+        for plugin in classes:
+            if not inspect.isclass(plugin) or not issubclass(plugin, GwPluginPattern):
+                self._log.error("Given plugin is not a subclass of groundworkPlugin.")
+                if not self._strict:
+                    continue
+                else:
+                    raise AttributeError("Given plugin is not a subclass of groundworkPlugin.")
+
+            if isinstance(plugin, GwPluginPattern):
+                self._log.error("Given plugin %s is already initialised. Please provide a class not an instance.")
+                if not self._strict:
+                    continue
+                else:
+                    raise Exception("Given plugin %s is already initialised. Please provide a class not an instance.")
+            plugin_name = plugin.__name__
+
+            if plugin_name in self._classes.keys():
+                self._log.warning("Plugin %s already registered" % plugin_name)
+                if not self._strict:
+                    continue
+                else:
+                    raise PluginRegistrationException("Plugin %s already registered" % plugin_name)
+
+            self._classes[plugin_name] = {
+                "name": plugin_name,
+                "entry_point": None,
+                "path": None,
+                "class": plugin,
+                "distribution": None,
+            }
+            self._log.debug("Plugin %s registered" % plugin_name)
+            plugin_registered.append(plugin_name)
+
+        self._log.info("Plugins registered: %s" % ", ".join(plugin_registered))
+
+    def get(self, name=None):
+        """
+        Returns the plugin class object with the given name.
+        Or if a name is not given, the complete plugin dictionary is returned.
+
+        :param name: Name of a plugin
+        :return: None, single plugin or dictionary of plugins
+        """
+        if name is None:
+            return self._classes
+        else:
+            if name not in self._classes.keys():
+                return None
+            else:
+                return self._classes[name]
+
+    def exist(self, name):
+        """
+        Returns True if plugin class exists.
+        :param name: plugin name
+        :return: boolean
+        """
+        if name in self._classes.keys():
+            return True
+        return False
