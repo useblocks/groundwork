@@ -19,8 +19,8 @@ setup(
     include_package_data=True,
     platforms='any',
     setup_requires=['pytest-runner'],
-    tests_require=['pytest'],
-    install_requires=["click", "blinker"],
+    tests_require=['pytest', 'pytest-flake8'],
+    install_requires=["click", "blinker", "sphinx"],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',

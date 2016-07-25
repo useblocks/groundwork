@@ -1,9 +1,37 @@
-import logging
+"""
+    gw_base_pattern provides all basic classes and functions, which are needed by any kind of groundwork plugin or
+    pattern.
 
+    It mostly cares about the correct activation and deactivation. Including sending signals to inform
+    other patterns or plugins about status changes of a plugin.
+
+"""
+import logging
 from .exceptions import PluginAttributeMissing
 
 
-class GwPluginPattern(object):
+class GwBasePattern(object):
+    """
+    Base pattern class for all plugins and patterns.
+
+    Usage::
+
+        from groundwork.patterns import GwBasePattern
+
+        class MyPlugin(GwBasePattern):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+
+            def activate():
+                self.signals.register("MySignal", "My description about signal)
+
+            def deactivate():
+                self.signals.unregister("MySignal")
+
+    :param app: groundwork application object, for which the plugin shall be initialised.
+    :type app: :class:`groundwork.App`.
+    :param name: Unique name. Normally set by plugin.
+    """
     def __init__(self, app, *args, name=None, **kwargs):
         super().__init__()
         self.app = app
@@ -71,10 +99,11 @@ class GwPluginPattern(object):
     def _pre_activate_injection(self):
         """
         Injects functions before the activation routine of child classes gets called
-        :return: None
         """
+        # Let's be sure that this plugins class is registered and available on application level under
+        # application.plugins.classes. This allows to reuse this class for *new* plugins.
         if not self.app.plugins.classes.exist(self.__class__.__name__):
-            self.app.plugins.classes.register(self.__class__)
+            self.app.plugins.classes.register([self.__class__])
 
         self.app.signals.send("plugin_activate_pre", self)
 
@@ -102,7 +131,7 @@ class GwPluginPattern(object):
         self.active = False
         self.app.signals.send("plugin_deactivate_post", self)
         # After all receivers are handled. We start to clean up signals and receivers of this plugin
-        # Attention: This clean must not be called via a signal (like in other patterns),
+        # Attention: This signal clean must not be called via a signal (like in other patterns),
         # because the call order of receivers is not clear and a signal/receiver clean up would prohibit the call
         # of all "later" receivers.
         self.signals.deactivate_plugin_signals()
@@ -113,10 +142,11 @@ class SignalsPlugin:
     Signal and Receiver management class on plugin level.
     This class gets initiated once per plugin.
 
-    Mostly delegates function calls to the SingnalListApplication instance on application level.
+    Mostly delegates function calls to the :class:`groundwork.signals.SignalListApplication` instance on application
+    level.
 
     :param plugin: The plugin, which wants to use signals
-    :type plugin: GwPluginPattern
+    :type plugin: GwBasePattern
     """
 
     def __init__(self, plugin):
@@ -148,7 +178,7 @@ class SignalsPlugin:
     def unregister(self, signal):
         return self.__app.signals.unregister(signal)
 
-    def connect(self, receiver, signal, function, description):
+    def connect(self, receiver, signal, function, description, sender=None):
         """
         Connect a receiver to a signal
 
@@ -160,7 +190,7 @@ class SignalsPlugin:
         :param description: Description of the reason or use case, why this connection is needed.
                             Used for documentation.
         """
-        return self.__app.signals.connect(receiver, signal, function, self._plugin, description)
+        return self.__app.signals.connect(receiver, signal, function, self._plugin, description, sender)
 
     def disconnect(self, receiver):
         """

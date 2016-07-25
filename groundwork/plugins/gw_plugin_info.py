@@ -1,6 +1,6 @@
 import inspect
 
-from groundwork.patterns import GwPluginPattern, GwCommandsPattern
+from groundwork.patterns import GwBasePattern, GwCommandsPattern
 
 
 class GwPluginInfo(GwCommandsPattern):

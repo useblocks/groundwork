@@ -1,9 +1,21 @@
+"""
+The pluginmanager module cares about the management of plugin status and their changes between statuses.
+
+There are two manager classes for managing plugin related objects.
+
+ * PluginManager: Cares about initialised Plugins, which can be activate and deactivate.
+ * PluginClassManager: Cares about plugin classes, which are used to create plugins.
+
+A plugin class can be reused for several plugins. The only thing to care about is the naming of a plugin.
+This plugin name must be unique inside a groundwork app and can be set during plugin initialisation/activation.
+
+"""
+
 from pkg_resources import iter_entry_points
 import logging
-import sys
 import inspect
 
-from groundwork.patterns.gw_plugin_pattern import GwPluginPattern
+from groundwork.patterns.gw_base_pattern import GwBasePattern
 from groundwork.exceptions import PluginNotActivatableException, PluginNotInitialisableException, \
     PluginRegistrationException, PluginNotDeactivatableException
 
@@ -19,7 +31,6 @@ class PluginManager:
         Additional plugins can be registered by adding their class via the plugins argument.
 
         :param app: groundwork application object
-        :param plugins: List of plugin classes to registration
         :param strict: If True, problems during plugin registration/initialisation or activation will throw an exception
         """
         self._log = logging.getLogger(__name__)
@@ -54,7 +65,7 @@ class PluginManager:
                 raise AttributeError("plugin name must be a str, not %s" % type(plugin_name))
 
             plugin_class = self.classes.get(plugin_name)
-            if plugin_class is not None and issubclass(plugin_class["class"], GwPluginPattern):
+            if plugin_class is not None and issubclass(plugin_class["class"], GwBasePattern):
                 try:
                     # Plugin Initialisation
                     plugin_instance = plugin_class["class"](app=self._app)
@@ -64,23 +75,23 @@ class PluginManager:
                         raise PluginNotInitialisableException("Plugin %s could not be initialised" % plugin_name) from e
                     continue
 
-                # Let's be sure, that GwPluginPattern got called
+                # Let's be sure, that GwBasePattern got called
                 if not hasattr(plugin_instance, "_plugin_base_initialised") or \
                                 plugin_instance._plugin_base_initialised is not True:
-                    self._log.error("GwPluginPattern.__init__() was not called during initialisation. "
+                    self._log.error("GwBasePattern.__init__() was not called during initialisation. "
                                     "Please add 'super(*args, **kwargs).__init__()' to the top of all involved "
                                     "plugin/pattern init routines."
                                     "Activate logging debug-output to see all involved classes.")
                     for mro_class in plugin_class.__mro__:
                         self._log.debug(mro_class)
-                    raise Exception("GwPluginPattern.__init()__ was not called during initialisation.")
+                    raise Exception("GwBasePattern.__init()__ was not called during initialisation.")
                 self._register_load(plugin_instance)
                 plugin_initialised.append(plugin_name)
                 self._log.debug("Plugin %s initialised" % plugin_name)
             else:
                 if plugin_class is None:
                     self._log.warn("Plugin %s not found" % plugin_name)
-                elif not issubclass(plugin_class, GwPluginPattern):
+                elif not issubclass(plugin_class, GwBasePattern):
                     self._log.warn("Can not load %s. Plugin is not based on groundwork.Plugin." % plugin_name)
                     if self._strict:
                         raise Exception("Can not load %s. Plugin is not based on groundwork.Plugin." % plugin_name)
@@ -253,12 +264,13 @@ class PluginClassManager:
             try:
                 entry_point_object = entry_point.load()
             except Exception as e:
+                # We should not throw an exception now, because a package/entry_point can be outdated, using an old
+                # api from groundwork, tries to import unavailable packages, what ever...
+                # We just do not make it available. That's all we can do.
                 self._log.warning("Couldn't load entry_point %s. Reason: %s" % (entry_point.name, e))
-                if self._app.config.get("PLUGIN_INIT_CHECK", False) or self._strict:
-                    raise Exception from e
                 continue
 
-            if not issubclass(entry_point_object, GwPluginPattern):
+            if not issubclass(entry_point_object, GwBasePattern):
                 self._log.warning("entry_point  %s is not a subclass of groundworkPlugin" % entry_point.name)
                 continue
             plugin_name = entry_point_object.__name__
@@ -285,7 +297,7 @@ class PluginClassManager:
         The registration only creates a new entry for a plugin inside the _classes dictionary.
         It does not activate or even initialise the plugin.
 
-        A plugin must be a class, which inherits directly or indirectly from GwPluginPattern.
+        A plugin must be a class, which inherits directly or indirectly from GwBasePattern.
 
         :param classes: List of plugin classes
         :type classes: list
@@ -296,14 +308,14 @@ class PluginClassManager:
         plugin_registered = []
 
         for plugin in classes:
-            if not inspect.isclass(plugin) or not issubclass(plugin, GwPluginPattern):
+            if not inspect.isclass(plugin) or not issubclass(plugin, GwBasePattern):
                 self._log.error("Given plugin is not a subclass of groundworkPlugin.")
                 if not self._strict:
                     continue
                 else:
                     raise AttributeError("Given plugin is not a subclass of groundworkPlugin.")
 
-            if isinstance(plugin, GwPluginPattern):
+            if isinstance(plugin, GwBasePattern):
                 self._log.error("Given plugin %s is already initialised. Please provide a class not an instance.")
                 if not self._strict:
                     continue

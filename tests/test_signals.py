@@ -60,4 +60,27 @@ def test_receiver_get(basicApp):
     assert len(receivers) == 0
 
 
+def test_multi_plugin_deactivations(basicApp, EmptyPlugin):
 
+    def test():
+        pass
+
+    plugin = basicApp.plugins.get("BasicPlugin")
+    plugin2 = EmptyPlugin(app=basicApp, name="EmptyPlugin")
+    plugin2.activate()
+    assert plugin2.active is True
+
+    plugin2.signals.register("test123", "test123 description")
+    plugin2_signals = plugin2.signals.get()
+    assert len(plugin2_signals) == 1
+
+    plugin_signals = plugin.signals.get()
+    assert len(plugin_signals) == 1
+
+    plugin2.deactivate()
+    plugin2_signals = plugin2.signals.get()
+    assert len(plugin2_signals) == 0
+    assert plugin2.active is False
+
+    assert len(plugin_signals) == 1
+    assert plugin.active is True

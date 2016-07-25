@@ -1,13 +1,12 @@
 import os
 import pytest
-from groundwork.patterns.gw_documents_pattern import NoAbsolutePathException
-from groundwork.exceptions import PluginRegistrationException
+from groundwork.patterns.gw_documents_pattern import NoAbsolutePathException, DocumentExistsException
 
 
 def test_document_plugin_activation(basicApp):
     plugin = basicApp.plugins.get("DocumentPlugin")
     assert plugin is not None
-    assert plugin.active == True
+    assert plugin.active is True
 
 
 def test_document_registration(basicApp):
@@ -24,5 +23,32 @@ def test_document_registration(basicApp):
     assert doc.name == "new_document"
 
 
+def test_document_deactivation(basicApp, EmptyDocumentPlugin):
+    plugin = basicApp.plugins.get("DocumentPlugin")
+    with pytest.raises(DocumentExistsException):
+        plugin.documents.register("test_document", "static/document.txt")
 
+    doc_file = os.path.abspath("static/document.txt")
 
+    assert len(plugin.documents.get().keys()) == 1
+    assert len(basicApp.documents.get().keys()) == 1
+
+    plugin.documents.unregister("test_document")
+    assert len(plugin.documents.get().keys()) == 0
+    assert len(basicApp.documents.get().keys()) == 0
+
+    plugin.documents.register("test_document", doc_file)
+    assert len(plugin.documents.get().keys()) == 1
+    assert len(basicApp.documents.get().keys()) == 1
+
+    plugin2 = EmptyDocumentPlugin(basicApp, "DocumentPlugin2")
+    plugin2.activate()
+    plugin2.documents.register("test_document2", doc_file)
+    assert len(plugin.documents.get().keys()) == 1
+    assert len(plugin2.documents.get().keys()) == 1
+    assert len(basicApp.documents.get().keys()) == 2
+
+    plugin.deactivate()
+    assert len(plugin.documents.get().keys()) == 0
+    assert len(plugin2.documents.get().keys()) == 1
+    assert len(basicApp.documents.get().keys()) == 1

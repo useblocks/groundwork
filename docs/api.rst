@@ -3,9 +3,11 @@ API
 
 Application Object
 ------------------
-.. currentmodule:: groundwork
+.. automodule:: groundwork
 
-.. autoclass:: App
+
+
+.. autoclass:: groundwork.App
    :members:
    :inherited-members:
    :undoc-members:
@@ -13,13 +15,7 @@ Application Object
 
 PluginManagers
 --------------
-There are two manager classes for managing plugin related objects.
-
- * PluginManager: Cares about initialised Plugins, which can be activate and deactivate.
- * PluginClassManager: Cares about plugin classes, which are used to create plugins.
-
-A plugin class can be reused for several plugins. The only thing to care about is the naming of a plugin.
-This plugin name must be unique inside an groundwork app and can be set during plugin initialisation/activation.
+.. automodule:: groundwork.pluginmanager
 
 .. currentmodule:: groundwork.pluginmanager
 
@@ -43,30 +39,59 @@ PluginClassManager
 
 Plugin Patterns
 ---------------
-.. currentmodule:: groundwork.patterns
 
-GwPluginPattern
+GwBasePattern
 ~~~~~~~~~~~~~~~
+.. automodule::  groundwork.patterns.gw_base_pattern
 
-.. autoclass:: GwPluginPattern
+.. currentmodule:: groundwork.patterns.gw_base_pattern
+
+.. autoclass:: GwBasePattern
    :members:
    :inherited-members:
    :undoc-members:
 
+.. autoclass:: SignalsPlugin
+   :members:
+
+
 GwCommandPattern
 ~~~~~~~~~~~~~~~~~
+.. currentmodule:: groundwork.patterns.gw_commands_pattern
 
 .. autoclass:: GwCommandsPattern
    :members:
    :inherited-members:
+   :show-inheritance:
    :undoc-members:
 
-GwExchangePattern
-~~~~~~~~~~~~~~~~~
+.. data:: GwCommandsPattern.commands
 
-.. autoclass:: GwExchangePattern
+.. autoclass:: CommandsListPlugin
+   :members:
+   :undoc-members:
+
+.. autoclass:: CommandsListApplication
+   :members:
+   :undoc-members:
+
+GwSharedObjectsPattern
+~~~~~~~~~~~~~~~~~~~~~~
+.. currentmodule:: groundwork.patterns.gw_shared_objects_pattern
+
+.. autoclass:: GwSharedObjectsPattern
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+GwDocumentsPattern
+~~~~~~~~~~~~~~~~~~
+.. currentmodule:: groundwork.patterns.gw_documents_pattern
+
+.. autoclass:: GwDocumentsPattern
    :members:
    :inherited-members:
+   :show-inheritance:
    :undoc-members:
 
 Plugins
@@ -78,5 +103,24 @@ GwPluginInfo
 
 .. autoclass:: GwPluginInfo
    :members:
+   :show-inheritance:
+   :inherited-members:
+   :undoc-members:
+
+GwSignalInfo
+~~~~~~~~~~~~
+
+.. autoclass:: GwSignalInfo
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :undoc-members:
+
+GwCommandslInfo
+~~~~~~~~~~~~~~~
+
+.. autoclass:: GwCommandsInfo
+   :members:
+   :show-inheritance:
    :inherited-members:
    :undoc-members:

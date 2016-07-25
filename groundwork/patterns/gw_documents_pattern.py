@@ -5,14 +5,15 @@ Groundwork documentation support module.
 import os
 import logging
 
-from groundwork.patterns.gw_plugin_pattern import GwPluginPattern
+from groundwork.patterns.gw_base_pattern import GwBasePattern
 
 
-class GwDocumentsPattern(GwPluginPattern):
+class GwDocumentsPattern(GwBasePattern):
     """
     Documents can be collected by other Plugins to present their content inside user documentation, online help,
     console output or whatever.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -34,12 +35,26 @@ class DocumentsListPlugin:
     def __init__(self, plugin):
         """
         :param plugin: The plugin, which wants to use signals
-        :type plugin: GwPluginPattern
+        :type plugin: GwBasePattern
         """
         self._plugin = plugin
         self.__app = plugin.app
         self.__log = plugin.log
-        self.__log.info("Plugin messages initialised")
+
+        # Let's register a receiver, which cares about the deactivation process of documents for this plugin.
+        # We do it after the original plugin deactivation, so we can be sure that the registered function is the last
+        # one which cares about documents for this plugin.
+        self._plugin.signals.connect(receiver="%s_documents_deactivation" % self._plugin.name,
+                                     signal="plugin_deactivate_post",
+                                     function=self.__deactivate_documents,
+                                     description="Deactivate documents for %s" % self._plugin.name,
+                                     sender=self._plugin)
+        self.__log.debug("Plugin documents initialised")
+
+    def __deactivate_documents(self, plugin, *args, **kwargs):
+        documents = self.get()
+        for document in documents.keys():
+            self.unregister(document)
 
     def register(self, name, file_path, alias=None):
         """
@@ -51,6 +66,9 @@ class DocumentsListPlugin:
                (Optional)
         """
         return self.__app.documents.register(name, file_path, alias, self._plugin)
+
+    def unregister(self, document):
+        return self.__app.documents.unregister(document)
 
     def get(self, name=None):
         return self.__app.documents.get(name, self._plugin)
@@ -69,10 +87,11 @@ class DocumentsListPlugin:
         return method
 
 
-class DocumentsListApplication():
+class DocumentsListApplication:
     """
 
     """
+
     def __init__(self, app):
         self.__app = app
         self.__log = logging.getLogger(__name__)
@@ -91,16 +110,31 @@ class DocumentsListApplication():
         :param alias: Alias of the document. May be used as file name, if documents are copied or restructured.
                (Optional)
         :param plugin: Plugin object, under which the signals where registered
-        :type plugin: GwPluginPattern
+        :type plugin: GwBasePattern
         """
         if name in self.documents.keys():
-            raise Exception("Document %s was already registered by %s" % (name, self.documents[name].plugin.name))
+            raise DocumentExistsException("Document %s was already registered by %s" %
+                                          (name, self.documents[name].plugin.name))
 
         if not os.path.isabs(file_path):
             raise NoAbsolutePathException("file_path %s is not absolute" % file_path)
         self.documents[name] = Document(name, file_path, alias, plugin)
         self.__log.debug("Document %s registered by %s" % (name, plugin.name))
         return self.documents[name]
+
+    def unregister(self, document):
+        """
+        Unregisters an existing document, so that this document is no longer available.
+
+        This function is mainly used during plugin deactivation.
+
+        :param document: Name of the document
+        """
+        if document not in self.documents.keys():
+            self.log.warning("Can not unregister document %s" % document)
+        else:
+            del (self.documents[document])
+            self.__log.debug("Document %s got unregistered" % document)
 
     def get(self, document=None, plugin=None):
         """
@@ -109,7 +143,7 @@ class DocumentsListApplication():
         :param document: Name of the signal
         :type document: str
         :param plugin: Plugin object, under which the signals where registered
-        :type plugin: GwPluginPattern
+        :type plugin: GwBasePattern
         """
         if plugin is not None:
             if document is None:
@@ -149,8 +183,9 @@ class Document:
     :param alias: Alias of the document. May be used as file name, if documents are copied or restructured.
     :type alias: str
     :param plugin: The plugin, which registered this document
-    :type plugin: GwPluginPattern
+    :type plugin: GwBasePattern
     """
+
     def __init__(self, name, file_path, alias, plugin, ):
         self.name = name
         self.file_path = file_path
@@ -161,3 +196,8 @@ class Document:
 
 class NoAbsolutePathException(BaseException):
     pass
+
+
+class DocumentExistsException(BaseException):
+    pass
+

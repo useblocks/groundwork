@@ -1,10 +1,10 @@
 import logging
 import click
 
-from groundwork.patterns.gw_plugin_pattern import GwPluginPattern
+from groundwork.patterns.gw_base_pattern import GwBasePattern
 
 
-class GwCommandsPattern(GwPluginPattern):
+class GwCommandsPattern(GwBasePattern):
     """
     Adds a commandline interface to a groundwork app and allows plugins to register own commands.
 
@@ -21,26 +21,28 @@ class GwCommandsPattern(GwPluginPattern):
         class MyPlugin(GwCommandsPattern)
 
             def activate(self):
-                self.commands.register("my_command", "Help for my command", params=[Option(("--test", "-t"), help="Some dummy text")])
+                self.commands.register(command="my_command",
+                                       description="Help for my command",
+                                       params=[Option(("--test", "-t"), help="Some
+                                       dummy text")])
 
             def my_command(self, my_test):
                     print("Command executed! my_test=%s" % my_test)
 
-    For a complete list of configurable options, please take a look into the related click documentation:
+    For a complete list of configurable options, please take a look into the related click documentation of
+    `Option
+    <https://github.com/pallets/click/blob/c8e21105ebeb824c06c929bdd74c41eed776e956/click/core.py#L1419>`_ and
+    `Argument <https://github.com/pallets/click/blob/c8e21105ebeb824c06c929bdd74c41eed776e956/click/core.py#L1687>`_
 
-    Option: https://github.com/pallets/click/blob/c8e21105ebeb824c06c929bdd74c41eed776e956/click/core.py#L1419
-
-    Argument: https://github.com/pallets/click/blob/c8e21105ebeb824c06c929bdd74c41eed776e956/click/core.py#L1687
-
-    *Usage inside your own App*
+    **Starting the command line interface**
 
     Groundwork does not start automatically the command line interface. This step must be done by the application
     developer. Example ::
 
         from groundwork import GwApp
 
-        gw_app = GwApp(config_files=["conf/myconf.py"])
-        gw_app.load_plugins(gw_app.config.get("PLUGINS"))
+        gw_app = GwApp(plugins=["MyCommandPlugin"])
+        gw_app.activate(plugins=["MyCommandPlugin"])
         gw_app.commands.start_cli()
     """
 
@@ -56,7 +58,6 @@ class CommandsListPlugin:
         self.plugin = plugin
         self.app = plugin.app
         self.log = plugin.log
-        self.log.info("Plugin commands initialised")
 
         # Let's register a receiver, which cares about the deactivation process of commands for this plugin.
         # We do it after the original plugin deactivation, so we can be sure that the registered function is the last
@@ -64,7 +65,9 @@ class CommandsListPlugin:
         self.plugin.signals.connect(receiver="%s_command_deactivation" % self.plugin.name,
                                     signal="plugin_deactivate_post",
                                     function=self.__deactivate_commands,
-                                    description="Deactivate commands for %s" % self.plugin.name)
+                                    description="Deactivate commands for %s" % self.plugin.name,
+                                    sender=self.plugin)
+        self.log.debug("Plugin commands initialised")
 
     def __deactivate_commands(self, plugin, *args, **kwargs):
         commands = self.get()
@@ -104,6 +107,15 @@ class CommandsListApplication():
         self.start_cli = self._click_root_command
 
     def get(self, name=None, plugin=None):
+        """
+        Returns commands, which can be filtered by name or plugin.
+
+        :param name: name of the command
+        :type name: str
+        :param plugin: plugin object, which registers the commands
+        :type plugin: instance of GwBasePattern
+        :return: None, single command or dict of commands
+        """
         if plugin is not None:
             if name is None:
                 command_list = {}
@@ -163,9 +175,9 @@ class CommandsListApplication():
             # Click does not have any kind of a function to unregister/remove/deactivate already added commands.
             # So we need to delete the related objects manually from the click internal commands dictionary for
             # our root command.
-            del (self._click_root_command.commands[command])
+            del(self._click_root_command.commands[command])
             # Finally lets delete the command from our internal dictionary too.
-            del (self._commands[command])
+            del(self._commands[command])
             self.log.debug("Command %s got unregistered" % command)
 
 

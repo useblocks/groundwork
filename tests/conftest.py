@@ -1,6 +1,6 @@
-import sys
 import os
 import pytest
+
 
 @pytest.fixture
 def test_apps(monkeypatch):
@@ -8,6 +8,7 @@ def test_apps(monkeypatch):
         os.path.abspath(os.path.join(
             os.path.dirname(__file__), 'test_apps'))
     )
+
 
 @pytest.fixture
 def test_plugins(monkeypatch):
@@ -26,11 +27,47 @@ def basicApp():
     :return: app
     """
     from groundwork import App
-    from tests.test_plugins import BasicPlugin, CommandPlugin, DocumentPlugin
+    from tests.test_plugins import BasicPlugin, CommandPlugin, DocumentPlugin, SharedObjectPlugin
 
-    app = App(plugins=[BasicPlugin, CommandPlugin, DocumentPlugin], strict=True)
-    app.plugins.activate(["BasicPlugin", "CommandPlugin", "DocumentPlugin"])
+    app = App(plugins=[BasicPlugin, CommandPlugin, DocumentPlugin, SharedObjectPlugin], strict=True)
+    app.plugins.activate(["BasicPlugin", "CommandPlugin", "DocumentPlugin", "SharedObjectPlugin"])
     return app
+
+
+@pytest.fixture
+def EmptyPlugin():
+    """
+    :return: empty plugin class
+    """
+    from tests.test_plugins.empty_plugin import EmptyPlugin
+    return EmptyPlugin
+
+
+@pytest.fixture
+def EmptyCommandPlugin():
+    """
+    :return: empty command plugin class
+    """
+    from tests.test_plugins.empty_command_plugin import EmptyCommandPlugin
+    return EmptyCommandPlugin
+
+
+@pytest.fixture
+def EmptyDocumentPlugin():
+    """
+    :return: empty document plugin class
+    """
+    from tests.test_plugins.empty_document_plugin import EmptyDocumentPlugin
+    return EmptyDocumentPlugin
+
+
+@pytest.fixture
+def EmptySharedObjectPlugin():
+    """
+    :return: empty shared object plugin class
+    """
+    from tests.test_plugins.empty_shared_object_plugin import EmptySharedObjectPlugin
+    return EmptySharedObjectPlugin
 
 
 @pytest.fixture
@@ -41,6 +78,7 @@ def BasicPlugin():
     from tests.test_plugins.basic_plugin import BasicPlugin
     return BasicPlugin
 
+
 @pytest.fixture
 def CommandPlugin():
     """
@@ -48,6 +86,7 @@ def CommandPlugin():
     """
     from tests.test_plugins.commands_plugin import CommandPlugin
     return CommandPlugin
+
 
 @pytest.fixture
 def DocumentPlugin():
@@ -66,6 +105,7 @@ def SignalPlugin():
     from tests.test_plugins.signals_plugin import SignalPlugin
     return SignalPlugin
 
+
 # See http://docs.pytest.org/en/latest/example/simple.html#incremental-testing-test-steps
 def pytest_runtest_makereport(item, call):
     if "incremental" in item.keywords:
@@ -79,4 +119,4 @@ def pytest_runtest_setup(item):
     if "incremental" in item.keywords:
         previousfailed = getattr(item.parent, "_previousfailed", None)
         if previousfailed is not None:
-            pytest.xfail("previous test failed (%s)" %previousfailed.name)
+            pytest.xfail("previous test failed (%s)" % previousfailed.name)

@@ -60,7 +60,7 @@ class SignalsApplication():
         else:
             self.__log.debug("Signal %s does not exist and could not be unregistered.")
 
-    def connect(self, receiver, signal, function, plugin, description=""):
+    def connect(self, receiver, signal, function, plugin, description="", sender=None):
         """
         Connect a receiver to a signal
 
@@ -72,11 +72,12 @@ class SignalsApplication():
         :param plugin: The plugin objects, which connects one of its functions to a signal.
         :param description: Description of the reason or use case, why this connection is needed.
                             Used for documentation.
+        :param sender: If set, only signals from this sender will be send to ths receiver.
 
         """
         if receiver in self.receivers.keys():
             raise Exception("Receiver %s was already registered by %s" % (receiver, self.receiver[receiver].plugin.name))
-        self.receivers[receiver] = Receiver(receiver, signal, function, plugin, self.namespace, description)
+        self.receivers[receiver] = Receiver(receiver, signal, function, plugin, self.namespace, description, sender)
         self.__log.debug("Receiver %s registered for signal %s" % (receiver, signal))
         return self.receivers[receiver]
 
@@ -100,7 +101,7 @@ class SignalsApplication():
         :param signal: Name of the signal
         :type signal: str
         :param plugin: Plugin object, under which the signals where registered
-        :type plugin: GwPluginPattern
+        :type plugin: GwBasePattern
         """
         if signal not in self.signals.keys():
             raise Exception("Unknown signal %s" % signal)
@@ -115,7 +116,7 @@ class SignalsApplication():
         :param signal: Name of the signal
         :type signal: str
         :param plugin: Plugin object, under which the signals where registered
-        :type plugin: GwPluginPattern
+        :type plugin: GwBasePattern
         """
         if plugin is not None:
             if signal is None:
@@ -148,7 +149,7 @@ class SignalsApplication():
         :param receiver: Name of the signal
         :type receiver: str
         :param plugin: Plugin object, under which the signals where registered
-        :type plugin: GwPluginPattern
+        :type plugin: GwBasePattern
         """
         if plugin is not None:
             if receiver is None:
@@ -187,14 +188,13 @@ class Signal:
     :param description: Additional description for the signal
     :type description: str
     :param plugin: The plugin, which registered this signal
-    :type plugin: GwPluginPattern
+    :type plugin: GwBasePattern
     """
     def __init__(self, name, plugin, namespace, description=""):
         self.name = name
         self.description = description
         self.plugin = plugin
         self._signal = namespace.signal(name, doc=description)
-        self.__log = logging.getLogger(__name__)
 
     def send(self, plugin, **kwargs):
         return self._signal.send(plugin, **kwargs)
@@ -211,11 +211,11 @@ class Receiver:
     :param namespace: Namespace of the signal. There is one per groundwork app.
     :param function: Callable function, which gets executed, if signal is sent.
     :param plugin: Plugin object, which registered the subscriber
-    :type plugin: GwPluginPattern
+    :type plugin: GwBasePattern
     :param description: Additional description about the subscriber.
     :type description: str
     """
-    def __init__(self, name, signal, function, plugin, namespace, description=""):
+    def __init__(self, name, signal, function, plugin, namespace, description="", sender=None):
         self.name = name
         self.plugin = plugin
         self.function = function
@@ -223,6 +223,7 @@ class Receiver:
         self.signal = signal
         self.__log = logging.getLogger(__name__)
         self.namespace = namespace
+        self.sender = sender
         self.connect()
 
     def connect(self):
@@ -230,7 +231,10 @@ class Receiver:
             self.__log.error("Given function object for signal %s is not a function" % self.signal)
         else:
             if isinstance(self.signal, str):
-                self.namespace.signal(self.signal).connect(self.function)
+                if self.sender is None:
+                    self.namespace.signal(self.signal).connect(self.function)
+                else:
+                    self.namespace.signal(self.signal).connect(self.function, sender=self.sender)
             else:
                 self.__log.error("Given signal object is not a string.")
 

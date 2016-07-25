@@ -52,7 +52,7 @@ def test_app_plugin_activation(BasicPlugin):
     app.plugins.activate(["BasicPlugin"])
     plugin = app.plugins.get("BasicPlugin")
     assert plugin is not None
-    assert plugin.active == True
+    assert plugin.active is True
 
 
 def test_app_plugin_deactivation(BasicPlugin):
@@ -60,9 +60,9 @@ def test_app_plugin_deactivation(BasicPlugin):
     app.plugins.activate(["BasicPlugin"])
     plugin = app.plugins.get("BasicPlugin")
     assert plugin is not None
-    assert plugin.active == True
+    assert plugin.active is True
     app.plugins.deactivate(["BasicPlugin"])
-    assert plugin.active == False
+    assert plugin.active is False
 
 
 def test_app_plugin_multi_status_change(BasicPlugin):
@@ -71,15 +71,16 @@ def test_app_plugin_multi_status_change(BasicPlugin):
     # De/Activation via app
     app.plugins.activate(["BasicPlugin"])
     plugin = app.plugins.get("BasicPlugin")
-    assert plugin.active == True
+    assert plugin.active is True
     app.plugins.deactivate(["BasicPlugin"])
-    assert plugin.active == False
+    assert plugin.active is False
     app.plugins.activate(["BasicPlugin"])
-    assert plugin.active == True
+    assert plugin.active is True
     # De/Activation via plugin itself
     plugin = app.plugins.get("BasicPlugin")
     plugin.deactivate()
-    assert plugin.active == False
+    assert plugin.active is False
+
 
 def test_app_multi_repeating_registration(BasicPlugin, basicApp):
     with pytest.raises(PluginRegistrationException):

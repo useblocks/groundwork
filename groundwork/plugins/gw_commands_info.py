@@ -4,7 +4,7 @@ import inspect
 from groundwork.patterns import GwCommandsPattern, GwDocumentsPattern
 
 
-class GwCommandInfo(GwDocumentsPattern):
+class GwCommandsInfo(GwDocumentsPattern):
     def __init__(self, *args, **kwargs):
         self.name = self.__class__.__name__
         super().__init__(*args, **kwargs)

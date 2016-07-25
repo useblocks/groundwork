@@ -10,7 +10,7 @@ from groundwork.patterns.gw_commands_pattern import CommandExistException
 def test_command_plugin_activation(basicApp):
     plugin = basicApp.plugins.get("CommandPlugin")
     assert plugin is not None
-    assert plugin.active == True
+    assert plugin.active is True
 
 
 def test_command_plugin_execution(basicApp):
@@ -28,7 +28,7 @@ def test_command_plugin_execution(basicApp):
 
 
 def test_command_multi_registration(basicApp):
-    def _test_command(self, arg):
+    def _test_command(arg):
         print(arg)
 
     plugin = basicApp.plugins.get("CommandPlugin")
@@ -39,6 +39,27 @@ def test_command_multi_registration(basicApp):
     plugin.commands.register("test", "my test command", _test_command, params=[Option(("--arg", "-a"))])
     assert len(basicApp.commands.get()) == 1
 
+    plugin.commands.register("test2", "my test2 command", _test_command, params=[Option(("--arg", "-a"))])
+    assert len(basicApp.commands.get()) == 2
+
     basicApp.plugins.deactivate(["CommandPlugin"])
     print(basicApp.commands.get().keys())
     assert len(basicApp.commands.get().keys()) == 0
+
+
+def test_command_multi_plugin_registration(basicApp, EmptyCommandPlugin):
+    def _test_command(arg):
+        print(arg)
+
+    plugin = basicApp.plugins.get("CommandPlugin")
+    plugin2 = EmptyCommandPlugin(app=basicApp, name="CommandPlugin2")
+    plugin2.activate()
+    plugin2.commands.register("test2", "my test2 command", _test_command, params=[Option(("--arg", "-a"))])
+    assert len(basicApp.commands.get()) == 2
+    assert len(plugin.commands.get()) == 1
+    assert len(plugin2.commands.get()) == 1
+
+    basicApp.plugins.deactivate(["CommandPlugin2"])
+    assert len(basicApp.commands.get()) == 1
+    assert len(plugin.commands.get()) == 1
+    assert len(plugin2.commands.get()) == 0
