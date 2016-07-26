@@ -34,8 +34,21 @@ class GwBasePattern(object):
     """
     def __init__(self, app, *args, name=None, **kwargs):
         super().__init__()
+
+        #: groundwork application instance. Access it inside a plugin via ``self.app``.
         self.app = app
+
+        #: A logger, especially created for this plugin. Usage inside a plugin: ``self.log.warn("WARNING!!")``.
+        #:
+        #: The logger name is the same as the plugin name. Therefor it is possible to configure the application logging
+        #: to show log messages of a specif plugin only. See :ref:`plugin_logging`
         self.log = logging.getLogger(self.name)
+
+        #: Instance of :class:`.SignalsPlugin`.
+        #: Provides functions to register and manage signals and retrievers.
+        #:
+        #: All action takes place in the context of this plugin. For instance a ``self.signals.get()`` will return
+        #: signals of this plugin only. To get all signals of an application, please use ``self.app.signals.get()``.
         self.signals = SignalsPlugin(self)
 
         # There must be a name for this plugin. Otherwise it is not detectable and manageable on application level

@@ -16,7 +16,7 @@ from groundwork.signals import SignalsApplication
 class App(object):
     """
     Application object for a groundwork app.
-    Loads configurations, configures logs, initialize and activates plugins and provides managers,
+    Loads configurations, configures logs, initialize and activates plugins and provides managers.
 
     Performed steps during start up:
       1. load configuration
@@ -31,15 +31,34 @@ class App(object):
     :param strict: If true, Exceptions are thrown, if a plugin can not be initialised or activated.
     """
     def __init__(self, config_files=[], plugins=None, strict=False):
+        #: logging object for sending log messages. Example::
+        #:
+        #:  from groundwork import App
+        #:  my_app = App()
+        #:  my_app.log.debug("Send debug message")
+        #:  my_app.log.error("Send error....")
         self.log = logging.getLogger("groundwork")
+
         self._configure_logging()
         self.log.info("Initializing groundwork")
         self.log.info("Reading configuration")
-        self.config = ConfigManager(config_files).load()
-        self._configure_logging(self.config.get("GROUNDWORK_LOGGING"))
-        self.name = self.config.get("APP_NAME", None) or "NoName App"
-        self.path = os.path.abspath(self.config.get("BASE_PATH", None) or os.getcwd())
 
+        #: Instance of :class:`~groundwork.configuration.configmanager.ConfigManager`.
+        #: Used to load different configuration files and create a common configuration object.
+        self.config = ConfigManager(config_files).load()
+
+        self._configure_logging(self.config.get("GROUNDWORK_LOGGING"))
+
+        #: Name of the application. Is configurable by parameter "APP_NAME" of a configuration file.
+        self.name = self.config.get("APP_NAME", None) or "NoName App"
+
+        #: Absolute application path. Is configurable by parameter "APP_PATH" of a configuration file.
+        #: If not given, the current working  directory is taken.
+        #: The path is used to calculate absolute paths for tests, documentation and much more.
+        self.path = os.path.abspath(self.config.get("APP_PATH", None) or os.getcwd())
+
+        #: Instance of :class:`~groundwork.signals.SignalsApplication`. Provides functions to register and fire
+        # signals or receivers on application level.
         self.signals = SignalsApplication(app=self)
 
         self.signals.register("plugin_activate_pre", self,
@@ -51,12 +70,25 @@ class App(object):
         self.signals.register("plugin_deactivate_post", self,
                               "Gets send right after deactivation routine of a plugins was executed")
 
+        #: Instance of :class:`~groundwork.pluginmanager.PluginManager`- Provides functions to load, activate and
+        # deactivate plugins.
         self.plugins = PluginManager(app=self, strict=strict)
 
         if plugins is not None:
             self.plugins.classes.register(plugins)
 
     def _configure_logging(self, logger_dict=None):
+        """
+        Configures the logging module with a given dictionary, which in most cases was loaded from a configuration
+        file.
+
+        If no dictionary is provided, it falls back to a default configuration.
+
+        See `Python docs
+        <https://docs.python.org/3.5/library/logging.config.html#logging.config.dictConfig>`_ for more information.
+
+        :param logger_dict: dictionary for logger.
+        """
         self.log.debug("Configure logging")
         if logger_dict is None:
             self.log.debug("No logger dictionary defined. Doing default logger configuration")

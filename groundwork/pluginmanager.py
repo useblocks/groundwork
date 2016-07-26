@@ -37,6 +37,9 @@ class PluginManager:
         self._strict = strict
         self._app = app
         self._plugins = {}
+
+        #: Instance of :class:`~groundwork.pluginmanager.PluginClassManager`.
+        #: Handles the registration of plugin classes, which can be used to create new plugins during runtime.
         self.classes = PluginClassManager(self._app, self._strict)
 
     def _load(self, plugins=[]):
@@ -99,6 +102,9 @@ class PluginManager:
         self._log.info("Plugins initialised: %s" % ", ".join(plugin_initialised))
 
     def _register_load(self, plugin_instance):
+        """
+        Internal functions to perform registration actions after plugin load was successful.
+        """
         self._plugins[plugin_instance.name] = plugin_instance
 
     def activate(self, plugins=[]):

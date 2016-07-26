@@ -1,24 +1,23 @@
-groundwork
-==========
+.. image:: _static/gw_slogan.png
 
-groundwork is a plugin framework for Python.
+| groundwork is a python based microframework for highly reusable applications and their components.
+| It's functionality is based on exchangeable, well-documented and well-tested plugins and patterns.
 
-It  enables an application to activate and deactivate plugins during runtime and to control dynamic plugin
+It is designed to support any kind of application: command line scripts, desktop programs or web applications.
+
+groundwork enables applications to activate and deactivate plugins during runtime and to control dynamic plugin
 behaviors like plugin status, used signals, registered commands and much more.
 
-groundwork is designed to support any kind of application: command line scripts, desktop programs or web applications.
-This is achieved by handling library functions and their dependencies inside plugins and their patterns.
+| The functionality of plugins can be easily extended by the usage of inheritable patterns.
+| Based on this, groundwork supports developers with time-saving solutions for:
 
-The functionality of a plugin can be easily extended by the usage of inheritable patterns.
-Based on this,  groundwork supports developers with time-saving out-of-the box solutions for own plugins:
+ * :ref:`Command line interfaces <commands>`
+ * Loose inter-plugin communication via :ref:`signals and receivers <signals>`
+ * :ref:`Shared objects <shared_objects>` to provide and request content to and from other plugins
+ * Static and dynamic documents for an overall :ref:`documentation <documentation>`
 
- * Registration of commands for command line interfaces.
- * Registration of signals and receivers for loose inter-plugin communication.
- * Registration of shared objects to provide and request any kind of shared content.
- * Registration of static and dynamic documents for documentation purposes.
-
-
-
+Additional, ready-to-use solutions can be easily integrated into groundwork applications by the usage of third-party
+plugins and patterns from the groundwork community.
 
 Example
 -------
@@ -43,7 +42,7 @@ this plugin: ::
             print("Hello world")
 
     if __name__ == "__main__":
-        my_app = App(plugins=[MyPlugin])        # Creates application and registers MyPlugin
+        my_app = App(plugins=[MyPlugin])        # Creates app and registers MyPlugin
         my_app.plugins.activate(["My Plugin"])  # Initialise and activates 'My Plugin'
         my_app.commands.start_cli()             # Starts the command line interface
 
@@ -63,10 +62,12 @@ User's Guide
    installation
    quickstart
    tutorial
-   plugins_patterns
+   application
+   plugins
+   patterns
    signals
+   commands
    shared_objects
-   cli
    documentation
    contribute
 

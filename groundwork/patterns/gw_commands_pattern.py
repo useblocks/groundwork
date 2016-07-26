@@ -50,6 +50,9 @@ class GwCommandsPattern(GwBasePattern):
         super().__init__(*args, **kwargs)
         if not hasattr(self.app, "commands"):
             self.app.commands = CommandsListApplication(self.app)
+
+        #: Instance of :class:`~.CommandsListPlugin`.
+        #: Provides functions to register and manage commands for a command line interface.
         self.commands = CommandsListPlugin(self)
 
 

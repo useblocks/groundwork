@@ -1,5 +1,4 @@
 import types
-import errno
 from pathlib import Path
 import logging
 
@@ -8,8 +7,22 @@ from groundwork.configuration.config import Config
 
 
 class ConfigManager:
+    """
+    Loads different configuration files and sets their attributes as attributes of its own instance.
 
+    A configuration file must be an importable python file.
+
+    Only uppercase attributes are loaded. Everything else is ignored. Example::
+
+        import os
+        APP_NAME = "My APP"                     # Is used
+        APP_PATH = os.path.abspath(".")         # Is used
+        app_test = "test"                       # Is NOT used
+        MY_OWN_VAR = "nice"                     # Is used
+    """
     def __init__(self, config_files=[]):
+        #: An instance of :class:`~groundwork.configuration.configmanager.Config` for storing all
+        #: configuration parameters.
         self.config = None
 
         self.log = logging.getLogger(__name__)
@@ -37,10 +50,11 @@ class ConfigManager:
 
     def load(self):
         """
-        Creates a configuration dictionary from all files in self.files and set the dictionary items as
-        attributes of the class.
-        """
+        Creates a configuration instance from class :class:`~groundwork.configuration.configmanager.Config` from all
+        files in self.files and set the dictionary items as attributes of of this instance.
 
+        :return: Instance of :class:`~groundwork.configuration.configmanager.Config`
+        """
         config = Config()
 
         for config_file in self.config_files:

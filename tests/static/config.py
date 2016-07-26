@@ -1,2 +1,2 @@
-BASE_PATH = "."
+APP_PATH = "."
 PLUGINS = ["PluginA", "PluginB", "NoPlugin"]

@@ -5,7 +5,7 @@ from blinker import WeakNamespace
 class SignalsApplication():
     """
     Signal and Receiver management class on application level.
-    This class can only be instantiated once (Singleton)
+    This class is initialised once per groundwork application object.
 
     Provides functions to register and send signals. And to connect receivers to signals.
 
@@ -16,7 +16,13 @@ class SignalsApplication():
         self.__app = app
         # self.__log = app.log
         self.__log = logging.getLogger(__name__)
+
+        #: Dictionary of registered signals. Dictionary key is the registered signal name.
+        #: Value is an instance of :class:`~groundwork.signals.Signal`.
         self.signals = {}
+
+        #: Dictionary of registered receivers. Dictionary key is the registered receiver name.
+        #: Value is an instance of :class:`~groundwork.signals.Receiver`.
         self.receivers = {}
 
         # We must use an unique namespace for our signals. Otherwise we get problems with multiple applications or
@@ -27,8 +33,10 @@ class SignalsApplication():
         # http://flask.pocoo.org/docs/0.11/signals/#creating-signals for blinker namespace usage
         # https://github.com/jek/blinker/blob/master/blinker/base.py#L432
         # Used WeakNamespace could also be Namespace.
-        # But doc says, Weaknamespace get clean up, if no reference exists anymore.
-        self.namespace = WeakNamespace()
+        # But doc says, Weaknamespace gets clean up, if no reference exists anymore.
+        #: Used blinker namespace object to register signals only for the context of a single groundwork application
+        #: instance
+        self.__namespace = WeakNamespace()
 
         self.__log.info("Application signals initialised")
 
@@ -44,7 +52,7 @@ class SignalsApplication():
         if signal in self.signals.keys():
             raise Exception("Signal %s was already registered by %s" % (signal, self.signals[signal].plugin.name))
 
-        self.signals[signal] = Signal(signal, plugin, self.namespace, description)
+        self.signals[signal] = Signal(signal, plugin, self.__namespace, description)
         self.__log.debug("Signal %s registered by %s" % (signal, plugin.name))
         return self.signals[signal]
 
@@ -77,7 +85,7 @@ class SignalsApplication():
         """
         if receiver in self.receivers.keys():
             raise Exception("Receiver %s was already registered by %s" % (receiver, self.receiver[receiver].plugin.name))
-        self.receivers[receiver] = Receiver(receiver, signal, function, plugin, self.namespace, description, sender)
+        self.receivers[receiver] = Receiver(receiver, signal, function, plugin, self.__namespace, description, sender)
         self.__log.debug("Receiver %s registered for signal %s" % (receiver, signal))
         return self.receivers[receiver]
 

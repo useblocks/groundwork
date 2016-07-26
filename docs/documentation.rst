@@ -1,2 +1,4 @@
+.. _documentation:
+
 Documentation support
 =====================

@@ -5,13 +5,33 @@ Application Object
 ------------------
 .. automodule:: groundwork
 
-
-
 .. autoclass:: groundwork.App
    :members:
-   :inherited-members:
-   :undoc-members:
+   :private-members:
 
+SignalsApplication
+------------------
+.. autoclass:: groundwork.signals.SignalsApplication
+   :members:
+
+.. autoclass:: groundwork.signals.Signal
+   :members:
+
+.. autoclass:: groundwork.signals.Receiver
+   :members:
+
+Configuration
+-------------
+
+ConfigManager
+~~~~~~~~~~~~~
+.. autoclass:: groundwork.configuration.configmanager.ConfigManager
+   :members:
+
+Config
+~~~~~~
+.. autoclass:: groundwork.configuration.configmanager.Config
+   :members:
 
 PluginManagers
 --------------

@@ -1,0 +1,5 @@
+.. _commands:
+
+Commands
+========
+
