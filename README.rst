@@ -1,4 +1,3 @@
-"""
 groundwork
 ----------
 
@@ -50,4 +49,3 @@ On a command line the following commands can be used now::
     python my_app.py hello      # Prints 'Hello world'
     python my_app.py            # Prints a list of available commands
     python my_app.yp hello -h   # Prints some help text for the command hello
-"""
