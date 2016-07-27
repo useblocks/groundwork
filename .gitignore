@@ -92,5 +92,7 @@ ENV/
 # IDEA (Pycharm)
 .idea
 
-
 .directory
+
+# Doc zip container for pypi
+docs.zip
