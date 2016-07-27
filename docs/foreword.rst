@@ -24,7 +24,7 @@ The groundwork team has defined some goals, which shall be applicable for all gr
 
 A Plugin bundles everything
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Beside the code itself, a plugin must also provide tests, documentation and meta data for its functionality.
+Beside the code itself, a :ref:`plugin <plugins>` must also provide tests, documentation and meta data for its functionality.
 
 As other application/plugin frameworks, groundwork is responsible to "clue" all plugin code together to a single
 application.
@@ -40,14 +40,15 @@ Injections
 To lower the learning curve, heavily used libraries and their core functions shall be injected directly into
 groundwork plugins by the usage of groundwork patterns.
 
-For instance: Instead of initialising and configure Blinker for signals and Click for commands by yourself.
+For instance: Instead of initialising and configure `Blinker <https://pythonhosted.org/blinker/>`_
+for signals and `Click <http://click.pocoo.org/latest>`_ for commands by yourself.
 groundworks provides ``self.signal.send("Yehaa")`` and ``self.commands.register(...)`` directly inside plugin classes.
 
-By defining own patterns, it is very easy to provide team members additional injected functions as well. E.g.
+By defining own :ref:`patterns <patterns>`, it is very easy to provide team members additional injected functions as well. E.g.
 ``self.web.route()`` for registering a web route or ``self.db.sql()`` to execute a SQL statement.
 
 However, the library and its objects itself shall still be available and directly accessible to support uncommon or
-not yet supporteded use cases.
+not yet supported use cases.
 
 Realtime documentation
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -61,6 +62,26 @@ For instance, it is able to show registered and used signals or to create a list
 These kind of information depends hardly on activated plugins, which may change during runtime and affect the
 documentation as well.
 
+
+Technical Background
+--------------------
+groundwork was created to clue code-snippets from different developers together and make their nested functions
+easily available.
+
+In python the most common way do this, is to import modules, initialise a class of them and store the class instance
+in some local or global variable.
+However, these mechanism isn't really dynamic and the relationship between different classes and objects is hard-coded,
+without any chance to change it during runtime.
+
+groundwork uses :ref:`plugins <plugins>`, based on cooperative-multi-inheritance to load and manage needed
+attributes and functions from reusable :ref:`patterns <patterns>`.
+It also claims the usage of the groundwork :class:`~groundwork.patterns.gw_base_pattern.GwBasePattern` for all
+plugins to get common attributes and functions to all groundwork plugins.
+
+For more information about cooperative-multi-inheritance see:
+
+ * `Raymond Hettinger - Super considered super! - PyCon 2015 <https://www.youtube.com/watch?v=EiOglTERPEo>`_
+ * `Python docs for classes and inheritance <https://docs.python.org/3/tutorial/classes.html#multiple-inheritance>`_
 
 
 

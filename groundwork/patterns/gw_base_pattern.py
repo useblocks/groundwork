@@ -33,8 +33,6 @@ class GwBasePattern(object):
     :param name: Unique name. Normally set by plugin.
     """
     def __init__(self, app, *args, name=None, **kwargs):
-        super().__init__()
-
         #: groundwork application instance. Access it inside a plugin via ``self.app``.
         self.app = app
 
