@@ -83,10 +83,11 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     entry_points={
+        'console_scripts': ["groundwork = groundwork.applications.gw_base_app:start_app"],
         'groundwork.plugin': [
             'gw_plugin_info = groundwork.plugins.gw_plugin_info:GwPluginInfo',
             'gw_signal_info = groundwork.plugins.gw_signal_info:GwSignalInfo',
-            'gw_command_info = groundwork.plugins.gw_commands_info:GwCommandInfo'
+            'gw_command_info = groundwork.plugins.gw_commands_info:GwCommandsInfo'
         ]
     }
 )

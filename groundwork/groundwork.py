@@ -45,7 +45,7 @@ class App(object):
 
         #: Instance of :class:`~groundwork.configuration.configmanager.ConfigManager`.
         #: Used to load different configuration files and create a common configuration object.
-        self.config = ConfigManager(config_files).load()
+        self.config = ConfigManager().load(config_files)
 
         self._configure_logging(self.config.get("GROUNDWORK_LOGGING"))
 
@@ -90,14 +90,19 @@ class App(object):
         :param logger_dict: dictionary for logger.
         """
         self.log.debug("Configure logging")
+
+        # Let's be sure, that for our log no handlers are registered anymore
+        if self.log.hasHandlers():
+                for handler in self.log.handlers:
+                    self.log.removeHandler(handler)
         if logger_dict is None:
             self.log.debug("No logger dictionary defined. Doing default logger configuration")
             formatter = logging.Formatter("%(name)s - %(asctime)s - [%(levelname)s] - %(module)s - %(message)s")
             stream_handler = logging.StreamHandler(sys.stdout)
-            stream_handler.setLevel(logging.DEBUG)
+            stream_handler.setLevel(logging.WARNING)
             stream_handler.setFormatter(formatter)
             self.log.addHandler(stream_handler)
-            self.log.setLevel(logging.INFO)
+            self.log.setLevel(logging.WARNING)
         else:
             self.log.debug("Logger dictionary defined. Loading dictConfig for logging")
             logging.config.dictConfig(logger_dict)
