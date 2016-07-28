@@ -1,5 +1,8 @@
 .. image:: _static/gw_slogan.png
 
+Welcome to groundwork
+=====================
+
 | groundwork is a python based microframework for highly reusable applications and their components.
 | It's functionality is based on exchangeable, well-documented and well-tested plugins and patterns.
 
@@ -61,7 +64,6 @@ User's Guide
    foreword
    installation
    quickstart
-   tutorial
    application
    plugins
    patterns
@@ -69,6 +71,7 @@ User's Guide
    commands
    shared_objects
    documentation
+   packaging
    contribute
 
 API Reference

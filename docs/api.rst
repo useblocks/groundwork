@@ -116,12 +116,11 @@ GwDocumentsPattern
 
 Plugins
 -------
-.. currentmodule:: groundwork.plugins
 
 GwPluginInfo
 ~~~~~~~~~~~~
 
-.. autoclass:: GwPluginInfo
+.. autoclass:: groundwork.plugins.gw_plugin_info.GwPluginInfo
    :members:
    :show-inheritance:
    :inherited-members:
@@ -130,7 +129,7 @@ GwPluginInfo
 GwSignalInfo
 ~~~~~~~~~~~~
 
-.. autoclass:: GwSignalInfo
+.. autoclass:: groundwork.plugins.gw_signal_info.GwSignalInfo
    :members:
    :show-inheritance:
    :inherited-members:
@@ -139,7 +138,7 @@ GwSignalInfo
 GwCommandslInfo
 ~~~~~~~~~~~~~~~
 
-.. autoclass:: GwCommandsInfo
+.. autoclass:: groundwork.plugins.gw_commands_info.GwCommandsInfo
    :members:
    :show-inheritance:
    :inherited-members:
