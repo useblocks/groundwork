@@ -48,7 +48,7 @@ class ConfigManager:
 
         self.config_files = absolute_files
 
-    def load(self):
+    def load(self, config_files):
         """
         Creates a configuration instance from class :class:`~groundwork.configuration.configmanager.Config` from all
         files in self.files and set the dictionary items as attributes of of this instance.
@@ -57,7 +57,7 @@ class ConfigManager:
         """
         config = Config()
 
-        for config_file in self.config_files:
+        for config_file in config_files:
             self.log.debug("Loading configuration from %s" % config_file)
             d = types.ModuleType('config')
             d.__file__ = config_file

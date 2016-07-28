@@ -164,3 +164,6 @@ So here is an example with multiple inheritance::
         def print_me():
             print("I'm %s." % self.name)
 
+    my_app = App([MyPlugin])
+    my_app.activate(["My Plugin"])
+

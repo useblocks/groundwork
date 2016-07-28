@@ -344,4 +344,3 @@ texinfo_documents = [
 #
 # texinfo_no_detailmenu = False
 
-
