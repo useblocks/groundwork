@@ -1,17 +1,17 @@
 groundwork
 ----------
 
-groundwork is a python based microframework for highly reusable applications and their components.
+groundwork is a Python based microframework for highly reusable applications and their components.
 
-It’s functionality is based on exchangeable, documented and tested plugins and patterns.
+Its functionality is based on exchangeable, documented and tested plugins and patterns.
 
-It is designed to support any kind of application: command line scripts, desktop programs or web applications.
+It is designed to support any kind of Python application: command line scripts, desktop programs or web applications.
 
 groundwork enables applications to activate and deactivate plugins during runtime and to control dynamic plugin
 behaviors like plugin status, used signals, registered commands and much more.
 
-The functionality of plugins can be easily extended by the usage of inheritable patterns.
-Based on this, groundwork supports developers with time-saving solutions for:
+The functionality of plugins can easily be extended by the usage of inheritable patterns.
+Thus, groundwork supports developers with time-saving solutions for:
 
     * Command line interfaces
     * Loose inter-plugin communication via signals and receivers
@@ -20,8 +20,8 @@ Based on this, groundwork supports developers with time-saving solutions for:
 
 Example
 ~~~~~~~
-The following code defines a plugin with command line support and creates a groundwork application, which activates
-this plugin::
+The following code defines a plugin with command line support and creates a groundwork application which activates
+the plugin::
 
     from groundwork import App
     from groundwork.patterns import GwCommandsPattern
@@ -44,8 +44,9 @@ this plugin::
         my_app.plugins.activate(["My Plugin"])  # Initialise and activates 'My Plugin'
         my_app.commands.start_cli()             # Starts the command line interface
 
-On a command line the following commands can be used now::
+The following commands can be used on a command line now::
 
     python my_app.py hello      # Prints 'Hello world'
     python my_app.py            # Prints a list of available commands
-    python my_app.yp hello -h   # Prints some help text for the command hello
+    python my_app.yp hello -h   # Prints syntax help for the hello command 
+

@@ -1,7 +1,6 @@
 """
-    groundwork module provides mainly the App class, which is a container for all functions and
-    data related to plugins and their patterns.
-
+groundwork module provides mainly the App class, which is a container for all functions and
+data related to plugins and their patterns.
 """
 import logging
 import logging.config
@@ -16,7 +15,7 @@ from groundwork.signals import SignalsApplication
 class App(object):
     """
     Application object for a groundwork app.
-    Loads configurations, configures logs, initialize and activates plugins and provides managers.
+    Loads configurations, configures logs, initialises and activates plugins and provides managers.
 
     Performed steps during start up:
       1. load configuration
@@ -30,13 +29,17 @@ class App(object):
     :type plugins: Plugin-Classes, based on :class:`~groundwork.patterns.gw_base_pattern.GwBasePattern`
     :param strict: If true, Exceptions are thrown, if a plugin can not be initialised or activated.
     """
-    def __init__(self, config_files=[], plugins=None, strict=False):
+    def __init__(self, config_files=None, plugins=None, strict=False):
         #: logging object for sending log messages. Example::
         #:
         #:  from groundwork import App
         #:  my_app = App()
         #:  my_app.log.debug("Send debug message")
         #:  my_app.log.error("Send error....")
+
+        if config_files is None:
+            config_files = []
+
         self.log = logging.getLogger("groundwork")
 
         self._configure_logging()
@@ -118,6 +121,3 @@ class App(object):
             self.log.debug("Logger dictionary defined. Loading dictConfig for logging")
             logging.config.dictConfig(logger_dict)
             self.log.debug("dictConfig loaded")
-
-
-
