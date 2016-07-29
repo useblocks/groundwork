@@ -15,7 +15,7 @@ The plugin itself decides to inherit from one or multiple patterns::
     from groundwork.patterns import GwCommandsPattern, GwDocumentsPattern, GwSharedObjects
 
     class MyPlugin(GwCommandsPattern, GwDocumentsPattern):          # Used Patterns
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             self.super().__init__(app, **kwargs)
 
@@ -36,20 +36,20 @@ A pattern is allowed to multiply inherit from other patterns as well. Example::
     from groundwork.patterns import GwCommandPattern, GwDocumentPattern
 
     class MyPattern(GwCommandPattern, GwDocumentPattern):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             super().__init__(app, **kwargs)
 
-        def my_register(command_name, command_func):
+        def my_register(self, command_name, command_func):
         """ Registers and documents a new command"""
             self.commands.register(command_name, command_func, ...)
             self.documents.register(command_name, ...)
 
     class MyPlugin(MyPattern):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             super().__init__(app, **kwargs)
 
-        def activate():
+        def activate(self):
             # Your new function
             self.my_register(command_name = "print_me", command_func = self.print_me)
 
@@ -58,7 +58,7 @@ A pattern is allowed to multiply inherit from other patterns as well. Example::
             self.commands.register(...)
             self.documents.register(...)
 
-        def print_me():
+        def print_me(self):
             print("I'm %s." % self.name)
 
     my_app = App([MyPlugin])
@@ -77,14 +77,14 @@ Patterns are using the same logger as the plugin, which has inherit from this pa
 
 
     class MyPattern(GwBasePatter):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             super().__init__(app, **kwargs)
 
             self.log.debug("Initialising pattern 'MyPattern'")
 
 
     class MyPlugin(MyPattern):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             super().__init__(app, **kwargs)
 
@@ -92,7 +92,7 @@ Patterns are using the same logger as the plugin, which has inherit from this pa
 
 
     class AnotherPlugin(MyPattern):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "Another Plugin"
             super().__init__(app, **kwargs)
 

@@ -32,7 +32,7 @@ If a user gets created, the GwUSerManager sends the signal "User created" and ad
 Both, GwEMail and GwChat, have registered receivers to the signal "User created". So GwEMail gets called, it fetches
 the e-mail address from the attached user object and sends a "Welcome" message to the user.
 GwChat gets also called and send a chat message to the chat room of the development team and informs them, that a
-new user was created.
+new user has been created.
 
 Working with signals
 --------------------
@@ -50,18 +50,18 @@ of self.signals::
     from grundwork.patters import GwBasePattern
 
     class MyPlugin(GwBasePattern):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             super().__init__(app, **kwargs)
 
-        def activate():
+        def activate(self):
             self.signals.register("my_signal", "this is my first signal")
 
 You are able to get all signals, which were registered by you plugin by
 using :func:`~groundwork.patterns.gw_base_pattern.SignalsPlugin.get`::
 
     ...
-    def activate():
+    def activate(self):
         self.signals.register("my_signal", "this is my first signal")
         my_signals = self.signals.get()                             # Returns a dictionary
         my_single_signal = self.signals.get(signal="my_signal")     # Return Signal or None
@@ -73,7 +73,7 @@ Sending a signal can be done by every plugin, even if it has not registered any 
 However, a signal, which shall be send, must already be registered. Otherwise an exception is thrown.::
 
     ...
-    def activate():
+    def activate(self):
         self.signals.register(signal ="my_signal",
                               description="this is my first signal")
 
@@ -81,21 +81,110 @@ However, a signal, which shall be send, must already be registered. Otherwise an
         self.signals.send("not_registered__signal")  # Will throw an exception
 
 .. note::
-    Also the application can send signals by using :func:`class groundwork.signals.SignalsApplication.send`, like
+    Also the application can send signals by using :func:`~groundwork.signals.SignalsApplication.send`, like
     ``my_app.signals.send("my_signal", plugin=self)``.
 
 Signals installed by groundwork
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+groundwork installs 4 signals during start up:
+
+ * plugin_activate_pre
+ * plugin_activate_post
+ * plugin_deactivate_pre
+ * plugin_activate_post
+
+This signals are called automatically if a plugin gets activated or deactivated.
+
+The difference between **pre** and **post** is that **pre** is called before any action is done by the plugin.
+And **post** is called after the plugin did some action for de/activation.
 
 
 Working with receivers
 ----------------------
+Any plugin can register a receiver for any signal. Even if the signal itself will never be send or even registered.
 
 Register a receiver
 ~~~~~~~~~~~~~~~~~~~
 
+To register a receiver, a callback function is needed, which gets executed, if the receiver gets called.
+
+Registration of receiver is done by the function :func:`~groundwork.patterns.gw_base_pattern.SignalsPlugin.connect`::
+
+    from grundwork.patters import GwBasePattern
+
+    class MyPlugin(GwBasePattern):
+        def __init__(self, app, **kwargs):
+            self.name = "My Plugin"
+            super().__init__(app, **kwargs)
+
+        def activate(self):
+            self.signals.connect(receiver="My signal receiver",
+                                 signal="My signal",
+                                 function=self.fancy_stuff,
+                                 description="Doing some fancy")
+
+        def fancy_stuff(plugin, **kwargs):
+            print("FANCY STUFF!!! " * 50)
+
+
+The used function must accept as first parameter the sender/plugin, which send the signal.
+After this multiple, optional keyword arguments must be accepted as well.
+
+The parameter **sender** can be used during registration, do receive signals only from specific senders/plugins.
+
+Best practice: Pattern clean up
+'''''''''''''''''''''''''''''''
+
+Lets say, a pattern provides a function to register web-routes. During activation, the plugin registers some of them.
+But during deactivation is forgets to unregister them, so that they are still registered and available.
+
+The pattern should register to **plugin_deactivate_post** and make sure, that everything gets unregistered.
+
+Example::
+
+    class GwWebPattern(GwBasePattern):
+        def __init__(self, app, **kwargs):
+            self.signals.connect(receiver="%s_command_deactivation" % self.name,
+                                 signal="plugin_deactivate_post",
+                                 function=self.__deactivate_commands,
+                                 description="Deactivate commands for %s" % self.name,
+                                 sender=self.plugin)
+
+        def __deactivate_web_routes(self, plugin, *args, **kwargs):
+            web_routes = self.web_routes.get()
+            for web_route in web_routes.keys():
+                self.web_routes.unregister(web_route)
+
 Unregister a receiver
 ~~~~~~~~~~~~~~~~~~~~~
+To disconnect a receiver from a signal, use the :func:`~groundwork.patterns.gw_base_pattern.SignalsPlugin.disconnect`
+function::
+
+    class MyPlugin(GwBasePattern):
+        def __init__(self, app, **kwargs):
+            self.name = "My Plugin"
+            super().__init__(app, **kwargs)
+
+        def activate(self):
+            self.signals.connect(receiver="%s_command_deactivation" % self.name, ... )
+
+        def deactivate(self):
+            self.signals.disconnect("%s_command_deactivation" % self.name)
+
 
 Signals and receivers on application level
 ------------------------------------------
+
+All signals and receivers can be accessed on application level via
+:func:`~groundwork.signals.SignalsApplication.get`::
+
+    from groundwork import App
+
+    my_app = App()
+    my_app.signals.register("app_signal", "signal from application", plugin=app)
+    signals = my_app.signals.get()
+
+It is also possible to register new signals and receivers. But inside the application an additional parameter
+called **plugin** is necessary.
+This parameter gets set automatically inside plugins. However on application level this must be set by
+the developer. 

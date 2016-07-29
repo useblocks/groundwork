@@ -105,13 +105,13 @@ the application developer. This can be done during application initialisation or
     from groundwork.patterns import GwBasePattern
 
     class MyPlugin(GwBasePattern):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             super().__init__(app, **kwargs)
 
-        def activate(): pass
+        def activate(self): pass
 
-        def deactivate(): pass
+        def deactivate(self): pass
 
 
     # Registration during initialisation
@@ -144,13 +144,13 @@ Here is an example, which demonstrates both ways::
     from groundwork.patterns import GwBasePattern
 
     class MyPlugin(GwBasePattern):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             super().__init__(app, **kwargs)
 
-        def activate(): pass
+        def activate(self): pass
 
-        def deactivate(): pass
+        def deactivate(self): pass
 
     # Activation by application
     my_app = App(plugins=[MyPlugin])                        # Registration

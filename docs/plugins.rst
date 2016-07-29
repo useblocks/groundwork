@@ -52,13 +52,13 @@ To start the development of own plugins, simply create a new class and inherit f
     from groundwork.patterns import GwBasePattern
 
     class MyPlugin(GwBasePattern):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             super().__init__(app, **kwargs)
 
-        def activate(): pass
+        def activate(self): pass
 
-        def deactivate(): pass
+        def deactivate(self): pass
 
 
 .. warning::
@@ -78,11 +78,11 @@ You are free add signals or connect receivers to them::
     from groundwork.patterns import GwBasePattern
 
     class MyPlugin(GwBasePattern):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             super().__init__(app, **kwargs)
 
-        def activate():
+        def activate(self):
             self.signals.register(signal="My signal",
                                   description="Informing about something")
 
@@ -121,11 +121,11 @@ You can load multiple patterns into your plugin::
 
     # GwBasePattern is no longer needed, because the used patterns already inherit from it.
     class MyPlugin(GwCommandsPattern, GwDocumentsPattern, GwSharedObjectsPattern):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             super().__init__(app, **kwargs)
 
-        def activate():
+        def activate(self):
             self.commands.register(...)
             self.documents.register(...)
             self.shared_objects.register(...)
@@ -144,12 +144,12 @@ class::
     from groundwork.patterns import GwBasePattern
 
     class MyPlugin(GwBasePattern):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             super().__init__(app, **kwargs)
             self.log.info("Initialisation done for %s" % self.name)
 
-        def activate():
+        def activate(self):
             self.log.debug("Starting activation")
             self.log.info("Activation done")
 

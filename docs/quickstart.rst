@@ -62,13 +62,13 @@ But before activation, it also needs to be registered, what can be done during a
     from groundwork.patterns import GwBasePattern
 
     class MyPlugin(GwBasePattern):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             super().__init__(app, **kwargs)
 
-        def activate(): pass
+        def activate(self): pass
 
-        def deactivate(): pass
+        def deactivate(self): pass
 
 
     my_app = App(plugins=[MyPlugin])    # Register your plugin class
@@ -98,7 +98,7 @@ You can also use the plugin object itself to perform the activation::
 
     So always use::
 
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             super().__init__(app, **kwargs)
 
@@ -114,7 +114,7 @@ different types of documentation, activating web support and much more.
 A plugin can inherit multiple patterns::
 
     class MyPlugin(GwCommandPattern, GwDocumentPatter):
-        def __init__(app, **kwargs):
+        def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             super().__init__(app, **kwargs)
 
