@@ -222,9 +222,15 @@ class SignalsPlugin:
         return self.__app.signals.send(signal, plugin=self._plugin, **kwargs)
 
     def get(self, signal=None):
+        """
+        Returns a single signal or a dictionary of signals for this plugin.
+        """
         return self.__app.signals.get(signal, self._plugin)
 
     def get_receiver(self, receiver=None):
+        """
+        Returns a single receiver or a dictionary of receivers for this plugin.
+        """
         return self.__app.signals.get_receiver(receiver, self._plugin)
 
     def __getattr__(self, item):

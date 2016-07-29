@@ -77,6 +77,17 @@ class App(object):
         if plugins is not None:
             self.plugins.classes.register(plugins)
 
+    @property
+    def strict(self):
+        return self.plugins._strict
+
+    @strict.setter
+    def strict(self, value):
+        if not isinstance(value, bool):
+            raise TypeError("strict must be bool")
+        self.plugins._strict = value
+        self.plugins.classes._strict = value
+
     def _configure_logging(self, logger_dict=None):
         """
         Configures the logging module with a given dictionary, which in most cases was loaded from a configuration

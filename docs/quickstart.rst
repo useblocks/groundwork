@@ -17,12 +17,10 @@ Create a file named **my_app.py** and add the following code::
 
 This code performs thew following actions:
 
-* It creates a groundwork application app via ``my_app = App()``
-* It activates the plugin :class:`~groundwork.plugins.gw_plugin_info.GwPluginInfo`, which is part of groundwork itself.
-
+ * It creates a groundwork application app via ``my_app = App()``
+ * It activates the plugin :class:`~groundwork.plugins.gw_plugin_info.GwPluginInfo`, which is part of groundwork itself.
     * During activation, GWPluginInfo registers a command called :command:`plugin_list` by its own.
-
-* It starts the command line interface
+ * It starts the command line interface
 
 Run an app
 ~~~~~~~~~~
@@ -131,39 +129,9 @@ Writing patterns
 A pattern is more or less a plugin without any **activation** or **deactivation** function. Like plugins, it must
 also inherit from :class:`~groundwork.patterns.gw_base_pattern.GwBasePattern`.
 
-A pattern is allowed to multiple inherit from other patterns as well.
+A pattern is allowed to multiply inherit from other patterns as well.
 
-So here is an example with multiple inheritance::
+You can find an example with multiple inheritance in the :ref:`Pattern Example Code <pattern_example>`.
 
-    from groundwork import App
-    from groundwork.patterns import GwCommandPattern, GwDocumentPattern
 
-    class MyPattern(GwCommandPattern, GwDocumentPattern):
-        def __init__(app, **kwargs):
-            super().__init__(app, **kwargs)
-
-        def my_register(command_name, command_func):
-        """ Registers and documents a new command"""
-            self.commands.register(command_name, command_func, ...)
-            self.documents.register(command_name, ...)
-
-    class MyPlugin(MyPattern):
-        def __init__(app, **kwargs):
-            self.name = "My Plugin"
-            super().__init__(app, **kwargs)
-
-        def activate():
-            # Your new function
-            self.my_register(command_name = "print_me", command_func = self.print_me)
-
-            # But you also have access to all functions from
-            # GwCommandPattern and GwDocumentPattern
-            self.commands.register(...)
-            self.documents.register(...)
-
-        def print_me():
-            print("I'm %s." % self.name)
-
-    my_app = App([MyPlugin])
-    my_app.activate(["My Plugin"])
 

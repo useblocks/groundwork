@@ -3,8 +3,8 @@
 Welcome to groundwork
 =====================
 
-| groundwork is a python based microframework for highly reusable applications and their components.
-| It's functionality is based on exchangeable, well-documented and well-tested plugins and patterns.
+| groundwork is a python based microframework for highly reusable :ref:`applications <application>` and their components.
+| It's functionality is based on exchangeable, well-documented and well-tested :ref:`plugins <plugins>` and :ref:`patterns <patterns>`.
 
 It is designed to support any kind of application: command line scripts, desktop programs or web applications.
 
@@ -17,7 +17,7 @@ behaviors like plugin status, used signals, registered commands and much more.
  * :ref:`Command line interfaces <commands>`
  * Loose inter-plugin communication via :ref:`signals and receivers <signals>`
  * :ref:`Shared objects <shared_objects>` to provide and request content to and from other plugins
- * Static and dynamic documents for an overall :ref:`documentation <documentation>`
+ * Static and dynamic :ref:`documents <documents>` for an overall documentation
 
 Additional, ready-to-use solutions can be easily integrated into groundwork applications by the usage of third-party
 plugins and patterns from the groundwork community.
@@ -25,8 +25,8 @@ plugins and patterns from the groundwork community.
 Example
 -------
 
-The following code defines a plugin with command line support and creates a groundwork application, which activates
-this plugin: ::
+The following code defines a plugin with command line support and creates a groundwork :ref:`application <application>`,
+which activates this :ref:`plugin <plugins>`: ::
 
     from groundwork import App
     from groundwork.patterns import GwCommandsPattern
@@ -70,7 +70,7 @@ User's Guide
    signals
    commands
    shared_objects
-   documentation
+   documents
    packaging
    contribute
 

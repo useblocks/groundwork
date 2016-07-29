@@ -54,7 +54,7 @@ On a command line the following commands can be used now::
 import re
 from setuptools import setup, find_packages
 
-version = "0.1.1a1"
+version = "0.1.1a2"
 
 setup(
     name='groundwork',
@@ -70,7 +70,7 @@ setup(
     platforms='any',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-flake8'],
-    install_requires=["click", "blinker", "sphinx"],
+    install_requires=["click", "blinker"],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',

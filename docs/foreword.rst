@@ -32,8 +32,7 @@ application.
 But it also cares about the test cases of a plugin and makes tests of all used plugins available inside a single
 test suite. Furthermore it also collects all plugin documentations and creates a single, overall documentation for
 developers and users. The meta data of a plugin is collected as well and made available inside documentation and if
-wished also in the
-application as well.
+wished also in the application.
 
 Injections
 ~~~~~~~~~~
@@ -44,7 +43,7 @@ For instance: Instead of initialising and configure `Blinker <https://pythonhost
 for signals and `Click <http://click.pocoo.org/latest>`_ for commands by yourself.
 groundworks provides ``self.signal.send("Yehaa")`` and ``self.commands.register(...)`` directly inside plugin classes.
 
-By defining own :ref:`patterns <patterns>`, it is very easy to provide team members additional injected functions as well. E.g.
+By defining own :ref:`patterns <patterns>`, it is very easy to provide team members additional injected functions. E.g.
 ``self.web.route()`` for registering a web route or ``self.db.sql()`` to execute a SQL statement.
 
 However, the library and its objects itself shall still be available and directly accessible to support uncommon or

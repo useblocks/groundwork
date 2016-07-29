@@ -17,13 +17,15 @@ On windows system **sudo** is not needed.
 Virtual environment
 -------------------
 
+A virtual environment allows you to install and test python packages without any affect on a system-wide installation.
+
 If not done yet, use pip to install **virtualenv**::
 
    sudo pip install virtualenv
 
-The create a virtual environment in your preferred folder with::
+Create a virtual environment in your preferred folder with::
 
-    virtualenv venv
+    virtualenv venv     # venv will be the name of the folder. You may change it.
 
 To activate it, run::
 

@@ -71,7 +71,93 @@ To start the development of own plugins, simply create a new class and inherit f
     Also make sure that your ``__init__`` can handle **app** as the first argument and
     additional, optional keyword arguments.
 
+Using signals and receivers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+You are free add signals or connect receivers to them::
+
+    from groundwork.patterns import GwBasePattern
+
+    class MyPlugin(GwBasePattern):
+        def __init__(app, **kwargs):
+            self.name = "My Plugin"
+            super().__init__(app, **kwargs)
+
+        def activate():
+            self.signals.register(signal="My signal",
+                                  description="Informing about something")
+
+            self.signals.connect(receiver="My signal receiver",
+                                 signal="My signal",
+                                 function=self.fancy_stuff,
+                                 description="Doing some fancy")
+
+        def fancy_stuff(plugin, **kwargs):
+            print("FANCY STUFF!!! " * 50)
+
+For more details about signals, please read :ref:`signals`.
+
+.. note::
+    Each plugin sends automatically signals when it gets activated or deactivated.
+    The used signals are: plugin_activate_pre, plugin_activate_post, plugin_deactivate_pre and plugin_deactivate_post.
+
+    Please see :ref:`signals` for more information.
+
+.. _plugin_patterns:
+
+Using patterns
+--------------
+:ref:`Patterns <patterns>` can be used to extend your plugin with new functions and objects.
+
+groundwork itself provides 4 patterns:
+
+    * :class:`~groundwork.patterns.gw_base_pattern.GwBasePattern`
+    * :class:`~groundwork.patterns.gw_commands_pattern.GwCommandsPattern`
+    * :class:`~groundwork.patterns.gw_documents_pattern.GwDocumentsPattern`
+    * :class:`~groundwork.patterns.gw_shared_objects_pattern.GwSharedObjectsPattern`
+
+You can load multiple patterns into your plugin::
+
+    from groundwork.patterns import GwCommandsPattern, GwDocumentsPattern, GwSharedObjectsPattern
+
+    # GwBasePattern is no longer needed, because the used patterns already inherit from it.
+    class MyPlugin(GwCommandsPattern, GwDocumentsPattern, GwSharedObjectsPattern):
+        def __init__(app, **kwargs):
+            self.name = "My Plugin"
+            super().__init__(app, **kwargs)
+
+        def activate():
+            self.commands.register(...)
+            self.documents.register(...)
+            self.shared_objects.register(...)
+
+For more information about these patterns, please read the related chapters: :ref:`commands`, :ref:`documents`
+and :ref:`shared_objects`.
+
+
 .. _plugin_logging:
 
 Logging
 -------
+Each plugin has its own logger, which name is the name of the plugin. It is accessible via ``self.log`` inside a plugin
+class::
+
+    from groundwork.patterns import GwBasePattern
+
+    class MyPlugin(GwBasePattern):
+        def __init__(app, **kwargs):
+            self.name = "My Plugin"
+            super().__init__(app, **kwargs)
+            self.log.info("Initialisation done for %s" % self.name)
+
+        def activate():
+            self.log.debug("Starting activation")
+            self.log.info("Activation done")
+
+For each logger, and therefore for each plugin, it is possible to register handlers to monitor specific plugins
+and log messages in detail.
+
+For instance: Store all messages of "My Plugin" inside a file called "my_plugin.log".
+All other messages go to "app.log".
+
+For details how to configure groundworks logging, please see :ref:`logging configuration <logging_configuration>`.
+

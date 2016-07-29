@@ -29,6 +29,21 @@ def test_app_initialisation_with_config2():
         app.config.PLUGINS != ["PluginA", "PluginB", "NoPlugin"]
 
 
+def test_app_strict():
+
+    class MyBadPlugin():
+        pass
+
+    my_app = groundwork.App(strict=True)
+    with pytest.raises(AttributeError):
+        my_app.plugins.classes.register([MyBadPlugin])     # will throw an exception
+
+    my_app.strict = False
+    my_app.plugins.classes.register([MyBadPlugin])     # will log a warning only
+
+    assert len(my_app.plugins.get()) == 0
+
+
 def test_app_initialisation_with_plugins(BasicPlugin):
     # Tries to import, but doesn't stop on problems
     app = groundwork.App(plugins=["TestPluginA", "TestPluginB", "NoPlugin"])

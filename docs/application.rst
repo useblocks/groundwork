@@ -6,7 +6,7 @@ The groundwork :class:`~groundwork.App` is a container mostly for configurations
 their needed objects.
 
 Most attributes are added during runtime by patterns, which need a single instance of an object per application.
-For instance: A list of registered commands, a database connection object, a web application like Flask.
+For instance: A list of registered commands, a database connection object, a web application.
 
 To initialise a groundwork application, simply do::
 
@@ -41,7 +41,7 @@ are used for the groundwork configuration::
     config_file_location = __file__                     # Is not used as config parameter
     APP_PATH = os.path.dirname(config_file_location)    # Is used as config parameter
 
-    APP_PLUGINS = [ "My Plugin",
+    APP_PLUGINS = [ "My Plugin",                        # Is used as config parameter
                     "GwPluginInfo",
                     "GwCommandInfo]
 
@@ -153,12 +153,12 @@ Here is an example, which demonstrates both ways::
         def deactivate(): pass
 
     # Activation by application
-    my_app = App(plugins=[MyPlugin])
-    my_app.activate(["My Plugin"])
+    my_app = App(plugins=[MyPlugin])                        # Registration
+    my_app.activate(["My Plugin"])                          # Activation
 
     # Activation by plugin
-    my_plugin2 = MyPlugin(app=my_app, name="MyPlugin2")
-    my_plugin2.activate()
+    my_plugin2 = MyPlugin(app=my_app, name="MyPlugin2")     # Registration
+    my_plugin2.activate()                                   # Activation
 
 
 .. _plugin_deactivation:
@@ -175,6 +175,28 @@ Like for plugin activation, also the plugin deactivation supports two ways of de
     # Deactivation by plugin
     my_plugin2.deactivate()
 
+Handling errors
+---------------
+
+A plugin registration or activation can easily fail. Reasons may be bad code, missing dependencies,
+already registered classes and more.
+
+By default groundwork logs only a warning if a registration or activation fails.
+
+You can ask groundwork to throw also an exception, if problems occur. This behavior can be activated by setting the
+parameter ``strict=True`` during application initialisation::
+
+    from groundwork import App
+
+    class MyBadPlugin():
+        pass
+
+    my_app = App(strict=True)
+    my_app.registers([MyBadPlugin])     # will throw an exception
+
+    my_app.strict = False
+    my_app.registers([MyBadPlugin])     # will log a warning only
+
 .. _application_logging:
 
 Logging
@@ -190,6 +212,8 @@ A groundwork application provides its own logger object, which is available unde
 
 This logger is used by most application related objects. Plugins have their own logger, which is available
 under ``self.log`` inside an plugin class.
+
+.. _logging_configuration:
 
 Configuration
 ~~~~~~~~~~~~~
