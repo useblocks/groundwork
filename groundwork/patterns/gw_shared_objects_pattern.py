@@ -88,12 +88,27 @@ class SharedObjectsListPlugin:
 
     def get(self, name=None):
         """
-        Returns requested shared objects.
+        Returns requested shared objects, which were registered by the current plugin.
+
+        If access to objects of other plugins are needed, use :func:`access` or perform get on application level::
+
+            my_app.shared_objects.get(name="...")
 
         :param name: Name of a request shared object
         :type name: str or None
         """
         return self.app.shared_objects.get(name, self.plugin)
+
+    def access(self, name):
+        """
+        Returns the object of the shared_object, if the given name has been registered.
+        The search is done on application level, so registered shared objects form other plugins
+        can be access.
+
+        :param name: Name of the shared object
+        :return: object, whatever it may be...
+        """
+        return self.app.shared_objects.access(name)
 
     def __getattr__(self, item):
         """
@@ -154,6 +169,18 @@ class SharedObjectsListApplication:
                     return self._shared_objects[name]
                 else:
                     return None
+
+    def access(self, name):
+        """
+        Returns the object of the shared_object, if the given name has been registered.
+
+        Unlike :func:`get()`, which returns the complete instance of a shared object, including
+        name, description, plugin, access() returns the object only (without any meta data).
+
+        :param name: Name of the shared object
+        :return: object, whatever it may be...
+        """
+        return self.get(name, plugin=None).obj
 
     def register(self, name, description, obj, plugin):
         """

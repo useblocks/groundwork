@@ -104,6 +104,16 @@ GwSharedObjectsPattern
    :show-inheritance:
    :undoc-members:
 
+.. data:: GwCommandsPattern.shared_objects
+
+.. autoclass:: SharedObjectsListPlugin
+   :members:
+   :undoc-members:
+
+.. autoclass:: SharedObjectsListApplication
+   :members:
+   :undoc-members:
+
 GwDocumentsPattern
 ~~~~~~~~~~~~~~~~~~
 .. currentmodule:: groundwork.patterns.gw_documents_pattern

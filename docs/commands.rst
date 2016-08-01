@@ -45,8 +45,8 @@ and use the function :func:`~groundwork.patterns.gw_commands_pattern.CommandsLis
                                    function=self.my_command,
                                    params=[])
 
-            self.my_command(self, plugin, **kwargs):
-                print("Yehaaa")
+        def my_command(self, plugin, **kwargs):
+            print("Yehaaa")
 
 Using arguments and options
 ---------------------------
@@ -58,7 +58,7 @@ For arguments and options, groundwork is using the definition and native classes
     * `Arguments <http://click.pocoo.org/5/api/#click.Argument>`_ are positional parameters to a command
     * `Options <http://click.pocoo.org/5/api/#click.Option>`_ are usually optional value on a command.
 
-To use them, you have to passe instances of them to the ``params`` parameter of the function
+To use them, you have to pass instances of them to the ``params`` parameter of the function
 :func:`~groundwork.patterns.gw_commands_pattern.CommandsListPlugin.register`. ::
 
     from groundwork.patterns import GwCommandsPattern
@@ -79,15 +79,27 @@ To use them, you have to passe instances of them to the ``params`` parameter of 
                                                   default=False,
                                                   is_flag=True)])
 
-            self.my_command(self, plugin, force, **kwargs):
-                if force:
-                    print("FORCE Yehaaa")
-                else:
-                    print("Maybe Yehaaa")
+        def my_command(self, plugin, force, **kwargs):
+            if force:
+                print("FORCE Yehaaa")
+            else:
+                print("Maybe Yehaaa")
 
 For detailed parameter description, please take a look into the documentation of `click <http://click.pocoo.org/>`_ for
 `arguments <http://click.pocoo.org/5/api/#click.Argument>`_ and
 `options <http://click.pocoo.org/5/api/#click.Option>`_
 
+Unregister a command
+--------------------
+
+A command can also be unregistered during runtime.
+
+Simply use :func:`~groundwork.patterns.gw_commands_pattern.CommandsListPlugin.unregister` and pass the name of
+the command::
+
+    ...
+
+    def deactivate(self):
+        self.commands.unregister("my_command")
 
 
