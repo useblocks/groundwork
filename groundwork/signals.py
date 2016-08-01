@@ -27,7 +27,7 @@ class SignalsApplication():
 
         # We must use an unique namespace for our signals. Otherwise we get problems with multiple applications or
         # application recreation, because blinker throws every signal to a "singleton container", which stays
-        # the same for the whole runtime of the python interpreter . No cleanup or anything else.
+        # the same for the whole runtime of the python interpreter. No cleanup or anything else.
         # So registered signals and receivers keep registered, whatever you do with the app.
         # How to use namespace in blinker? See:
         # http://flask.pocoo.org/docs/0.11/signals/#creating-signals for blinker namespace usage

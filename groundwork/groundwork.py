@@ -121,3 +121,4 @@ class App(object):
             self.log.debug("Logger dictionary defined. Loading dictConfig for logging")
             logging.config.dictConfig(logger_dict)
             self.log.debug("dictConfig loaded")
+
