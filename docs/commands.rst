@@ -12,7 +12,7 @@ However the command line interface must be started by the application itself.
 Starting the CLI
 ----------------
 
-To start the cli, be sure that at least own plugin gets activated, which is using the pattern
+To start the cli, be sure that at least one plugin gets activated, which is using the pattern
 :class:`~groundwork.patterns.gw_commands_pattern.GwCommandsPattern`.
 
 After application initialisation and plugin activations,
@@ -30,7 +30,7 @@ Registering commands
 --------------------
 
 To register commands, a plugin must inherit from :class:`~groundwork.patterns.gw_commands_pattern.GwCommandsPattern`
-and use the function :func:`~groundwork.patterns.gw_commands_pattern.CommandsListPlugin.register`::
+and use the function :func:`~groundwork.patterns.gw_commands_pattern.CommandsListPlugin.register`. ::
 
     from groundwork.patterns import GwCommandsPattern
 
@@ -59,7 +59,7 @@ For arguments and options, groundwork is using the definition and native classes
     * `Options <http://click.pocoo.org/5/api/#click.Option>`_ are usually optional value on a command.
 
 To use them, you have to passe instances of them to the ``params`` parameter of the function
-:func:`~groundwork.patterns.gw_commands_pattern.CommandsListPlugin.register`::
+:func:`~groundwork.patterns.gw_commands_pattern.CommandsListPlugin.register`. ::
 
     from groundwork.patterns import GwCommandsPattern
     from click import Argument, Option
