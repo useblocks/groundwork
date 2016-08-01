@@ -54,7 +54,7 @@ On a command line the following commands can be used now::
 import re
 from setuptools import setup, find_packages
 
-version = "0.1.1a2"
+version = "0.1.1a3"
 
 setup(
     name='groundwork',

@@ -40,7 +40,6 @@ Like for commands or signals, there is also a
                                          description="A shared object of My Plugin",
                                          obj=self.my_shared_object)
 
-
 Get/Access a shared object
 --------------------------
 
@@ -54,7 +53,7 @@ The search is performed on plugin level only, so there is no possibility to acce
 via ``get()``
 
 ``access()`` returns the object only, without any meta data. It can be used to access a single shared object only.
-A **name** must be given and the search is performed on application level.::
+A **name** must be given and the search is performed on application level::
 
     from groundwork.patterns import GwSharedObjectsPattern
 

@@ -25,7 +25,6 @@ After application initialisation and plugin activations,
     my_app.plugins.activate(["GwCommandInfo"])
     my_app.commands.start_cli()
 
-
 Registering commands
 --------------------
 
