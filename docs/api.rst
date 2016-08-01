@@ -104,7 +104,7 @@ GwSharedObjectsPattern
    :show-inheritance:
    :undoc-members:
 
-.. data:: GwCommandsPattern.shared_objects
+.. data:: GwSharedObjectsPattern.shared_objects
 
 .. autoclass:: SharedObjectsListPlugin
    :members:
@@ -124,32 +124,38 @@ GwDocumentsPattern
    :show-inheritance:
    :undoc-members:
 
+.. autoclass:: DocumentsListPlugin
+   :members:
+   :undoc-members:
+
+.. autoclass:: DocumentsListApplication
+   :members:
+   :undoc-members:
+
 Plugins
 -------
+
+GwDocumentsInfo
+~~~~~~~~~~~~~~
+
+.. autoclass:: groundwork.plugins.gw_documents_info.GwDocumentsInfo
+   :show-inheritance:
+
 
 GwPluginInfo
 ~~~~~~~~~~~~
 
-.. autoclass:: groundwork.plugins.gw_plugin_info.GwPluginInfo
-   :members:
+.. autoclass:: groundwork.plugins.gw_plugins_info.GwPluginsInfo
    :show-inheritance:
-   :inherited-members:
-   :undoc-members:
 
 GwSignalInfo
 ~~~~~~~~~~~~
 
-.. autoclass:: groundwork.plugins.gw_signal_info.GwSignalInfo
-   :members:
+.. autoclass:: groundwork.plugins.gw_signals_info.GwSignalsInfo
    :show-inheritance:
-   :inherited-members:
-   :undoc-members:
 
 GwCommandslInfo
 ~~~~~~~~~~~~~~~
 
 .. autoclass:: groundwork.plugins.gw_commands_info.GwCommandsInfo
-   :members:
    :show-inheritance:
-   :inherited-members:
-   :undoc-members:

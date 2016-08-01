@@ -12,6 +12,8 @@ class GwDocumentsPattern(GwBasePattern):
     """
     Documents can be collected by other Plugins to present their content inside user documentation, online help,
     console output or whatever.
+
+    Please see :ref:`documents` for more details.
     """
 
     def __init__(self, *args, **kwargs):
@@ -19,17 +21,23 @@ class GwDocumentsPattern(GwBasePattern):
 
         if not hasattr(self.app, "documents"):
             self.app.documents = DocumentsListApplication(self.app)
+
+        #: Stores an instance of :class:`~groundwork.patterns.gw_documents_pattern.DocumentsListPlugin`
         self.documents = DocumentsListPlugin(self)
-
-    def activate(self):
-        pass
-
-    def deactivate(self):
-        pass
 
 
 class DocumentsListPlugin:
     """
+    Stores and handles documents.
+
+    These documents are used for real-time and offline documentation of a groundwork application.
+
+    The content of a document must be string, which is can contain jinja and rst syntax.
+
+    Plugins, which want to generate a documentation out of all documents, must render this content
+    (jinja render_template) and transform the rst by the own (e.g. by using rst2html).
+
+    Please see :ref:`documents` for more details.
     """
 
     def __init__(self, plugin):
@@ -56,16 +64,16 @@ class DocumentsListPlugin:
         for document in documents.keys():
             self.unregister(document)
 
-    def register(self, name, file_path, alias=None):
+    def register(self, name, content, description=None):
         """
         Register a new document.
 
-        :param file_path: Absolute path of the document location
+        :param content: Content of this document. Jinja and rst are supported.
+        :type content: str
         :param name: Unique name of the document for documentation purposes.
-        :param alias: Alias of the document. May be used as file name, if documents are copied or restructured.
-               (Optional)
+        :param description: Short description of this document
         """
-        return self.__app.documents.register(name, file_path, alias, self._plugin)
+        return self.__app.documents.register(name, content, self._plugin, description)
 
     def unregister(self, document):
         return self.__app.documents.unregister(document)
@@ -98,17 +106,16 @@ class DocumentsListApplication:
         self.documents = {}
         self.__log.info("Application documents initialised")
 
-    def register(self, name, file_path, alias, plugin):
+    def register(self, name, content, plugin, description=None):
         """
-        Registers a new signal.
+        Registers a new document.
 
         .. warning: You can not use any relative links inside a given document.
                     For instance, sphinx's toctree, image, figure or include statements do not work.
 
-        :param file_path: Absolute path of the document location
+        :param content: Content of the document
+        :type content: str
         :param name: Unique name of the document for documentation purposes.
-        :param alias: Alias of the document. May be used as file name, if documents are copied or restructured.
-               (Optional)
         :param plugin: Plugin object, under which the signals where registered
         :type plugin: GwBasePattern
         """
@@ -116,9 +123,7 @@ class DocumentsListApplication:
             raise DocumentExistsException("Document %s was already registered by %s" %
                                           (name, self.documents[name].plugin.name))
 
-        if not os.path.isabs(file_path):
-            raise NoAbsolutePathException("file_path %s is not absolute" % file_path)
-        self.documents[name] = Document(name, file_path, alias, plugin)
+        self.documents[name] = Document(name, content, plugin, description)
         self.__log.debug("Document %s registered by %s" % (name, plugin.name))
         return self.documents[name]
 
@@ -178,20 +183,17 @@ class Document:
 
     :param name: Name of the document
     :type name: str
-    :param file_path: Absolute path to the document file
-    :type file_path: str (path)
-    :param alias: Alias of the document. May be used as file name, if documents are copied or restructured.
-    :type alias: str
+    :param content: Content of the document, which is used for documentation building
+    :type content: str (jinja + rst)
     :param plugin: The plugin, which registered this document
     :type plugin: GwBasePattern
+    :param description: short description of document
     """
-
-    def __init__(self, name, file_path, alias, plugin, ):
+    def __init__(self, name, content, plugin, description=None):
         self.name = name
-        self.file_path = file_path
-        self.alias = alias
+        self.content = content
         self.plugin = plugin
-        self.__log = logging.getLogger(__name__)
+        self.description = description
 
 
 class NoAbsolutePathException(BaseException):

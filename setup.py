@@ -70,7 +70,7 @@ setup(
     platforms='any',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-flake8'],
-    install_requires=["click", "blinker"],
+    install_requires=["click", "blinker", "jinja2"],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
@@ -85,9 +85,10 @@ setup(
     entry_points={
         'console_scripts': ["groundwork = groundwork.applications.gw_base_app:start_app"],
         'groundwork.plugin': [
-            'gw_plugin_info = groundwork.plugins.gw_plugin_info:GwPluginInfo',
-            'gw_signal_info = groundwork.plugins.gw_signal_info:GwSignalInfo',
-            'gw_command_info = groundwork.plugins.gw_commands_info:GwCommandsInfo'
+            'gw_plugins_info = groundwork.plugins.gw_plugins_info:GwPluginsInfo',
+            'gw_signals_info = groundwork.plugins.gw_signals_info:GwSignalsInfo',
+            'gw_commands_info = groundwork.plugins.gw_commands_info:GwCommandsInfo',
+            'gw_documents_info = groundwork.plugins.gw_documents_info:GwDocumentsInfo'
         ]
     }
 )

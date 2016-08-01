@@ -1,9 +1,55 @@
 import inspect
 
-from groundwork.patterns import GwBasePattern, GwCommandsPattern
+from groundwork.patterns import GwDocumentsPattern, GwCommandsPattern
 
 
-class GwPluginInfo(GwCommandsPattern):
+plugins_content = """
+Plugins overview
+=================
+
+Registered plugins: {{app.plugins.get()|count}}
+
+List of plugins
+---------------
+
+ {% for name, plugin in app.plugins.get().items() %}
+ * {{plugin.name-}}
+ {% endfor %}
+
+{% for name, plugin in app.plugins.get().items() %}
+{{plugin.name}}
+{{"-" * plugin.name|length}}
+Name: {{plugin.name}}
+Description: {{plugin.description}}
+{% endfor %}
+"""
+
+plugin_classes_content = """
+Plugin Classes overview
+========================
+
+This is an overview about all plugin classes, which are registered.
+
+Found plugin classes: {{app.plugins.classes.get()|count}}
+
+List of plugin classes
+----------------------
+
+ {% for name, class in app.plugins.classes.get().items() %}
+ * {{class.name-}}
+ {% endfor %}
+
+{% for name, class in app.plugins.classes.get().items() %}
+{{class.name}}
+{{"-" * class.name|length}}
+Name: {{class.name}}
+Path: {{class.path}}
+Distribution: {{class.distribution.key}} - {{class.distribution.version}}
+{% endfor %}
+"""
+
+
+class GwPluginsInfo(GwCommandsPattern, GwDocumentsPattern):
     """
     Collects information about plugins, which are registered at the current application.
 
@@ -17,10 +63,14 @@ class GwPluginInfo(GwCommandsPattern):
 
     def activate(self):
         self.commands.register("plugin_list", "List all plugins", self._list_plugins)
-        self.signals.connect(receiver="plugin_info_doc_build_receiver",
-                             signal="doc_build",
-                             function=self._doc_build,
-                             description="Does nothing in the moment")
+        self.documents.register(name="plugins_overview",
+                                content=plugins_content,
+                                description="Gives an overview about all registered plugins")
+
+        self.documents.register(name="plugins_classes",
+                                content=plugin_classes_content,
+                                description="Gives an overview about all available plugin classes"
+                                            "")
 
     def _list_plugins(self):
         for key, plugin in self.app.plugins.classes.get().items():
@@ -58,7 +108,4 @@ class GwPluginInfo(GwCommandsPattern):
                     if not attribute[0].startswith("_"):
                         print("   ", attribute[0])
             print("\n\n")
-
-    def _doc_build(self, plugin, **kwargs):
-        self.log.debug("_doc_build of PluginInfo got called by signal from %s" % plugin.name)
 

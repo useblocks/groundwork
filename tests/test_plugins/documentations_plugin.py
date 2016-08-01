@@ -8,4 +8,4 @@ class DocumentPlugin(GwDocumentsPattern):
         super().__init__(*args, **kwargs)
 
     def activate(self):
-        self.documents.register("test_document", os.path.abspath("../static/document.txt"))
+        self.documents.register("test_document", "test_content")
