@@ -1,14 +1,13 @@
 """
-The pluginmanager module cares about the management of plugin status and their changes between statuses.
+The pluginmanager module cares about the management of plugin status and their changes between status.
 
 There are two manager classes for managing plugin related objects.
 
- * PluginManager: Cares about initialised Plugins, which can be activate and deactivate.
+ * PluginManager: Cares about initialised Plugins, which can be activated and deactivated.
  * PluginClassManager: Cares about plugin classes, which are used to create plugins.
 
 A plugin class can be reused for several plugins. The only thing to care about is the naming of a plugin.
 This plugin name must be unique inside a groundwork app and can be set during plugin initialisation/activation.
-
 """
 
 from pkg_resources import iter_entry_points
@@ -42,7 +41,7 @@ class PluginManager:
         #: Handles the registration of plugin classes, which can be used to create new plugins during runtime.
         self.classes = PluginClassManager(self._app, self._strict)
 
-    def _load(self, plugins=[]):
+    def _load(self, plugins=None):
         """
         Initialises given plugins, but does not activate them.
 
@@ -57,6 +56,10 @@ class PluginManager:
         :param plugins: List of plugin names
         :type plugins: list of strings
         """
+
+        if plugins is None:
+            plugins = []
+
         self._log.debug("Plugins Initialisation started")
         if not isinstance(plugins, list):
             raise AttributeError("plugins must be a list, not %s" % type(plugins))
