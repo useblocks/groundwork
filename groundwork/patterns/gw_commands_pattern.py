@@ -78,12 +78,34 @@ class CommandsListPlugin:
             self.unregister(command)
 
     def register(self, command, description, function, params=[]):
+        """
+        Registers a new command for a plugin.
+
+        :param command: Name of the command
+        :param description: Description of the command. Is used as help message on cli
+        :param function: function reference, which gets invoked if command gets called.
+        :param params: list of click options and arguments
+        :return: command object
+        """
         return self.app.commands.register(command, description, function, params, self.plugin)
 
     def unregister(self, command):
+        """
+        Unregisters an existing command, so that this command is no longer available on the command line interface.
+        This function is mainly used during plugin deactivation.
+
+        :param command: Name of the command
+        """
         return self.app.commands.unregister(command)
 
     def get(self, name=None):
+        """
+        Returns commands, which can be filtered by name.
+
+        :param name: name of the command
+        :type name: str
+        :return: None, single command or dict of commands
+        """
         return self.app.commands.get(name, self.plugin)
 
     def __getattr__(self, item):
@@ -107,7 +129,17 @@ class CommandsListApplication():
         self._commands = {}
         self.log.info("Application commands initialised")
         self._click_root_command = click.Group()
-        self.start_cli = self._click_root_command
+        #self.start_cli = self._click_root_command
+
+    def start_cli(self, *args, **kwargs):
+        """
+        Start the command line interface for the application.
+
+        :param args: arguments
+        :param kwargs: keyword arguments
+        :return: none
+        """
+        return self._click_root_command(*args, **kwargs)
 
     def get(self, name=None, plugin=None):
         """

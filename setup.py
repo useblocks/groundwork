@@ -59,7 +59,7 @@ version = "0.1.1a2"
 setup(
     name='groundwork',
     version=version,
-    url='http://pythonhosted.org/groundwork/',
+    url='http://groundwork.readthedocs.org',
     license='MIT',
     author='team useblocks',
     author_email='info@useblocks.com',

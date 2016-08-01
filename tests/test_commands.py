@@ -13,6 +13,11 @@ def test_command_plugin_activation(basicApp):
     assert plugin.active is True
 
 
+# def test_command_cli_activation(basicApp):
+#     test = basicApp.commands.start_cli(standalone_mode=True, args=[])
+#     print(test)
+
+
 def test_command_plugin_execution(basicApp):
     runner = CliRunner()
     result = runner.invoke(basicApp.commands._commands["test"].click_command, ["--invalid"])

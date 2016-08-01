@@ -144,11 +144,11 @@ Example::
 
     class GwWebPattern(GwBasePattern):
         def __init__(self, app, **kwargs):
-            self.signals.connect(receiver="%s_command_deactivation" % self.name,
+            self.signals.connect(receiver="%s_web_route_deactivation" % self.name,
                                  signal="plugin_deactivate_post",
                                  function=self.__deactivate_commands,
                                  description="Deactivate commands for %s" % self.name,
-                                 sender=self.plugin)
+                                 sender=self)    # We only need signals from this plugin
 
         def __deactivate_web_routes(self, plugin, *args, **kwargs):
             web_routes = self.web_routes.get()
@@ -166,10 +166,10 @@ function::
             super().__init__(app, **kwargs)
 
         def activate(self):
-            self.signals.connect(receiver="%s_command_deactivation" % self.name, ... )
+            self.signals.connect(receiver="%s_my_deactivation" % self.name, ... )
 
         def deactivate(self):
-            self.signals.disconnect("%s_command_deactivation" % self.name)
+            self.signals.disconnect("%s_my_deactivation" % self.name)
 
 
 Signals and receivers on application level
@@ -187,4 +187,4 @@ All signals and receivers can be accessed on application level via
 It is also possible to register new signals and receivers. But inside the application an additional parameter
 called **plugin** is necessary.
 This parameter gets set automatically inside plugins. However on application level this must be set by
-the developer. 
+the developer.
