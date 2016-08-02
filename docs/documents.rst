@@ -61,8 +61,8 @@ To unregister a document, you must use
 
 Using Jinja and RST
 -------------------
-`Jinja <http://jinja.pocoo.org/>`_ and `rst <http://docutils.sourceforge.net/rst.html>`_ are really powerful, wide used
-and well documented. Therefore it is a big benefit use these techniques inside a documents content.
+`Jinja <http://jinja.pocoo.org/>`_ and `rst <http://docutils.sourceforge.net/rst.html>`_ are powerful, wide used
+and well documented libraries for creating intelligent and beautiful documents.
 
 Jinja
 ~~~~~
@@ -90,14 +90,109 @@ groundwork provides the application object as ``app`` and the plugin object, whi
 The template engine must be executed by the plugin, which provides a viewer to these documents. And the execution
 should be done directly before the document gets presented to the user.
 
-RST
+rst
 ~~~
 `Restructured Text <http://docutils.sourceforge.net/rst.html>`_ is used to give your document some sort of a layout.
 For instance add titles and chapters, make some words strong and add some links.
 
-rst so so generic, that it can be used to build pdf documents, html webpages, epub (an ebook format) and much more.
+rst is so generic, that it can be used to build pdf documents, html webpages, epub (an ebook format) and much more.
 
 A famous rst based documentation framework is `Sphinx <http://www.sphinx-doc.org/>`_
 
 For a quick introduction, please read
 `Quick reStructuredText <http://docutils.sourceforge.net/docs/user/rst/quickref.html>`_.
+
+
+Developing a document viewer
+----------------------------
+
+A viewer for the groundwork documents must care about the following functions:
+
+    1. Render the `Jinja <http://jinja.pocoo.org/>`_ template string.
+    2. Transform rst-content to the needed output.
+
+Step 1: Render Jinja
+~~~~~~~~~~~~~~~~~~~~
+
+Step 1 can be done using the Jinja template and its
+`from_string() <http://jinja.pocoo.org/docs/dev/api/#jinja2.Environment.from_string>`_ command::
+
+    from jinja2 import Environment
+
+    ...  # App initialisation, plugin activation, ...
+
+    document = my_app.documents.get("my example document")
+    rendered_doc = Environment().from_string(document.content).render(app=my_app, plugin=document.plugin))
+
+It is important to provide 2 parameters to the jinja template:
+
+    * **app**: the current application object
+    * **plugin**: the plugin, which has registered the current document
+
+Step 2: Transform rst
+~~~~~~~~~~~~~~~~~~~~~
+
+The second step depends on the needed output format. You will find a wide range of rst supports for different
+programming languages. A good starting point is a list of rst supporting libraries and tools in this
+`stackoverflow answer <http://stackoverflow.com/questions/2746692/restructuredtext-tool-support>`_.
+
+However, the following example will make *html* from an already rendered, rst structured document content::
+
+    from docutils.core import publish_parts
+
+    ...  # App initialisation, plugin activation, jinja rendering, ...
+
+    output = publish_parts(rendered_doc, writer_name="html")['html_body']
+
+``publish_parts()`` renders the rst string and provides several groups of html areas.
+Based on this it is very easy to get the complete html tree or the body content only. Which would be really helpful,
+if a document should be integrated into an already existing html frame.
+
+Supported areas are: body_prefix, fragment, html_subtitle, header, version, meta, stylesheet, subtitle,
+html_head, body_pre_docinfo, head, html_body, body, html_prolog, title, docinfo, html_title,
+whole, body_suffix, head_prefix, footer, encoding.
+
+For details of ``publish_parts()`` and its supported part names, please take a look into the
+`official documentation <http://docutils.sourceforge.net/docs/api/publisher.html#publish-parts-details>`_.
+
+
+Sphinx support
+--------------
+
+`Sphinx <http://www.sphinx-doc.org/>`_ is a documentation builder, which takes static, rst based files and generates
+websites, PDFs and more out of it. For instance, this documentation is using sphinx.
+
+As sphinx supports physical files on a hard disk only, it can not integrate groundwork documents directly.
+
+Luckily the groundwork plugin :class:`~groundwork.plugins.gw_documents_info.GwDocumentsInfo` provides the
+command ``doc_write`` to store the content of all registered documents of an application in a directory.
+
+Before it writes the files, the command will give you an overview about what will happen and asks for a final
+confirmation.
+
+Examples::
+
+    # On a command line
+
+    groundwork doc_write ../temp            # Writes rst documents to given, relative path.
+
+    groundwork doc_write /home/user/temp    # Writes rst documents to the given, absolute path.
+
+    groundwork doc_write ./temp -h          # Writes HTML documents.
+
+    groundwork doc_write ./temp -o          # Does not exit, if given directory is not empty.
+
+    groundwork doc_write ./temp -q          # Does not ask for final confirmation. Most needed by automation scripts.
+
+    groundwork doc_write ./temp -o -q -h    # All options together...
+
+After export, you can use the generated rst files as normal input files for sphinx. For instance you can add them
+to a ``.. toctree::`` of your index.rst.
+
+.. note::
+
+    The output filename of a document is the document name in lowercase. Also all whitespaces are removed.
+    For instance: "My Great Document" becomes "mygreatdocument.rst"
+
+
+

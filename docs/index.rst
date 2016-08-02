@@ -3,16 +3,17 @@
 Welcome to groundwork
 =====================
 
-| groundwork is a python based microframework for highly reusable :ref:`applications <application>` and their components.
-| It's functionality is based on exchangeable, well-documented and well-tested :ref:`plugins <plugins>` and :ref:`patterns <patterns>`.
+| groundwork is a Python based microframework for highly reusable :ref:`applications <application>` and their
+components.
+| Its functionality is based on exchangeable, well-documented and well-tested :ref:`plugins <plugins>` and :ref:`patterns <patterns>`.
 
-It is designed to support any kind of application: command line scripts, desktop programs or web applications.
+It is designed to support any kind of a Python application: command line scripts, desktop programs or web applications.
 
 groundwork enables applications to activate and deactivate plugins during runtime and to control dynamic plugin
 behaviors like plugin status, used signals, registered commands and much more.
 
-| The functionality of plugins can be easily extended by the usage of inheritable patterns.
-| Based on this, groundwork supports developers with time-saving solutions for:
+| The functionality of plugins can easily be extended by the usage of inheritable patterns.
+| Thus, groundwork supports developers with time-saving solutions for:
 
  * :ref:`Command line interfaces <commands>`
  * Loose inter-plugin communication via :ref:`signals and receivers <signals>`
@@ -26,7 +27,7 @@ Example
 -------
 
 The following code defines a plugin with command line support and creates a groundwork :ref:`application <application>`,
-which activates this :ref:`plugin <plugins>`: ::
+which activates the :ref:`plugin <plugins>`: ::
 
     from groundwork import App
     from groundwork.patterns import GwCommandsPattern
@@ -49,11 +50,11 @@ which activates this :ref:`plugin <plugins>`: ::
         my_app.plugins.activate(["My Plugin"])  # Initialise and activates 'My Plugin'
         my_app.commands.start_cli()             # Starts the command line interface
 
-On a command line the following commands can be used now: ::
+The following commands can be used on a command line now::
 
     python my_app.py hello      # Prints 'Hello world'
     python my_app.py            # Prints a list of available commands
-    python my_app.yp hello -h   # Prints some help text for the command hello
+    python my_app.yp hello -h   # Prints syntax help for the hello command
 
 User's Guide
 ------------
