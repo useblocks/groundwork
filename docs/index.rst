@@ -3,8 +3,7 @@
 Welcome to groundwork
 =====================
 
-| groundwork is a Python based microframework for highly reusable :ref:`applications <application>` and their
-components.
+| groundwork is a Python based microframework for highly reusable :ref:`applications <application>` and their components.
 | Its functionality is based on exchangeable, well-documented and well-tested :ref:`plugins <plugins>` and :ref:`patterns <patterns>`.
 
 It is designed to support any kind of a Python application: command line scripts, desktop programs or web applications.
