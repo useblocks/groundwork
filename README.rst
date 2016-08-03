@@ -7,6 +7,9 @@
 
 Full documentation at http://groundwork.readthedocs.io
 
+.. image:: https://raw.githubusercontent.com/useblocks/groundwork/master/docs/_static/gw_slogan.png
+
+
 groundwork
 ----------
 
