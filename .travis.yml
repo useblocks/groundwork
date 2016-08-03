@@ -4,6 +4,7 @@ python:
   - "3.5"
 before_install:
   - pip install pytest pytest-cov click blinker jinja2
+  - python setup.py install
 # command to install dependencies
 # install: "pip install -r requirements.txt"
 # command to run tests
