@@ -2,10 +2,12 @@ language: python
 python:
   - "3.4"
   - "3.5"
-before_install:
-  - pip install pytest pytest-cov pytest-flake8 click blinker jinja2
-  - python setup.py install
+#before_install:
+
 # command to install dependencies
-# install: "pip install -r requirements.txt"
+install:
+  - pip install pytest>=2.8 pytest-cov pytest-flake8 click blinker jinja2
+  - python setup.py install
+
 # command to run tests
 script: py.test --flake8
