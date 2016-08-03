@@ -1,4 +1,9 @@
 .. image:: https://readthedocs.org/projects/groundwork/badge/?version=latest
+   :target: http://groundwork.readthedocs.io/
+   :width: 30%
+.. image:: https://travis-ci.org/useblocks/groundwork.svg?branch=master
+   :target: https://travis-ci.org/useblocks/groundwork
+   :width: 30%
 
 groundwork
 ----------
