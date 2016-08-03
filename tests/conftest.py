@@ -1,6 +1,11 @@
 import os
 import pytest
+import sys
 
+# The following addition to sys.path is needed to find imports
+# like 'from test.test_plugins import BasicPlugin'
+# Normally the test path is not part of sys.path
+sys.path.append("/".join([os.path.dirname(os.path.abspath(__file__)), ".."]))
 
 @pytest.fixture
 def test_apps(monkeypatch):
@@ -95,15 +100,6 @@ def DocumentPlugin():
     """
     from tests.test_plugins.documentations_plugin import DocumentPlugin
     return DocumentPlugin
-
-
-@pytest.fixture
-def SignalPlugin():
-    """
-    :return: signal plugin class
-    """
-    from tests.test_plugins.signals_plugin import SignalPlugin
-    return SignalPlugin
 
 
 # See http://docs.pytest.org/en/latest/example/simple.html#incremental-testing-test-steps
