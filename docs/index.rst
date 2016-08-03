@@ -5,7 +5,7 @@
    :target: https://pypi.python.org/pypi/groundwork
    :alt: Supported versions
 .. image:: https://readthedocs.org/projects/groundwork/badge/?version=latest
-   :target: http://groundwork.readthedocs.io/
+   :target: https://readthedocs.org/projects/groundwork/
 .. image:: https://travis-ci.org/useblocks/groundwork.svg?branch=master
    :target: https://travis-ci.org/useblocks/groundwork
    :alt: Travis-CI Build Status
