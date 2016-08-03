@@ -3,9 +3,9 @@ python:
   - "3.4"
   - "3.5"
 before_install:
-  - pip install pytest pytest-cov click blinker jinja2
+  - pip install pytest pytest-cov pytest-flake8 click blinker jinja2
   - python setup.py install
 # command to install dependencies
 # install: "pip install -r requirements.txt"
 # command to run tests
-script: py.test
+script: py.test --flake8

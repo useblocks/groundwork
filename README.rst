@@ -22,7 +22,7 @@ It is designed to support any kind of Python application: command line scripts, 
 groundwork enables applications to activate and deactivate plugins during runtime and to control dynamic plugin
 behaviors like plugin status, used signals, registered commands and much more.
 
-The functionality of plugins can easily be extended by the usage of inheritable patterns.
+The functionality of plugins can easily be extended by using inheritable patterns.
 Thus, groundwork supports developers with time-saving solutions for:
 
     * Command line interfaces

@@ -1,4 +1,10 @@
+.. image:: https://readthedocs.org/projects/groundwork/badge/?version=latest
+   :target: http://groundwork.readthedocs.io/
+.. image:: https://travis-ci.org/useblocks/groundwork.svg?branch=master
+   :target: https://travis-ci.org/useblocks/groundwork
+
 .. image:: _static/gw_slogan.png
+
 
 Welcome to groundwork
 =====================
