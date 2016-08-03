@@ -1,3 +1,15 @@
+.. image:: https://readthedocs.org/projects/groundwork/badge/?version=latest
+   :target: http://groundwork.readthedocs.io/
+   :width: 30%
+.. image:: https://travis-ci.org/useblocks/groundwork.svg?branch=master
+   :target: https://travis-ci.org/useblocks/groundwork
+   :width: 30%
+
+Full documentation at http://groundwork.readthedocs.io
+
+.. image:: https://raw.githubusercontent.com/useblocks/groundwork/master/docs/_static/gw_slogan.png
+
+
 groundwork
 ----------
 
