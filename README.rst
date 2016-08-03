@@ -5,6 +5,8 @@
    :target: https://travis-ci.org/useblocks/groundwork
    :width: 30%
 
+Full documentation at http://groundwork.readthedocs.io
+
 groundwork
 ----------
 
