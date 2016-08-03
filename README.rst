@@ -1,3 +1,5 @@
+.. image:: https://readthedocs.org/projects/groundwork/badge/?version=latest
+
 groundwork
 ----------
 
