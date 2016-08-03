@@ -49,9 +49,9 @@ The following commands can be used on a command line now::
 
     python my_app.py hello      # Prints 'Hello world'
     python my_app.py            # Prints a list of available commands
-    python my_app.yp hello -h   # Prints syntax help for the hello command 
+    python my_app.yp hello -h   # Prints syntax help for the hello command
+
 """
-import re
 from setuptools import setup, find_packages
 
 version = "0.1.1a4"

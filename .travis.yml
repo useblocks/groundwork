@@ -2,12 +2,15 @@ language: python
 python:
   - "3.4"
   - "3.5"
-#before_install:
 
 # command to install dependencies
 install:
-  - pip install pytest>=2.8 pytest-cov pytest-flake8 click blinker jinja2
+  - pip install tox-travis
+  - pip install coveralls
   - python setup.py install
 
 # command to run tests
-script: py.test --flake8
+script: tox
+
+after_success:
+  - coveralls

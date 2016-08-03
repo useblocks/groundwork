@@ -108,4 +108,3 @@ class GwPluginsInfo(GwCommandsPattern, GwDocumentsPattern):
                     if not attribute[0].startswith("_"):
                         print("   ", attribute[0])
             print("\n\n")
-

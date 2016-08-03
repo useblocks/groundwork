@@ -1,4 +1,3 @@
-import os
 from groundwork.patterns import GwDocumentsPattern
 
 

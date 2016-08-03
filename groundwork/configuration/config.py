@@ -48,4 +48,3 @@ class Config:
         else:
             setattr(self, name, value)
         return getattr(self, name)
-

@@ -1,6 +1,6 @@
 import os
 import pytest
-from groundwork.patterns.gw_documents_pattern import NoAbsolutePathException, DocumentExistsException
+from groundwork.patterns.gw_documents_pattern import DocumentExistsException
 
 
 def test_document_plugin_activation(basicApp):

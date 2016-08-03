@@ -7,6 +7,7 @@ import sys
 # Normally the test path is not part of sys.path
 sys.path.append("/".join([os.path.dirname(os.path.abspath(__file__)), ".."]))
 
+
 @pytest.fixture
 def test_apps(monkeypatch):
     monkeypatch.syspath_prepend(

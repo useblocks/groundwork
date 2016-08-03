@@ -74,4 +74,3 @@ class ConfigManager:
                     else:
                         raise InvalidParameter("%s is not allowed as name for a configuration parameter" % key)
         return config
-

@@ -2,7 +2,6 @@
 Groundwork documentation support module.
 """
 
-import os
 import logging
 
 from groundwork.patterns.gw_base_pattern import GwBasePattern
@@ -202,4 +201,3 @@ class NoAbsolutePathException(BaseException):
 
 class DocumentExistsException(BaseException):
     pass
-

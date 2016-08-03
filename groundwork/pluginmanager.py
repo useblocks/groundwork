@@ -23,6 +23,7 @@ class PluginManager:
     """
     PluginManager for searching, initialising, activating and deactivating groundwork plugins.
     """
+
     def __init__(self, app, strict=False):
         """
         Initialises the plugin manager.
@@ -82,8 +83,8 @@ class PluginManager:
                     continue
 
                 # Let's be sure, that GwBasePattern got called
-                if not hasattr(plugin_instance, "_plugin_base_initialised") or \
-                                plugin_instance._plugin_base_initialised is not True:
+                if not hasattr(plugin_instance, "_plugin_base_initialised") \
+                        or plugin_instance._plugin_base_initialised is not True:
                     self._log.error("GwBasePattern.__init__() was not called during initialisation. "
                                     "Please add 'super(*args, **kwargs).__init__()' to the top of all involved "
                                     "plugin/pattern init routines."
