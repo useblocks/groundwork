@@ -4,6 +4,9 @@
 .. image:: https://travis-ci.org/useblocks/groundwork.svg?branch=master
    :target: https://travis-ci.org/useblocks/groundwork
    :width: 30%
+.. image:: https://coveralls.io/repos/github/useblocks/groundwork/badge.svg?branch=master
+   :target: https://coveralls.io/github/useblocks/groundwork?branch=master
+   :width: 30%
 
 Full documentation at http://groundwork.readthedocs.io
 
