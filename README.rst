@@ -8,7 +8,7 @@
    :target: https://coveralls.io/github/useblocks/groundwork?branch=master
    :width: 30%
 
-Full documentation at http://groundwork.readthedocs.io
+Full documentation at https://groundwork.readthedocs.io
 
 .. image:: https://raw.githubusercontent.com/useblocks/groundwork/master/docs/_static/gw_slogan_white.png
 
