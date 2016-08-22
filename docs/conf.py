@@ -140,8 +140,10 @@ html_theme = 'gw'
 # documentation.
 #
 html_theme_options = {
+    "contribute": True,
     "github_fork": "useblocks/groundwork",
-    "github_ribbon_color": "white_ffffff"
+    "github_ribbon_color": "white_ffffff",
+    "github_user": "useblocks",
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
