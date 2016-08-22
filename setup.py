@@ -53,8 +53,13 @@ The following commands can be used on a command line now::
 
 """
 from setuptools import setup, find_packages
+import re
+import ast
 
-version = "0.1.1a4"
+_version_re = re.compile(r'__version__\s+=\s+(.*)')
+with open('groundwork/__init__.py', 'rb') as f:
+    version = str(ast.literal_eval(_version_re.search(
+        f.read().decode('utf-8')).group(1)))
 
 setup(
     name='groundwork',
