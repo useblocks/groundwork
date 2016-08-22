@@ -1,5 +1,5 @@
 from .groundwork import App
 from .patterns.gw_base_pattern import GwBasePattern
+from .version import __version__
 
 
-__version__ = "0.1.1a5"
