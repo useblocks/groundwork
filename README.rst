@@ -1,14 +1,31 @@
+.. image:: https://img.shields.io/pypi/l/groundwork.svg
+   :target: https://pypi.python.org/pypi/groundwork
+   :alt: License
+   :width: 30%
+.. image:: https://img.shields.io/pypi/pyversions/groundwork.svg
+   :target: https://pypi.python.org/pypi/groundwork
+   :alt: Supported versions
+   :width: 30%
 .. image:: https://readthedocs.org/projects/groundwork/badge/?version=latest
    :target: http://groundwork.readthedocs.io/
    :width: 30%
 .. image:: https://travis-ci.org/useblocks/groundwork.svg?branch=master
    :target: https://travis-ci.org/useblocks/groundwork
+   :alt: Travis-CI Build Status
    :width: 30%
 .. image:: https://coveralls.io/repos/github/useblocks/groundwork/badge.svg?branch=master
    :target: https://coveralls.io/github/useblocks/groundwork?branch=master
    :width: 30%
+.. image:: https://img.shields.io/pypi/dm/groundwork.svg?style=flat
+   :target: https://pypi.python.org/pypi/groundwork
+   :alt: PyPI Package monthly downloads
+   :width: 30%
+.. image:: https://img.shields.io/pypi/v/groundwork.svg
+   :target: https://pypi.python.org/pypi/groundwork
+   :alt: PyPI Package latest release
+   :width: 30%
 
-Full documentation at https://groundwork.readthedocs.io
+**Full documentation at https://groundwork.readthedocs.io**
 
 .. image:: https://raw.githubusercontent.com/useblocks/groundwork/master/docs/_static/gw_slogan_white.png
 
