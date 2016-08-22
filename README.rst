@@ -1,24 +1,24 @@
 .. image:: https://img.shields.io/pypi/l/groundwork.svg
    :target: https://pypi.python.org/pypi/groundwork
-   :width: 30%
+   :height: 20px
 .. image:: https://img.shields.io/pypi/pyversions/groundwork.svg
    :target: https://pypi.python.org/pypi/groundwork
-   :width: 30%
+   :height: 20px
 .. image:: https://readthedocs.org/projects/groundwork/badge/?version=latest
    :target: http://groundwork.readthedocs.io/
-   :width: 30%
+   :height: 20px
 .. image:: https://travis-ci.org/useblocks/groundwork.svg?branch=master
    :target: https://travis-ci.org/useblocks/groundwork
-   :width: 30%
+   :height: 20px
 .. image:: https://coveralls.io/repos/github/useblocks/groundwork/badge.svg?branch=master
    :target: https://coveralls.io/github/useblocks/groundwork?branch=master
-   :width: 30%
+   :height: 20px
 .. image:: https://img.shields.io/pypi/dm/groundwork.svg?style=flat
    :target: https://pypi.python.org/pypi/groundwork
-   :width: 30%
+   :height: 20px
 .. image:: https://img.shields.io/pypi/v/groundwork.svg
    :target: https://pypi.python.org/pypi/groundwork
-   :width: 30%
+   :height: 20px
 
 **Full documentation at https://groundwork.readthedocs.io**
 
