@@ -144,9 +144,9 @@ class DocumentsListApplication:
         """
         Get one or more documents.
 
-        :param document: Name of the signal
+        :param document: Name of the document
         :type document: str
-        :param plugin: Plugin object, under which the signals where registered
+        :param plugin: Plugin object, under which the document where registered
         :type plugin: GwBasePattern
         """
         if plugin is not None:

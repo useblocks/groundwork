@@ -93,7 +93,8 @@ setup(
             'gw_plugins_info = groundwork.plugins.gw_plugins_info:GwPluginsInfo',
             'gw_signals_info = groundwork.plugins.gw_signals_info:GwSignalsInfo',
             'gw_commands_info = groundwork.plugins.gw_commands_info:GwCommandsInfo',
-            'gw_documents_info = groundwork.plugins.gw_documents_info:GwDocumentsInfo'
+            'gw_documents_info = groundwork.plugins.gw_documents_info:GwDocumentsInfo',
+            'gw_recipes_builder = groundwork.plugins.gw_recipes_builder:GwRecipesBuilder',
         ]
     }
 )

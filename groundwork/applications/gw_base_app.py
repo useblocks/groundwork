@@ -34,7 +34,8 @@ def start_app():
 
     # The following used plugins are all part of groundwork and
     # therefore already registered via entry_point
-    app.plugins.activate(["GwPluginsInfo", "GwSignalsInfo", "GwCommandsInfo", "GwDocumentsInfo"])
+    app.plugins.activate(["GwPluginsInfo", "GwSignalsInfo", "GwCommandsInfo", "GwDocumentsInfo",
+                          "GwRecipesBuilder"])
 
     # Let's register a main document, which is the entrance for the documentation and links
     # to all other documents.

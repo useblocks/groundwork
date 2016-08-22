@@ -76,8 +76,8 @@ class GwDocumentsInfo(GwCommandsPattern, GwDocumentsPattern):
                                 description="Gives an overview about all registered documents")
 
     def _list_documents(self):
+        print("Documents:")
         for key, document in self.app.documents.get().items():
-            print("Documents:")
             print("  %s" % document.name)
 
     def _store_documentation(self, path, html, overwrite, quiet):
