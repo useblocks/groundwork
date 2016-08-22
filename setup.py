@@ -75,7 +75,7 @@ setup(
     platforms='any',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-flake8'],
-    install_requires=["click", "blinker", "jinja2"],
+    install_requires=["click", "blinker", "jinja2", "cookiecutter"],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
