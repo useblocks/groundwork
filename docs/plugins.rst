@@ -36,7 +36,7 @@ Plugins can be activated and deactivated during runtime. There are two ways of d
 
  * By the :func:`~groundwork.pluginmanager.PluginManager.activate`/
    :func:`~groundwork.pluginmanager.PluginManager.deactivate` function, accessible by ``my_app.plugins.activate()`` or
-   ``my_app_plugins.deactivate()``.
+   ``my_app.plugins.deactivate()``.
  * By the activation/deactivation function of the plugin itself, accessible by ``my_plugin.activate()`` or
    ``my_plugin.deactivate()``.
 
@@ -73,7 +73,7 @@ To start the development of own plugins, simply create a new class and inherit f
 
 Using signals and receivers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-You are free add signals or connect receivers to them::
+You are free to add signals or connect receivers to them::
 
     from groundwork.patterns import GwBasePattern
 
@@ -89,7 +89,7 @@ You are free add signals or connect receivers to them::
             self.signals.connect(receiver="My signal receiver",
                                  signal="My signal",
                                  function=self.fancy_stuff,
-                                 description="Doing some fancy")
+                                 description="Doing some fancy stuff")
 
         def fancy_stuff(plugin, **kwargs):
             print("FANCY STUFF!!! " * 50)
