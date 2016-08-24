@@ -189,7 +189,7 @@ class Recipe:
     def build(self, output_dir=os.getcwd()):
         return self.cookiecutter_build(config_json="recipe.json", output_dir=output_dir)
 
-    # the original cookiecutter build() command. Added only param config_json.
+    # the original cookiecutter cookiecutter() command from main.py. Added only param config_json.
     def cookiecutter_build(self, checkout=None, no_input=False, extra_context=None,
               replay=False, overwrite_if_exists=False, output_dir='.',
               config_file=USER_CONFIG_PATH, config_json='cookiecutter.json'):
