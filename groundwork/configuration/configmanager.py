@@ -1,6 +1,7 @@
 import types
 from pathlib import Path
 import logging
+import os
 
 from groundwork.configuration.exceptions import InvalidParameter
 from groundwork.configuration.config import Config
@@ -58,6 +59,9 @@ class ConfigManager:
         config = Config()
 
         for config_file in config_files:
+            if not os.path.isabs(config_file):
+                config_file = os.path.join(os.getcwd(), config_file)
+
             self.log.debug("Loading configuration from %s" % config_file)
             d = types.ModuleType('config')
             d.__file__ = config_file

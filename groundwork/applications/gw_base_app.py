@@ -29,8 +29,7 @@ Registered documents: {{app.documents.get()|count}}
 
 
 def start_app():
-    os.chdir(os.path.dirname(__file__))
-    app = App(["gw_base_app.conf"])
+    app = App([os.path.join(os.path.dirname(__file__), "gw_base_app.conf")])
 
     # The following used plugins are all part of groundwork and
     # therefore already registered via entry_point
