@@ -24,8 +24,10 @@ class GwRecipesBuilder(GwCommandsPattern, GwRecipesPattern):
         self.commands.register("recipe_build", "Builds a given recipe", self._recipe_build,
                                params=[Argument(("recipe",), required=True)])
 
-        self.recipes.register("gw_app", os.path.abspath(os.path.join(os.path.dirname(__file__), "../recipes/gw_app")),
-                              description="Groundwork basic application")
+        self.recipes.register("gw_package",
+                              os.path.abspath(os.path.join(os.path.dirname(__file__), "../recipes/gw_package")),
+                              description="Groundwork basic package. Includes places for "
+                                          "apps, plugins, patterns and recipes.")
 
     def _recipe_list(self):
         print("Recipes:")
@@ -36,8 +38,8 @@ class GwRecipesBuilder(GwCommandsPattern, GwRecipesPattern):
         recipe_obj = self.app.recipes.get(recipe)
         if recipe_obj is None:
             print("Recipe %s not found." % recipe)
-        recipe_obj.build()
-        #  print("Error during recipe build. Error: %s" % e)
+        else:
+            recipe_obj.build()
 
 
 
