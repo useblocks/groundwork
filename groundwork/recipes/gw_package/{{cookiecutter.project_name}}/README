@@ -1,0 +1,6 @@
+Installation
+============
+
+Inside XY run::
+
+    python setup.py develop

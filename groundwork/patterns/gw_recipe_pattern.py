@@ -46,8 +46,8 @@ class RecipesListPlugin:
         for recipe in recipes.keys():
             self.unregister(recipe)
 
-    def register(self, name, path, description):
-        return self.__app.recipes.register(name, path, self._plugin, description)
+    def register(self, name, path, description, final_words=None):
+        return self.__app.recipes.register(name, path, self._plugin, description, final_words)
 
     def unregister(self, recipe):
         return self.__app.recipes.unregister(recipe)
@@ -75,7 +75,7 @@ class RecipesListApplication:
         self.__log = logging.getLogger(__name__)
         self.__log.info("Application recipes initialised")
 
-    def register(self, name, path, plugin, description=None):
+    def register(self, name, path, plugin, description=None, final_words=None):
         """
         Registers a new recipe.
         """
@@ -83,7 +83,7 @@ class RecipesListApplication:
             raise RecipeExistsException("Recipe %s was already registered by %s" %
                                         (name, self.recipes["name"].plugin.name))
 
-        self.recipes[name] = Recipe(name, path, plugin, description)
+        self.recipes[name] = Recipe(name, path, plugin, description, final_words)
         self.__log.debug("Recipe %s registered by %s" % (name, plugin.name))
         return self.recipes[name]
 
@@ -155,8 +155,9 @@ class Recipe:
     :param path: Absolute path to the recipe folder
     :param plugin: Plugin which registers the recipe
     :param description: Meaningful description of the recipe
+    :param final_words: String, which gets printed after a recipe was successfully build.
     """
-    def __init__(self, name, path, plugin, description=""):
+    def __init__(self, name, path, plugin, description="", final_words=""):
         self.name = name
         if os.path.isabs(path):
             self.path = path
@@ -164,6 +165,7 @@ class Recipe:
             raise FileNotFoundError("Path of recipe must be absolute. Got %s" % path)
         self.plugin = plugin
         self.description = description
+        self.final_words = final_words
 
     def build(self, output_dir=os.getcwd()):
         """
@@ -173,7 +175,11 @@ class Recipe:
         :param output_dir: Path, where the recipe shall be build. Default is the current working directory
         :return: location of the installed recipe
         """
-        return cookiecutter(self.path, output_dir=output_dir)
+        target = cookiecutter(self.path, output_dir=output_dir)
+        if self.final_words is not None and len(self.final_words) > 0:
+            print("")
+            print(self.final_words)
+        return target
 
 
 class RecipeExistsException(BaseException):

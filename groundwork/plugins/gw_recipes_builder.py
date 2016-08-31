@@ -27,7 +27,15 @@ class GwRecipesBuilder(GwCommandsPattern, GwRecipesPattern):
         self.recipes.register("gw_package",
                               os.path.abspath(os.path.join(os.path.dirname(__file__), "../recipes/gw_package")),
                               description="Groundwork basic package. Includes places for "
-                                          "apps, plugins, patterns and recipes.")
+                                          "apps, plugins, patterns and recipes.",
+                              final_words="Recipe Installation is done.\n\n"
+                                          "For installation run: 'python setup.py develop' \n"
+                                          "For documentation run: 'make html' inside doc folder "
+                                          "(after installation!)\n\n"
+                                          "For more information, please take a look into the README file "
+                                          "to know how to go on.\n"
+                                          "For help visit: https://groundwork.readthedocs.io\n\n"
+                                          "Have fun with your groundwork package.")
 
     def _recipe_list(self):
         print("Recipes:")
