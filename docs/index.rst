@@ -11,9 +11,9 @@
    :alt: Travis-CI Build Status
 .. image:: https://coveralls.io/repos/github/useblocks/groundwork/badge.svg?branch=master
    :target: https://coveralls.io/github/useblocks/groundwork?branch=master
-.. image:: https://img.shields.io/pypi/dm/groundwork.svg?style=flat
-   :target: https://pypi.python.org/pypi/groundwork
-   :alt: PyPI Package monthly downloads
+.. image:: https://scrutinizer-ci.com/g/useblocks/groundwork/badges/quality-score.png?b=master
+   :target: https://scrutinizer-ci.com/g/useblocks/groundwork/
+   :alt: Code quality
 .. image:: https://img.shields.io/pypi/v/groundwork.svg
    :target: https://pypi.python.org/pypi/groundwork
    :alt: PyPI Package latest release
