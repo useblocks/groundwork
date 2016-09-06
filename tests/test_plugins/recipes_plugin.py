@@ -11,3 +11,6 @@ class RecipePlugin(GwRecipesPattern):
         self.recipes.register("test_recipe",
                               os.path.join(os.path.dirname(__file__), "../recipes/gw_test_app"),
                               "test recipe")
+
+    def deactivate(self):
+        pass

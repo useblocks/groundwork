@@ -41,7 +41,7 @@ class RecipesListPlugin:
                                      sender=self._plugin)
         self.__log.debug("Plugin recipes initialised")
 
-    def __deactivate_documents(self, plugin, *args, **kwargs):
+    def __deactivate_recipes(self, plugin, *args, **kwargs):
         recipes = self.get()
         for recipe in recipes.keys():
             self.unregister(recipe)
@@ -54,18 +54,6 @@ class RecipesListPlugin:
 
     def get(self, name=None):
         return self.__app.recipes.get(name, self._plugin)
-
-    def __getattr__(self, item):
-        """
-        Catches unknown function/attribute calls and delegates them to RecipesListApplication
-        """
-        def method(*args, **kwargs):
-            func = getattr(self.__app.recipes, item, None)
-            if func is None:
-                raise AttributeError("RecipesistApplication does not have an attribute called %s" % item)
-            return func(*args, plugin=self._plugin, **kwargs)
-
-        return method
 
 
 class RecipesListApplication:
@@ -167,7 +155,7 @@ class Recipe:
         self.description = description
         self.final_words = final_words
 
-    def build(self, output_dir=os.getcwd(), **kwargs):
+    def build(self, output_dir=None, **kwargs):
         """
         Buildes the recipe and creates needed folder and files.
         May ask the user for some parameter inputs.
@@ -175,6 +163,8 @@ class Recipe:
         :param output_dir: Path, where the recipe shall be build. Default is the current working directory
         :return: location of the installed recipe
         """
+        if output_dir is None:
+            output_dir = os.getcwd()
 
         target = cookiecutter(self.path, output_dir=output_dir, **kwargs)
 

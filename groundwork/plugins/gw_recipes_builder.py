@@ -37,6 +37,9 @@ class GwRecipesBuilder(GwCommandsPattern, GwRecipesPattern):
                                           "For help visit: https://groundwork.readthedocs.io\n\n"
                                           "Have fun with your groundwork package.")
 
+    def deactivate(self):
+        pass
+
     def _recipe_list(self):
         print("Recipes:")
         for key, recipe in self.app.recipes.get().items():

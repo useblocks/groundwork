@@ -80,19 +80,6 @@ class DocumentsListPlugin:
     def get(self, name=None):
         return self.__app.documents.get(name, self._plugin)
 
-    def __getattr__(self, item):
-        """
-        Catches unknown function/attribute calls and delegates them to DocumentsListApplication
-        """
-
-        def method(*args, **kwargs):
-            func = getattr(self.__app.documents, item, None)
-            if func is None:
-                raise AttributeError("DocumentsListApplication does not have an attribute called %s" % item)
-            return func(*args, plugin=self._plugin, **kwargs)
-
-        return method
-
 
 class DocumentsListApplication:
     """

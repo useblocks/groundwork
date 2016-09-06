@@ -108,19 +108,6 @@ class CommandsListPlugin:
         """
         return self.app.commands.get(name, self.plugin)
 
-    def __getattr__(self, item):
-        """
-        Catches unknown function/attribute calls and delegates them to CommandsListApplication
-        """
-
-        def method(*args, **kwargs):
-            func = getattr(self.app.commands, item, None)
-            if func is None:
-                raise AttributeError("CommandsList does not have an attribute called %s" % item)
-            return func(*args, plugin=self.plugin, **kwargs)
-
-        return method
-
 
 class CommandsListApplication():
     def __init__(self, app):

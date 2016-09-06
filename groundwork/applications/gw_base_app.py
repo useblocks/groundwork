@@ -28,22 +28,31 @@ Registered documents: {{app.documents.get()|count}}
 """
 
 
-def start_app():
+def start_app():  # pragma: no cover
+    app = register_app()
+    app = configure_app(app)
+    app.commands.start_cli()
+
+
+def register_app():
     app = App([os.path.join(os.path.dirname(__file__), "gw_base_app.conf")])
 
     # The following used plugins are all part of groundwork and
     # therefore already registered via entry_point
     app.plugins.activate(["GwPluginsInfo", "GwSignalsInfo", "GwCommandsInfo", "GwDocumentsInfo",
                           "GwRecipesBuilder"])
+    return app
 
+
+def configure_app(app):
     # Let's register a main document, which is the entrance for the documentation and links
     # to all other documents.
     app.documents.register(name="main",
                                 content=main_content,
                                 description="Main document of application",
                                 plugin=app)
+    return app
 
-    app.commands.start_cli()
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     start_app()

@@ -3,6 +3,8 @@ import pytest
 
 import groundwork
 from groundwork.exceptions import PluginRegistrationException
+from groundwork.patterns import GwBasePattern
+from groundwork.patterns.gw_base_pattern import PluginAttributeMissing, PluginActivateMissing, PluginDeactivateMissing
 
 
 def test_app_initialisation():
@@ -119,3 +121,47 @@ def test_multi_app(BasicPlugin):
     plugin2 = app2.plugins.get("BasicPlugin")
 
     assert plugin is not plugin2
+
+
+def test_plugin_missing_name(basicApp):
+
+    class MyPlugin(GwBasePattern):
+        def __init__(self, app, **kwargs):
+            super().__init__(app, **kwargs)
+
+    with pytest.raises(PluginAttributeMissing):
+        MyPlugin(basicApp)
+
+
+def test_plugin_missing_activate(basicApp):
+
+    class MyPlugin(GwBasePattern):
+        def __init__(self, app, **kwargs):
+            self.name = "my_plugin"
+            super().__init__(app, **kwargs)
+
+    my_plugin = MyPlugin(basicApp)
+    with pytest.raises(PluginActivateMissing):
+        my_plugin.activate()
+
+
+def test_plugin_missing_deactivate(basicApp):
+
+    class MyPlugin(GwBasePattern):
+        def __init__(self, app, **kwargs):
+            self.name = "my_plugin"
+            super().__init__(app, **kwargs)
+
+        def activate(self):
+            pass
+
+    my_plugin = MyPlugin(basicApp)
+    my_plugin.activate()
+    with pytest.raises(PluginDeactivateMissing):
+        my_plugin.deactivate()
+
+
+def test_plugin_unknow_attribute(basicApp):
+    plugin = basicApp.plugins.get("CommandPlugin")
+    with pytest.raises(AttributeError):
+        plugin.nowhere()

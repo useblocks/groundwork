@@ -10,5 +10,8 @@ class CommandPlugin(GwCommandsPattern):
     def activate(self):
         self.commands.register("test", "my test command", self._test_command, params=[Option(("--arg", "-a"))])
 
+    def deactivate(self):
+        pass
+
     def _test_command(self, arg):
         print(arg)

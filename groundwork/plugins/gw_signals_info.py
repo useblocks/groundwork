@@ -67,6 +67,9 @@ class GwSignalsInfo(GwCommandsPattern, GwDocumentsPattern):
                                 content=receiver_content,
                                 description="Gives an overview about all registered receivers")
 
+    def deactivate(self):
+        pass
+
     def list_signals(self):
         """
         Prints a list of all registered signals. Including description and plugin name.

@@ -110,19 +110,6 @@ class SharedObjectsListPlugin:
         """
         return self.app.shared_objects.access(name)
 
-    def __getattr__(self, item):
-        """
-        Catches unknown function/attribute calls and delegates them to SharedObjectsListApplication
-        """
-
-        def method(*args, **kwargs):
-            func = getattr(self.app.shared_objects, item, None)
-            if func is None:
-                raise AttributeError("SharedObjectsList does not have an attribute called %s" % item)
-            return func(*args, plugin=self.plugin, **kwargs)
-
-        return method
-
 
 class SharedObjectsListApplication:
     """

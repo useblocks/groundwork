@@ -75,6 +75,9 @@ class GwDocumentsInfo(GwCommandsPattern, GwDocumentsPattern):
                                 content=documents_content,
                                 description="Gives an overview about all registered documents")
 
+    def deactivate(self):
+        pass
+
     def _list_documents(self):
         print("Documents:")
         for key, document in self.app.documents.get().items():

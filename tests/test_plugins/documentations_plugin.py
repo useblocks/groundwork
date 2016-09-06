@@ -8,3 +8,6 @@ class DocumentPlugin(GwDocumentsPattern):
 
     def activate(self):
         self.documents.register("test_document", "test_content")
+
+    def deactivate(self):
+        pass

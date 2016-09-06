@@ -10,3 +10,6 @@ class SharedObjectPlugin(GwSharedObjectsPattern):
         test_object = {"test": "this"}
 
         self.shared_objects.register("test_object", "test_object description", test_object)
+
+    def deactivate(self):
+        pass

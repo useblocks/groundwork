@@ -7,7 +7,7 @@
 
 """
 import logging
-from .exceptions import PluginAttributeMissing
+from .exceptions import PluginAttributeMissing, PluginActivateMissing, PluginDeactivateMissing
 
 
 class GwBasePattern(object):
@@ -36,6 +36,14 @@ class GwBasePattern(object):
         #: groundwork application instance. Access it inside a plugin via ``self.app``.
         self.app = app
 
+        # There must be a name for this plugin. Otherwise it is not detectable and manageable on application level
+        if not hasattr(self, "name"):
+            raise PluginAttributeMissing("Name not set for plugin")
+
+        # Let's be sure active is false, even if a child class set something different
+        if not hasattr(self, "active"):
+            self.active = False
+
         #: A logger, especially created for this plugin. Usage inside a plugin: ``self.log.warn("WARNING!!")``.
         #:
         #: The logger name is the same as the plugin name. Therefor it is possible to configure the application logging
@@ -49,14 +57,6 @@ class GwBasePattern(object):
         #: signals of this plugin only. To get all signals of an application, please use ``self.app.signals.get()``.
         self.signals = SignalsPlugin(self)
 
-        # There must be a name for this plugin. Otherwise it is not detectable and manageable on application level
-        if not hasattr(self, "name"):
-            raise PluginAttributeMissing("name attribute not set in Plugin class. Plugin initialisation stops here.")
-
-        # Let's be sure active is false, even if a child class set something different
-        if not hasattr(self, "active"):
-            self.active = False
-
         # This is used as flag for the pluginManager to be sure, that an initiated class has called the __init__()
         # routine of GwPluginPatter
         self._plugin_base_initialised = True
@@ -66,6 +66,7 @@ class GwBasePattern(object):
         # for doing this job.
         self.app.plugins._register_load(self)
 
+    # def __getattribute__(self, name):
     def __getattribute__(self, name):
         """
         Catches all calls on class attributes, but care only for activate() and deactivate().
@@ -74,6 +75,7 @@ class GwBasePattern(object):
         So there is no need for a plugin developer to call something like super().activate() for
         his/her plugin. This gets done automatically.
         """
+
         attr = object.__getattribute__(self, name)
         if hasattr(attr, '__call__'):
             if attr.__name__ == "activate":
@@ -100,12 +102,14 @@ class GwBasePattern(object):
         Must be overwritten by the plugin class itself.
         """
         self.log.warn("No activation routine in Plugin defined. Define self.activate() in plugin %s" % self.name)
+        raise PluginActivateMissing("plugin must provide an activation routine by itself.")
 
     def deactivate(self):
         """
         Must be overwritten by the plugin class itself.
         """
         self.log.warn("No activation routine in Plugin defined. Define self.deactivate() in plugin %s" % self.name)
+        raise PluginDeactivateMissing("plugin must provide an deactivation routine by itself.")
 
     def _pre_activate_injection(self):
         """
@@ -232,16 +236,3 @@ class SignalsPlugin:
         Returns a single receiver or a dictionary of receivers for this plugin.
         """
         return self.__app.signals.get_receiver(receiver, self._plugin)
-
-    def __getattr__(self, item):
-        """
-        Catches unknown function/attribute calls and delegates them to SignalsListApplication
-        """
-
-        def method(*args, **kwargs):
-            func = getattr(self.__app.signals, item, None)
-            if func is None:
-                raise AttributeError("SignalsListApplication does not have an attribute called %s" % item)
-            return func(*args, plugin=self._plugin, **kwargs)
-
-        return method

@@ -72,6 +72,9 @@ class GwPluginsInfo(GwCommandsPattern, GwDocumentsPattern):
                                 description="Gives an overview about all available plugin classes"
                                             "")
 
+    def deactivate(self):
+        pass
+
     def _list_plugins(self):
         for key, plugin in self.app.plugins.classes.get().items():
             print("*" * (len(plugin["name"]) + 4))
