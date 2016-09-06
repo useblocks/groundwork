@@ -45,8 +45,12 @@ Thus, groundwork supports developers with time-saving solutions for:
     * Shared objects to provide and request content to and from other plugins
     * Static and dynamic documents for an overall documentation
 
-Example
-~~~~~~~
+Examples
+~~~~~~~~
+
+Initial app
+```````````
+
 The following code defines a plugin with command line support and creates a groundwork application which activates
 the plugin::
 
@@ -76,4 +80,15 @@ The following commands can be used on a command line now::
     python my_app.py hello      # Prints 'Hello world'
     python my_app.py            # Prints a list of available commands
     python my_app.yp hello -h   # Prints syntax help for the hello command 
+
+
+Weather Web App
+```````````````
+The following image shows the architecture of a imaginary weather service for the web. A detailed description can be
+found on `groundwork's architecture page <http://groundwork.readthedocs.io/en/latest/architecture.html>`_.
+
+.. image:: docs/_static/groundwork_architecture.png
+
+
+
 
