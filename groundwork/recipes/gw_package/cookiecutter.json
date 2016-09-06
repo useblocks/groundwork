@@ -8,6 +8,8 @@
   "project_app": "{{cookiecutter.project_slug}}_app",
   "project_plugin": "{{cookiecutter.project_slug}}_plugin",
   "project_short_description": "Package for hosting groundwork apps and plugins like {{cookiecutter.project_app}} or {{cookiecutter.project_plugin}}.",
+  "test_folder": "tests",
+  "test_prefix": "test_",
   "version": "0.1.0",
   "license": ["MIT license", "BSD license", "ISC license", "Apache Software License 2.0", "GNU General Public License v3", "Not open source"]
 }

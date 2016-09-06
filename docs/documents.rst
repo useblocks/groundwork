@@ -162,7 +162,7 @@ Sphinx support
 `Sphinx <http://www.sphinx-doc.org/>`_ is a documentation builder, which takes static, rst based files and generates
 websites, PDFs and more out of it. For instance, this documentation is using sphinx.
 
-As sphinx supports physical files on a hard disk only, it can not integrate groundwork documents directly.
+As sphinx supports physical files on a hard disk only, it can not integrate with groundwork documents directly.
 
 Luckily the groundwork plugin :class:`~groundwork.plugins.gw_documents_info.GwDocumentsInfo` provides the
 command ``doc_write`` to store the content of all registered documents of an application in a directory.

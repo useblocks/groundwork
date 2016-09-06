@@ -87,6 +87,7 @@ User's Guide
    foreword
    installation
    quickstart
+   architecture
    application
    plugins
    patterns

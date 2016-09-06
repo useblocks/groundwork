@@ -11,6 +11,3 @@ class {{cookiecutter.project_plugin}}(GwCommandsPattern):
 
     def _hello(self):
         print("Hello World. It's me, {{cookiecutter.project_plugin}}!")
-
-
-

@@ -11,7 +11,7 @@ https://github.com/audreyr/cookiecutter/blob/master/cookiecutter/main.py
 import os
 from click import Argument
 
-from groundwork.patterns import GwDocumentsPattern, GwCommandsPattern, GwRecipesPattern
+from groundwork.patterns import GwCommandsPattern, GwRecipesPattern
 
 
 class GwRecipesBuilder(GwCommandsPattern, GwRecipesPattern):
@@ -48,9 +48,3 @@ class GwRecipesBuilder(GwCommandsPattern, GwRecipesPattern):
             print("Recipe %s not found." % recipe)
         else:
             recipe_obj.build()
-
-
-
-
-
-

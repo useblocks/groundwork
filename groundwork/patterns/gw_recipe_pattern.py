@@ -175,7 +175,9 @@ class Recipe:
         :param output_dir: Path, where the recipe shall be build. Default is the current working directory
         :return: location of the installed recipe
         """
+
         target = cookiecutter(self.path, output_dir=output_dir)
+
         if self.final_words is not None and len(self.final_words) > 0:
             print("")
             print(self.final_words)

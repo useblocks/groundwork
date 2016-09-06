@@ -38,7 +38,10 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     entry_points={
-        'console_scripts': ["{{cookiecutter.project_slug}} = {{cookiecutter.project_slug}}.applications.{{cookiecutter.project_app}}:start_app"],
-        'groundwork.plugin': ["{{cookiecutter.project_slug}}_plugin = {{cookiecutter.project_slug}}.plugins.{{cookiecutter.project_plugin}}:{{cookiecutter.project_plugin}}"],
+        'console_scripts': ["{{cookiecutter.project_slug}} = "
+                            "{{cookiecutter.project_slug}}.applications.{{cookiecutter.project_app}}:start_app"],
+        'groundwork.plugin': ["{{cookiecutter.project_slug}}_plugin = "
+                              "{{cookiecutter.project_slug}}.plugins.{{cookiecutter.project_plugin}}:"
+                              "{{cookiecutter.project_plugin}}"],
     }
 )
