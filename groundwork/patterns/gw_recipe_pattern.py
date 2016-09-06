@@ -96,7 +96,7 @@ class RecipesListApplication:
         :param recipe: Name of the recipe
         """
         if recipe not in self.recipes.keys():
-            self.log.warning("Can not unregister recipe %s" % recipe)
+            self.__log.warning("Can not unregister recipe %s" % recipe)
         else:
             del (self.recipes[recipe])
             self.__log.debug("Recipe %s got unregistered" % recipe)
@@ -167,7 +167,7 @@ class Recipe:
         self.description = description
         self.final_words = final_words
 
-    def build(self, output_dir=os.getcwd()):
+    def build(self, output_dir=os.getcwd(), **kwargs):
         """
         Buildes the recipe and creates needed folder and files.
         May ask the user for some parameter inputs.
@@ -176,7 +176,7 @@ class Recipe:
         :return: location of the installed recipe
         """
 
-        target = cookiecutter(self.path, output_dir=output_dir)
+        target = cookiecutter(self.path, output_dir=output_dir, **kwargs)
 
         if self.final_words is not None and len(self.final_words) > 0:
             print("")

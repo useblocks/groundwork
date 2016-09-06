@@ -33,10 +33,10 @@ def basicApp():
     :return: app
     """
     from groundwork import App
-    from tests.test_plugins import BasicPlugin, CommandPlugin, DocumentPlugin, SharedObjectPlugin
+    from tests.test_plugins import BasicPlugin, CommandPlugin, DocumentPlugin, SharedObjectPlugin, RecipePlugin
 
-    app = App(plugins=[BasicPlugin, CommandPlugin, DocumentPlugin, SharedObjectPlugin], strict=True)
-    app.plugins.activate(["BasicPlugin", "CommandPlugin", "DocumentPlugin", "SharedObjectPlugin"])
+    app = App(plugins=[BasicPlugin, CommandPlugin, DocumentPlugin, SharedObjectPlugin, RecipePlugin], strict=True)
+    app.plugins.activate(["BasicPlugin", "CommandPlugin", "DocumentPlugin", "SharedObjectPlugin", "RecipePlugin"])
     return app
 
 

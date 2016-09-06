@@ -84,7 +84,7 @@ The following commands can be used on a command line now::
 
 Weather Web App
 ```````````````
-The following image shows the architecture of a imaginary weather service for the web. A detailed description can be
+The following image shows the architecture of an imaginary weather service for the web. A detailed description can be
 found on `groundwork's architecture page <http://groundwork.readthedocs.io/en/latest/architecture.html>`_.
 
 .. image:: docs/_static/groundwork_architecture.png
