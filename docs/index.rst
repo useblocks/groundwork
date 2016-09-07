@@ -95,6 +95,7 @@ User's Guide
    commands
    shared_objects
    documents
+   recipes
    packaging
    contribute
 
