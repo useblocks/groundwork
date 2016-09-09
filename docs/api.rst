@@ -61,7 +61,7 @@ Plugin Patterns
 ---------------
 
 GwBasePattern
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
 .. automodule::  groundwork.patterns.gw_base_pattern
 
 .. currentmodule:: groundwork.patterns.gw_base_pattern
@@ -132,11 +132,35 @@ GwDocumentsPattern
    :members:
    :undoc-members:
 
+GwRecipePattern
+~~~~~~~~~~~~~~~
+.. automodule::  groundwork.patterns.gw_recipes_pattern
+
+.. currentmodule:: groundwork.patterns.gw_recipes_pattern
+
+.. autoclass:: GwRecipesPattern
+   :members:
+   :inherited-members:
+   :undoc-members:
+
+.. autoclass:: RecipesListPlugin
+   :members:
+   :undoc-members:
+
+.. autoclass:: RecipesListApplication
+   :members:
+   :undoc-members:
+
+.. autoclass:: Recipe
+   :members:
+   :undoc-members:
+
+
 Plugins
 -------
 
 GwDocumentsInfo
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 
 .. autoclass:: groundwork.plugins.gw_documents_info.GwDocumentsInfo
    :show-inheritance:
@@ -158,4 +182,10 @@ GwCommandslInfo
 ~~~~~~~~~~~~~~~
 
 .. autoclass:: groundwork.plugins.gw_commands_info.GwCommandsInfo
+   :show-inheritance:
+
+GwRecipesBuilder
+~~~~~~~~~~~~~~~~
+
+.. autoclass:: groundwork.plugins.gw_recipes_builder.GwRecipesBuilder
    :show-inheritance:

@@ -1,13 +1,4 @@
 # -*- coding: utf-8 -*-
-
-"""
-groundwork recipe manager
--------------------------
-Main entry point for the `groundwork recipe` command.
-
-This code is hardly based on Cookiecutter's main.py file:
-https://github.com/audreyr/cookiecutter/blob/master/cookiecutter/main.py
-"""
 import os
 from click import Argument
 
@@ -15,6 +6,28 @@ from groundwork.patterns import GwCommandsPattern, GwRecipesPattern
 
 
 class GwRecipesBuilder(GwCommandsPattern, GwRecipesPattern):
+    """
+    Provides commands for listing and building recipes via command line interface.
+
+    Provided commands:
+
+     * recipe_list
+     * recipe_build
+
+    Provides also the recipe **gw_package**, which can be used to setup a groundwork related python package.
+    Content of the package:
+
+     * setup.py: Preconfigured and ready to use.
+     * groundwork package structure: Directories for applications, patterns, plugins and recipes.
+     * Simple, runnable example of a groundwork application and plugins.
+     * usable test, supported by py.test and tox.
+     * expandable documentation, supported by sphinx and the groundwork sphinx template.
+     * .gitignore
+
+
+    This code is hardly based on Cookiecutter's main.py file:
+    https://github.com/audreyr/cookiecutter/blob/master/cookiecutter/main.py
+    """
     def __init__(self, *args, **kwargs):
         self.name = self.__class__.__name__
         super().__init__(*args, **kwargs)

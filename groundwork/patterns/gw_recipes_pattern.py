@@ -1,6 +1,11 @@
 """
 Groundwork recipe pattern.
 
+Provides function to register, get and build recipes.
+
+Recipes are used create directories and files based on a given template and some user input.
+It is mostly used to speed up the set up of new python packages, groundwork applications or projects.
+
 Based on cookiecutter: https://github.com/audreyr/cookiecutter/
 """
 import os
@@ -26,6 +31,12 @@ class GwRecipesPattern(GwBasePattern):
 
 
 class RecipesListPlugin:
+    """
+    Cares about the recipe management on plugin level.
+    Allows to register, get and build recipes in the context of the current plugin.
+
+    :param plugin: plugin, which shall be used as contxt.
+    """
     def __init__(self, plugin):
         self._plugin = plugin
         self.__app = plugin.app
@@ -42,21 +53,57 @@ class RecipesListPlugin:
         self.__log.debug("Plugin recipes initialised")
 
     def __deactivate_recipes(self, plugin, *args, **kwargs):
+        """
+        Deactivates/unregisters all recipes of the current plugin, if this plugin gets deactivated.
+        """
         recipes = self.get()
         for recipe in recipes.keys():
             self.unregister(recipe)
 
     def register(self, name, path, description, final_words=None):
+        """
+        Registers a new recipe in the context of the current plugin.
+
+        :param name: Name of the recipe
+        :param path: Absolute path of the recipe folder
+        :param description: A meaningful description of the recipe
+        :param final_words: A string, which gets printed after the recipe was build.
+        """
         return self.__app.recipes.register(name, path, self._plugin, description, final_words)
 
     def unregister(self, recipe):
+        """
+        Unregister a recipe of the current plugin.
+
+        :param recipe: Name of the recipe.
+        """
         return self.__app.recipes.unregister(recipe)
 
     def get(self, name=None):
+        """
+        Gets a list of all recipes, which are registered by the current plugin.
+        If a name is provided, only the requested recipe is returned or None.
+
+        :param: name: Name of the recipe
+        """
         return self.__app.recipes.get(name, self._plugin)
+
+    def build(self, recipe):
+        """
+        Builds a recipe
+
+        :param recipe: Name of the recipe to build.
+        """
+        return self.__app.recipes.build(recipe, self._plugin)
 
 
 class RecipesListApplication:
+    """
+    Cares about the recipe management on application level.
+    Allows to register, get and build recipes.
+
+    :param app: groundwork application instance
+    """
     def __init__(self, app):
         self.__app = app
         self.recipes = {}
@@ -122,16 +169,24 @@ class RecipesListApplication:
                 else:
                     return None
 
-    def build(self, recipe):
+    def build(self, recipe, plugin=None):
         """
         Execute a recipe and creates new folder and files.
 
         :param recipe: Name of the recipe
+        :param plugin: Name of the plugin, to which the recipe must belong.
         """
         if recipe not in self.recipes.keys():
             raise RecipeMissingException("Recipe %s unknown." % recipe)
 
         recipe_obj = self.recipes[recipe]
+
+        if plugin is not None:
+            if recipe_obj.plugin != plugin:
+                raise RecipeWrongPluginException("The requested recipe does not belong to the given plugin. Use"
+                                                 "the app object, to retrieve the requested recipe: "
+                                                 "my_app.recipes.get(%s)" % recipe)
+
         recipe_obj.build()
 
 
@@ -179,4 +234,8 @@ class RecipeExistsException(BaseException):
 
 
 class RecipeMissingException(BaseException):
+    pass
+
+
+class RecipeWrongPluginException(BaseException):
     pass
