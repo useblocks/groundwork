@@ -55,9 +55,9 @@ which activates the :ref:`plugin <plugins>`: ::
     from groundwork.patterns import GwCommandsPattern
 
     class MyPlugin(GwCommandsPattern):
-        def _init_(self, *args, **kwargs):
+        def _init_(self, app, *args, **kwargs):
             self.name = "My Plugin"
-            super().__init__(*args, **kwargs)
+            super().__init__(app, *args, **kwargs)
 
         def activate(self):
             self.commands.register(command='hello',
