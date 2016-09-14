@@ -150,7 +150,7 @@ if html_theme == 'gw':
             print("Please install 'gitpython' to use the latest version of the groundwork"
                   "sphinx theme or save it by your own under '_themes' by executing "
                   "'git clone https://github.com/useblocks/gw-sphinx-themes")
-            sys.exti(1)
+            sys.exit(1)
         else:
             print("gitpython is not installed, but _themes is no empty. So maybe there is"
                   "a working copy of the groundwork sphinx themes. Lets go one.")

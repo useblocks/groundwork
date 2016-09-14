@@ -116,7 +116,6 @@ class CommandsListApplication():
         self._commands = {}
         self.log.info("Application commands initialised")
         self._click_root_command = click.Group()
-        # self.start_cli = self._click_root_command
 
     def start_cli(self, *args, **kwargs):
         """

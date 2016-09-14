@@ -23,7 +23,7 @@ setup(
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
     include_package_data=True,
     platforms='any',
-    setup_requires=['pytest-runner', 'sphinx'],
+    setup_requires=['pytest-runner', 'sphinx', 'gitpython'],
     tests_require=['pytest', 'pytest-flake8'],
     install_requires=[],
     classifiers=[
