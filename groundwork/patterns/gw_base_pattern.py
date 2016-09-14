@@ -78,24 +78,23 @@ class GwBasePattern(object):
 
         attr = object.__getattribute__(self, name)
         if hasattr(attr, '__call__'):
-            if attr.__name__ == "activate":
-                def newfunc(*args, **kwargs):
-                    self._pre_activate_injection()
-                    result = attr(*args, **kwargs)
-                    self._post_activate_injection()
-                    return result
-                return newfunc
-            elif attr.__name__ == "deactivate":
-                def newfunc(*args, **kwargs):
-                    self._pre_deactivate_injection()
-                    result = attr(*args, **kwargs)
-                    self._post_deactivate_injection()
-                    return result
-                return newfunc
-            else:
-                return attr
-        else:
-            return attr
+            if hasattr(attr, "__name__"):
+                if attr.__name__ == "activate":
+                    def newfunc(*args, **kwargs):
+                        self._pre_activate_injection()
+                        result = attr(*args, **kwargs)
+                        self._post_activate_injection()
+                        return result
+                    return newfunc
+                elif attr.__name__ == "deactivate":
+                    def newfunc(*args, **kwargs):
+                        self._pre_deactivate_injection()
+                        result = attr(*args, **kwargs)
+                        self._post_deactivate_injection()
+                        return result
+                    return newfunc
+
+        return attr
 
     def activate(self):
         """
