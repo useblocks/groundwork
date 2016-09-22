@@ -77,23 +77,23 @@ class GwPluginsInfo(GwCommandsPattern, GwDocumentsPattern):
 
     def _list_plugins(self):
         for key, plugin in self.app.plugins.classes.get().items():
-            print("*" * (len(plugin["name"]) + 4))
-            print("* %s *" % plugin["name"])
-            print("*" * (len(plugin["name"]) + 4))
+            print("*" * (len(plugin.name) + 4))
+            print("* %s *" % plugin.name)
+            print("*" * (len(plugin.name) + 4))
             print("")
-            print("  Package: %s (%s)" % (plugin["distribution"]["key"], plugin["distribution"]["version"]))
-            print("  Path: %s" % plugin["path"])
+            print("  Package: %s (%s)" % (plugin.distribution["key"], plugin.distribution["version"]))
+            print("  Path: %s" % plugin.distribution["path"])
 
-            if plugin["class"] is not None:
+            if plugin.clazz is not None:
                 print("\n  Description:")
-                print(plugin["class"].__doc__)
+                print(plugin.clazz.__doc__)
 
                 print("\n  MRO:")
-                for mro in plugin["class"].__mro__:
+                for mro in plugin.clazz.__mro__:
                     print("  ", mro.__name__)
 
             # if "instance" in plugin.keys() and plugin["instance"] is not None:
-            plugin_instance = self.app.plugins.get(plugin["name"])
+            plugin_instance = self.app.plugins.get(plugin.name)
             if plugin_instance is not None:
                 print("\n  Functions:")
                 for instance_cls in inspect.getmro(plugin_instance.__class__):

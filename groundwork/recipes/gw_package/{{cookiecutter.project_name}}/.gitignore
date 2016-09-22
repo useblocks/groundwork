@@ -58,3 +58,12 @@ docs/_themes
 
 # PyBuilder
 target/
+
+# Buildout folder
+# These folders are created during buildout configuration process.
+src/
+bin/
+
+
+# IDEA IDEs
+.idea/

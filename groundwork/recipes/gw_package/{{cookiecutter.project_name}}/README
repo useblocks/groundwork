@@ -1,6 +1,6 @@
 Installation
 ============
 
-Inside XY run::
+Inside {{cookiecutter.project_slug}} run::
 
     python setup.py develop
