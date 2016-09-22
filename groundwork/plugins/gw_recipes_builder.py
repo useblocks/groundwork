@@ -42,7 +42,11 @@ class GwRecipesBuilder(GwCommandsPattern, GwRecipesPattern):
                               description="Groundwork basic package. Includes places for "
                                           "apps, plugins, patterns and recipes.",
                               final_words="Recipe Installation is done.\n\n"
-                                          "For installation run: 'python setup.py develop' \n"
+                                          "During development use buildout:\n"
+                                          "Run: python bootstrap.py\n"
+                                          "Then: bin/buildout\n"
+                                          "Start the app: bin/app\n\n"
+                                          "For installation run: 'python setup.py install' \n"
                                           "For documentation run: 'make html' inside doc folder "
                                           "(after installation!)\n\n"
                                           "For more information, please take a look into the README file "
