@@ -32,7 +32,7 @@ class GwCommandsInfo(GwDocumentsPattern, GwCommandsPattern):
     # However, if no plugin does inherit from GwCommandsPattern the needed argument app.commands would not exist.
     # So this is the way to make sure that command-functionality was set up when this plugins gets used.
     def __init__(self, *args, **kwargs):
-        self.name = self.__class__.__name__
+        self.name = kwargs.get("name", self.__class__.__name__)
         super().__init__(*args, **kwargs)
 
     def activate(self):

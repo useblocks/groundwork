@@ -42,7 +42,7 @@ class PluginManager:
         #: Handles the registration of plugin classes, which can be used to create new plugins during runtime.
         self.classes = PluginClassManager(self._app, self._strict)
 
-    def _load(self, plugins=None):
+    def initialise_by_names(self, plugins=None):
         """
         Initialises given plugins, but does not activate them.
 
@@ -72,40 +72,52 @@ class PluginManager:
                 raise AttributeError("plugin name must be a str, not %s" % type(plugin_name))
 
             plugin_class = self.classes.get(plugin_name)
-            if plugin_class is not None and issubclass(plugin_class["class"], GwBasePattern):
-                try:
-                    # Plugin Initialisation
-                    plugin_instance = plugin_class["class"](app=self._app)
-                except Exception as e:
-                    self._log.warning("Plugin %s could not be initialised" % plugin_name)
-                    if self._strict:
-                        raise PluginNotInitialisableException("Plugin %s could not be initialised" % plugin_name) from e
-                    continue
-
-                # Let's be sure, that GwBasePattern got called
-                if not hasattr(plugin_instance, "_plugin_base_initialised") \
-                        or plugin_instance._plugin_base_initialised is not True:
-                    self._log.error("GwBasePattern.__init__() was not called during initialisation. "
-                                    "Please add 'super(*args, **kwargs).__init__()' to the top of all involved "
-                                    "plugin/pattern init routines."
-                                    "Activate logging debug-output to see all involved classes.")
-                    for mro_class in plugin_class.__mro__:
-                        self._log.debug(mro_class)
-                    raise Exception("GwBasePattern.__init()__ was not called during initialisation.")
-                self._register_load(plugin_instance)
-                plugin_initialised.append(plugin_name)
-                self._log.debug("Plugin %s initialised" % plugin_name)
-            else:
-                if plugin_class is None:
-                    self._log.warn("Plugin %s not found" % plugin_name)
-                elif not issubclass(plugin_class, GwBasePattern):
-                    self._log.warn("Can not load %s. Plugin is not based on groundwork.Plugin." % plugin_name)
-                    if self._strict:
-                        raise Exception("Can not load %s. Plugin is not based on groundwork.Plugin." % plugin_name)
+            self.initialise(plugin_class.clazz, plugin_name)
 
         self._log.info("Plugins initialised: %s" % ", ".join(plugin_initialised))
 
-    def _register_load(self, plugin_instance):
+    def initialise(self, clazz, name=None):
+        if clazz is not None and issubclass(clazz, GwBasePattern):
+            if name is None:
+                name = clazz.__name__
+            try:
+                # Plugin Initialisation
+                plugin_instance = clazz(app=self._app, name=name)
+                # Let's be sure the correct name was set. Even if the init_routine of
+                # the plugin does not support the name parameter.
+                if plugin_instance.name != name:
+                    plugin_instance.name = name
+            except Exception as e:
+                self._log.warning("Plugin class %s could not be initialised" % clazz.__name__)
+                if self._strict:
+                    raise PluginNotInitialisableException("Plugin class %s could not be initialised" % clazz.__name__) \
+                        from e
+
+            # Let's be sure, that GwBasePattern got called
+            if not hasattr(plugin_instance, "_plugin_base_initialised") \
+                    or plugin_instance._plugin_base_initialised is not True:
+                self._log.error("GwBasePattern.__init__() was not called during initialisation. "
+                                "Please add 'super(*args, **kwargs).__init__()' to the top of all involved "
+                                "plugin/pattern init routines."
+                                "Activate logging debug-output to see all involved classes.")
+                for mro_class in clazz.__mro__:
+                    self._log.debug(mro_class)
+                raise Exception("GwBasePattern.__init()__ was not called during initialisation.")
+            self._register_initialisation(plugin_instance)
+            self._log.debug("Plugin %s initialised" % name)
+            return plugin_instance
+
+        if clazz is None:
+            self._log.warn("Plugin class %s not found" % clazz.__name__)
+            return None
+
+        if not issubclass(clazz, GwBasePattern):
+            self._log.warn("Can not load %s. Plugin is not based on groundwork.Plugin." % clazz.__name__)
+            if self._strict:
+                raise Exception("Can not load %s. Plugin is not based on groundwork.Plugin." % clazz.__name__)
+        return None
+
+    def _register_initialisation(self, plugin_instance):
         """
         Internal functions to perform registration actions after plugin load was successful.
         """
@@ -138,7 +150,7 @@ class PluginManager:
             if plugin_name not in self._plugins.keys() and plugin_name in self.classes._classes.keys():
                 self._log.debug("Initialisation needed before activation.")
                 try:
-                    self._load([plugin_name])
+                    self.initialise_by_names([plugin_name])
                 except Exception as e:
                     self._log.error("Couldn't initialise plugin %s" % plugin_name)
                     if self._strict:
@@ -256,7 +268,8 @@ class PluginClassManager:
         self._log = logging.getLogger(__name__)
         self._app = app
         self._strict = strict
-        self._classes = self._get_plugins_by_entry_points()
+        self._classes = {}
+        self._get_plugins_by_entry_points()
 
     def _get_plugins_by_entry_points(self):
         """
@@ -285,16 +298,23 @@ class PluginClassManager:
                 continue
             plugin_name = entry_point_object.__name__
 
-            classes[plugin_name] = {
-                "name": plugin_name,
-                "entry_point": entry_point.name,
-                "path": entry_point.dist.location,
-                "class": entry_point_object,
-                "distribution": {
-                    "key": entry_point.dist.key,
-                    "version": entry_point.dist.version
-                },
-            }
+            plugin_class = self.register_class(entry_point_object, plugin_name,
+                                               entrypoint_name=entry_point.name,
+                                               distribution_path=entry_point.dist.location,
+                                               distribution_key=entry_point.dist.key,
+                                               distribution_version=entry_point.dist.version)
+
+            classes[plugin_name] = plugin_class
+            # classes[plugin_name] = {
+            #     "name": plugin_name,
+            #     "entry_point": entry_point.name,
+            #     "path": entry_point.dist.location,
+            #     "class": entry_point_object,
+            #     "distribution": {
+            #         "key": entry_point.dist.key,
+            #         "version": entry_point.dist.version
+            #     },
+            # }
             self._log.debug("Found plugin: %s at entry_point %s of package %s (%s)" % (plugin_name, entry_point.name,
                                                                                        entry_point.dist.key,
                                                                                        entry_point.dist.version))
@@ -317,40 +337,47 @@ class PluginClassManager:
 
         plugin_registered = []
 
-        for plugin in classes:
-            if not inspect.isclass(plugin) or not issubclass(plugin, GwBasePattern):
-                self._log.error("Given plugin is not a subclass of groundworkPlugin.")
-                if not self._strict:
-                    continue
-                else:
-                    raise AttributeError("Given plugin is not a subclass of groundworkPlugin.")
-
-            if isinstance(plugin, GwBasePattern):
-                self._log.error("Given plugin %s is already initialised. Please provide a class not an instance.")
-                if not self._strict:
-                    continue
-                else:
-                    raise Exception("Given plugin %s is already initialised. Please provide a class not an instance.")
-            plugin_name = plugin.__name__
-
-            if plugin_name in self._classes.keys():
-                self._log.warning("Plugin %s already registered" % plugin_name)
-                if not self._strict:
-                    continue
-                else:
-                    raise PluginRegistrationException("Plugin %s already registered" % plugin_name)
-
-            self._classes[plugin_name] = {
-                "name": plugin_name,
-                "entry_point": None,
-                "path": None,
-                "class": plugin,
-                "distribution": None,
-            }
+        for plugin_class in classes:
+            plugin_name = plugin_class.__name__
+            self.register_class(plugin_class, plugin_name)
             self._log.debug("Plugin %s registered" % plugin_name)
             plugin_registered.append(plugin_name)
 
         self._log.info("Plugins registered: %s" % ", ".join(plugin_registered))
+
+    def register_class(self, clazz, name=None, entrypoint_name=None, distribution_path=None,
+                       distribution_key=None, distribution_version=None):
+
+        if name is None:
+            name = clazz.__name__
+
+        if not inspect.isclass(clazz) or not issubclass(clazz, GwBasePattern):
+            self._log.error("Given plugin is not a subclass of groundworkPlugin.")
+            if self._strict:
+                raise AttributeError("Given plugin is not a subclass of groundworkPlugin.")
+
+        if isinstance(clazz, GwBasePattern):
+            self._log.error("Given plugin %s is already initialised. Please provide a class not an instance.")
+            if self._strict:
+                raise Exception("Given plugin %s is already initialised. Please provide a class not an instance.")
+
+        if name in self._classes.keys():
+            self._log.warning("Plugin %s already registered" % name)
+            if self._strict:
+                raise PluginRegistrationException("Plugin %s already registered" % name)
+
+        self._classes[name] = PluginClass(name, clazz, entrypoint_name, distribution_path,
+                                          distribution_key, distribution_version)
+
+        return self._classes[name]
+
+        # self._classes[name] = {
+        #     "name": plugin_name,
+        #     "entry_point": None,
+        #     "path": None,
+        #     "class": plugin,
+        #     "distribution": None,
+        # }
 
     def get(self, name=None):
         """
@@ -377,3 +404,15 @@ class PluginClassManager:
         if name in self._classes.keys():
             return True
         return False
+
+
+class PluginClass:
+    def __init__(self, name, clazz, entrypoint_name, distribution_path, distribution_key, distribution_version):
+        self.name = name
+        self.entrypoint_name = entrypoint_name
+        self.clazz = clazz
+        self.distribution = {
+            "path": distribution_path,
+            "key": distribution_key,
+            "version": distribution_version
+        }

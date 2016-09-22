@@ -46,16 +46,16 @@ def test_app_strict():
     assert len(my_app.plugins.get()) == 0
 
 
-def test_app_initialisation_with_plugins(BasicPlugin):
-    # Tries to import, but doesn't stop on problems
-    app = groundwork.App(plugins=["TestPluginA", "TestPluginB", "NoPlugin"])
-
-    # Tries to import and stops on problems
-    with pytest.raises(AttributeError):
-        app = groundwork.App(plugins=["TestPluginA", "TestPluginB", "NoPlugin"], strict=True)
-
-    app = groundwork.App(plugins=[BasicPlugin])
-    app.plugins.activate(["BasicPlugin"])
+# def test_app_initialisation_with_plugins(BasicPlugin):
+#     # Tries to import, but doesn't stop on problems
+#     # app = groundwork.App(plugins=["TestPluginA", "TestPluginB", "NoPlugin"])
+#
+#     # Tries to import and stops on problems
+#     with pytest.raises(AttributeError):
+#         app = groundwork.App(plugins=["TestPluginA", "TestPluginB", "NoPlugin"], strict=True)
+#
+#     app = groundwork.App(plugins=[BasicPlugin])
+#     app.plugins.activate(["BasicPlugin"])
 
 
 def test_app_plugin_registration(BasicPlugin):

@@ -85,7 +85,7 @@ class SignalsApplication():
         """
         if receiver in self.receivers.keys():
             raise Exception("Receiver %s was already registered by %s" % (receiver,
-                                                                          self.receiver[receiver].plugin.name))
+                                                                          self.receivers[receiver].plugin.name))
         self.receivers[receiver] = Receiver(receiver, signal, function, plugin, self.__namespace, description, sender)
         self.__log.debug("Receiver %s registered for signal %s" % (receiver, signal))
         return self.receivers[receiver]

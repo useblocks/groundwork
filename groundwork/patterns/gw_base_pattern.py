@@ -64,7 +64,7 @@ class GwBasePattern(object):
         # Let's tell the pluginManager that this plugin got initialised, so that it gets tracked on app level.
         # This is needed if this class gets initiated by hand and the function self.app.plugins._load() was not used
         # for doing this job.
-        self.app.plugins._register_load(self)
+        self.app.plugins._register_initialisation(self)
 
     # def __getattribute__(self, name):
     def __getattribute__(self, name):

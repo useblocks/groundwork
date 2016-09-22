@@ -52,7 +52,7 @@ Function: {{receiver.function.__name__}} from {{receiver.function.__self__.__cla
 
 class GwSignalsInfo(GwCommandsPattern, GwDocumentsPattern):
     def __init__(self, *args, **kwargs):
-        self.name = self.__class__.__name__
+        self.name = kwargs.get("name", self.__class__.__name__)
         super().__init__(*args, **kwargs)
 
     def activate(self):
