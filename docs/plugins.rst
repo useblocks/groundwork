@@ -161,3 +161,42 @@ All other messages go to "app.log".
 
 For details how to configure groundworks logging, please see :ref:`logging configuration <logging_configuration>`.
 
+
+
+.. _plugin_dependencies:
+
+Plugin dependencies
+-------------------
+
+A plugin can have dependencies to other plugins and it needs to be sure that these plugins are activated in the current
+app.
+
+Therefore a plugin can specify the names of the needed plugins and groundwork cares about their activation::
+
+    from groundwork.patterns import GwBasePattern
+
+    class MyPlugin(GwBasePattern):
+        def __init__(self, app, **kwargs):
+            self.name = "My Plugin"
+            self.needed_plugins = ("AnotherPlugin", "AndAnotherPlugin")
+            super().__init__(app, **kwargs)
+
+During plugin activation, groundwork does the following:
+
+    * Read in ``self.needed_plugins``
+    * For each plugin name
+
+      * Check, if a plugin with this name exists in app.plugins
+
+        * If yes: activate it (if not done yet)
+        * If no: check for plugin classes with ths name in app.plugin.classes
+
+          * If yes: Initiated and activate it
+          * If now: Throw error
+
+
+
+
+
+
+

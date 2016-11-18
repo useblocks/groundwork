@@ -126,9 +126,11 @@ A recipe must follow the rules of `cookiecutter`_. Therefore it needs to have th
     |
     |-- other direcotries/files, which will NOT be copied
 
+
 .. note::
-It is important to have a **cookiecutter.json** file, as well as a single root-directory, which name is surrounded by
-**{{ }}**.
+
+    It is important to have a **cookiecutter.json** file, as well as a single root-directory, which name is surrounded by
+    **{{ }}**.
 
 cookiecutter.json
 ~~~~~~~~~~~~~~~~~

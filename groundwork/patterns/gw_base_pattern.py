@@ -7,7 +7,8 @@
 
 """
 import logging
-from .exceptions import PluginAttributeMissing, PluginActivateMissing, PluginDeactivateMissing
+from groundwork.patterns.exceptions import PluginAttributeMissing, PluginActivateMissing, PluginDeactivateMissing, \
+    PluginDependencyLoop
 
 
 class GwBasePattern(object):
@@ -37,12 +38,26 @@ class GwBasePattern(object):
         self.app = app
 
         # There must be a name for this plugin. Otherwise it is not detectable and manageable on application level
-        if not hasattr(self, "name"):
+        if not hasattr(self, "name") and name is None:
             raise PluginAttributeMissing("Name not set for plugin")
+        elif not hasattr(self, "name") and name is not None:
+            # Set the given name, if the plugin itself does not have set one
+            self.name = name
+
+        # Be sure we have a set version number. Can be overwritten by the plugin itself.
+        if not hasattr(self, "version"):
+            self.version = "0.0.1"
 
         # Let's be sure active is false, even if a child class set something different
         if not hasattr(self, "active"):
             self.active = False
+
+        # Even if this plugin has no dependencies to other plugins, we should set an empty tuple.
+        if not hasattr(self, "needed_plugins"):
+            #: Variable for storing dependencies to other plugins.
+            #: Tuple must contains needed plugin names.
+            #: needed_plugins = ("MyPlugin", "MyPlugin2)
+            self.needed_plugins = ()
 
         #: A logger, especially created for this plugin. Usage inside a plugin: ``self.log.warn("WARNING!!")``.
         #:
@@ -69,7 +84,7 @@ class GwBasePattern(object):
     # def __getattribute__(self, name):
     def __getattribute__(self, name):
         """
-        Catches all calls on class attributes, but care only for activate() and deactivate().
+        Catches all calls on class attributes, but cares only for activate() and deactivate().
 
         If the plugin gets activated or deactivated, the base class can perform extra work.
         So there is no need for a plugin developer to call something like super().activate() for
@@ -119,6 +134,8 @@ class GwBasePattern(object):
         if not self.app.plugins.classes.exist(self.__class__.__name__):
             self.app.plugins.classes.register([self.__class__])
 
+        self._load_needed_plugins()
+
         self.app.signals.send("plugin_activate_pre", self)
 
     def _post_activate_injection(self):
@@ -149,6 +166,49 @@ class GwBasePattern(object):
         # because the call order of receivers is not clear and a signal/receiver clean up would prohibit the call
         # of all "later" receivers.
         self.signals.deactivate_plugin_signals()
+
+    def _load_needed_plugins(self):
+        """
+        Checks if this plugins needs other plugins to work and tries to activate them
+        :return: True, if all needed plugins are or got activated. Otherwise False
+        """
+        global plugin_recursive_store
+        if "plugin_recursive_store" not in globals():
+            plugin_recursive_store = []
+
+        if self.name in plugin_recursive_store:
+            self.log.warning("Plugin dependency loop detected: %s already checked and dependencies got activated" %
+                             self.name)
+            if self.app.strict:
+                raise PluginDependencyLoop("Plugin dependency loop detected: %s already checked and dependencies "
+                                           "got activated" % self.name)
+            return False
+        else:
+            plugin_recursive_store.append(self.name)
+
+        if not hasattr(self, "needed_plugins"):
+            pass
+        elif not isinstance(self.needed_plugins, tuple) or isinstance(self.needed_plugins, list):
+            raise TypeError("needed_plugins must be a tuple or a list")
+        elif len(self.needed_plugins) > 0:
+            try:
+                for needed_plugin in self.needed_plugins:
+                    if not isinstance(needed_plugin, str):
+                        raise TypeError("Plugin name must be a string, got %s" % type(needed_plugin).__name__)
+                    # Check, if a plugin with this name got already activated
+                    plugin = self.app.plugins.get(needed_plugin)
+                    if plugin is not None and not plugin.active:
+                        plugin.activate()
+                    # If not, check if a plugin_class with this name is available and activate it
+                    plugin_class = self.app.plugins.classes.get(needed_plugin)
+                    if plugin_class is not None:
+                        plugin_class(self.app, needed_plugin)
+            except Exception:
+                plugin_recursive_store.remove(self.name)
+                return False
+
+        plugin_recursive_store.remove(self.name)
+        return True
 
 
 class SignalsPlugin:

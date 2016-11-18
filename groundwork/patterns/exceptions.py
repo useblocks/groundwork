@@ -1,10 +1,14 @@
-class PluginAttributeMissing(Exception):
+class PluginAttributeMissing(BaseException):
     pass
 
 
-class PluginActivateMissing(Exception):
+class PluginActivateMissing(BaseException):
     pass
 
 
-class PluginDeactivateMissing(Exception):
+class PluginDeactivateMissing(BaseException):
+    pass
+
+
+class PluginDependencyLoop(BaseException):
     pass

@@ -5,6 +5,7 @@ import groundwork
 from groundwork.exceptions import PluginRegistrationException
 from groundwork.patterns import GwBasePattern
 from groundwork.patterns.gw_base_pattern import PluginAttributeMissing, PluginActivateMissing, PluginDeactivateMissing
+from groundwork.patterns.exceptions import PluginDependencyLoop
 
 
 def test_app_initialisation():
@@ -161,7 +162,83 @@ def test_plugin_missing_deactivate(basicApp):
         my_plugin.deactivate()
 
 
-def test_plugin_unknow_attribute(basicApp):
+def test_plugin_unknown_attribute(basicApp):
     plugin = basicApp.plugins.get("CommandPlugin")
     with pytest.raises(AttributeError):
         plugin.nowhere()
+
+
+def test_plugin_dependency(basicApp):
+
+    class MyPluginA(GwBasePattern):
+        def __init__(self, app, **kwargs):
+            self.name = "my_plugin_a"
+            self.needed_plugins = ("my_plugin_b",)
+            super().__init__(app, **kwargs)
+
+        def activate(self):
+            pass
+
+        def deactivate(self):
+            pass
+
+    class MyPluginB(GwBasePattern):
+        def __init__(self, app, **kwargs):
+            self.name = "my_plugin_b"
+            super().__init__(app, **kwargs)
+
+        def activate(self):
+            pass
+
+        def deactivate(self):
+            pass
+
+    my_plugin_a = MyPluginA(basicApp)
+    my_plugin_b = MyPluginB(basicApp)
+
+    assert my_plugin_b.active is False
+    my_plugin_a.activate()
+    assert my_plugin_b.active is True
+
+
+def test_plugin_dependency_loop(basicApp):
+
+    class MyPluginA(GwBasePattern):
+        def __init__(self, app, **kwargs):
+            self.name = "my_plugin_a"
+            self.needed_plugins = ("my_plugin_b",)
+            super().__init__(app, **kwargs)
+
+        def activate(self):
+            pass
+
+        def deactivate(self):
+            pass
+
+    class MyPluginB(GwBasePattern):
+        def __init__(self, app, **kwargs):
+            self.name = "my_plugin_b"
+            self.needed_plugins = ("my_plugin_a",)
+            super().__init__(app, **kwargs)
+
+        def activate(self):
+            pass
+
+        def deactivate(self):
+            pass
+
+    my_plugin_a = MyPluginA(basicApp)
+    my_plugin_b = MyPluginB(basicApp)
+
+    basicApp.strict = False
+    assert my_plugin_b.active is False
+    my_plugin_a.activate()
+    assert my_plugin_b.active is True
+
+    my_plugin_a.deactivate()
+    my_plugin_b.deactivate()
+
+    basicApp.strict = True
+    assert my_plugin_b.active is False
+    with pytest.raises(PluginDependencyLoop):
+        my_plugin_a.activate()
