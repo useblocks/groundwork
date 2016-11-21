@@ -189,7 +189,7 @@ During plugin activation, groundwork does the following:
       * Check, if a plugin with this name exists in app.plugins
 
         * If yes: activate it (if not done yet)
-        * If no: check for plugin classes with ths name in app.plugin.classes
+        * If no: check for plugin classes with this name in app.plugin.classes
 
           * If yes: Initiated and activate it
           * If now: Throw error
