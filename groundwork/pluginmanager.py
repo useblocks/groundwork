@@ -163,7 +163,8 @@ class PluginManager:
                     try:
                         self._plugins[plugin_name].activate()
                     except Exception as e:
-                        raise PluginNotActivatableException("Plugin %s could not be activated" % plugin_name) from e
+                        raise PluginNotActivatableException("Plugin %s could not be activated: %s" % (plugin_name,
+                                                                                                      e)) from e
                     else:
                         self._log.debug("Plugin %s activated" % plugin_name)
                         plugins_activated.append(plugin_name)

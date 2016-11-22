@@ -18,6 +18,26 @@ For these tests, the following plugins are recommended:
  * `pytest-flake8 <https://pypi.python.org/pypi/flake8/1.6.1>`_
  * `pytest-sugar <https://pypi.python.org/pypi/pytest-sugar>`_
 
+
+pytest and exception chains
+---------------------------
+
+pytest seems to show the traceback of last raised exception only.
+In some cases this is not really helpful, as the location of last raised exception may not be place, where you need
+to fix something.
+
+E.g. if a plugin raises an exception during plugin activation, the pluginmanager will catch this and raises
+another exception. pytest will only guide you to the pluginmanager, but not to the plugin activation routine itself.
+
+groundwork raises exceptions always with the "from e" statement (e.g. raise Exception("Ohh no") from e).
+A normal python traceback would show this exception chain. pytest unluckily does not, if it is not configured to do so.
+
+To activate the default python traceback, start pytest with the following parameter::
+
+    py.test --tb=native
+
+
+
 Deviations from common standards
 --------------------------------
 
