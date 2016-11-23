@@ -12,9 +12,9 @@ with open('{{cookiecutter.project_slug}}/version.py', 'rb') as f:
         f.read().decode('utf-8')).group(1)))
 
 setup(
-    name='{{cookiecutter.project_name}}',
+    name='{{cookiecutter.project_slug}}',
     version=version,
-    url='http://{{cookiecutter.project_name}}.readthedocs.org',
+    url='http://{{cookiecutter.project_slug}}.readthedocs.org',
     license='{{cookiecutter.license}}',
     author='{{cookiecutter.full_name}}',
     author_email='{{cookiecutter.email}}',
@@ -23,9 +23,9 @@ setup(
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
     include_package_data=True,
     platforms='any',
-    setup_requires=['pytest-runner', 'sphinx', 'gitpython'],
-    tests_require=['pytest', 'pytest-flake8'],
-    install_requires=[],
+    setup_requires=[],
+    tests_require=[],
+    install_requires=['groundwork', 'pytest-runner', 'sphinx', 'gitpython'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',

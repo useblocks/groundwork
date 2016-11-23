@@ -3,8 +3,11 @@ Contribute
 
 Running tests
 =============
+Before tests can be executed, you have to install the test dependencies of groundwork::
 
-To run groundwork's own tests, open a command line interface, change to groundwork/tests and run::
+    pip install -r test-requirements.txt
+
+Then to run groundwork's own tests, open a command line interface, change to groundwork/tests and run::
 
     py.test --flake8
 
@@ -27,7 +30,7 @@ In some cases this is not really helpful, as the location of last raised excepti
 to fix something.
 
 E.g. if a plugin raises an exception during plugin activation, the pluginmanager will catch this and raises
-another exception. pytest will only guide you to the pluginmanager, but not to the plugin activation routine itself.
+it's own exception. pytest will only guide you to the pluginmanager, but not to the plugin activation routine itself.
 
 groundwork raises exceptions always with the "from e" statement (e.g. raise Exception("Ohh no") from e).
 A normal python traceback would show this exception chain. pytest unluckily does not, if it is not configured to do so.
@@ -49,10 +52,13 @@ This value is also used for flake8 configuration in the file *setup.cfg*.
 
 Documentation
 =============
-
 groundwork is using sphinx for documentation building.
 
-Just run the following inside groundwork/docs to get a html documentation::
+To build the documentation you need to have all documentation requirements installed::
+
+    pip install -r doc-requirements.txt
+
+Then just run the following inside groundwork/docs to get a html documentation::
 
     make html
 
