@@ -71,6 +71,19 @@ To start the development of own plugins, simply create a new class and inherit f
     Also make sure that your ``__init__`` can handle **app** as the first argument and
     additional, optional keyword arguments.
 
+Provided variables
+~~~~~~~~~~~~~~~~~~~
+
+The groundwork :class:`~groundwork.patterns.gw_base_pattern.GwBasePattern`:: creates the following variables for your
+plugin and makes them directly available:
+
+* **self.path**: The absolute path of the python-file, which contains your plugin (directory + file name)
+* **self.dir**: The absolute directory, which contains your plugin (directory only)
+* **self.file**: The name of the file, which contains your plugin (file name only)
+* **self.version**: An initial version (0.0.1), if this was not set by your plugin during initialisation
+* **self.active**: True, if the plugin got activated.
+* **self.needed_plugins**: Empty tuple, if it was not set by your plugin during initialisation
+
 Using signals and receivers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You are free to add signals or connect receivers to them::
