@@ -1,8 +1,12 @@
-include Makefile CHANGES LICENSE AUTHORS
+include LICENSE
 
-global-exclude *.py[co]
+graft groundwork/recipes
+
+global-exclude *.pyc
 
 global-include *.conf
 
 prune docs/_build
 prune docs/_themes
+
+
