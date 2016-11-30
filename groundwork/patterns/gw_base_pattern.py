@@ -6,7 +6,10 @@
     other patterns or plugins about status changes of a plugin.
 
 """
+import sys
+import os
 import logging
+
 from groundwork.patterns.exceptions import PluginAttributeMissing, PluginActivateMissing, PluginDeactivateMissing, \
     PluginDependencyLoop
 
@@ -58,6 +61,10 @@ class GwBasePattern(object):
             #: Tuple must contains needed plugin names.
             #: needed_plugins = ("MyPlugin", "MyPlugin2)
             self.needed_plugins = ()
+
+        self.path = sys.modules[self.__module__].__file__
+        self.file = os.path.basename(self.path)
+        self.dir = os.path.dirname(self.path)
 
         #: A logger, especially created for this plugin. Usage inside a plugin: ``self.log.warn("WARNING!!")``.
         #:
@@ -188,7 +195,7 @@ class GwBasePattern(object):
 
         if not hasattr(self, "needed_plugins"):
             pass
-        elif not isinstance(self.needed_plugins, tuple) or isinstance(self.needed_plugins, list):
+        elif not isinstance(self.needed_plugins, tuple) and not isinstance(self.needed_plugins, list):
             raise TypeError("needed_plugins must be a tuple or a list")
         elif len(self.needed_plugins) > 0:
             try:
@@ -227,7 +234,7 @@ class SignalsPlugin:
         self._plugin = plugin
         self.__app = plugin.app
         self.__log = plugin.log
-        self.__log.info("Plugin messages initialised")
+        self.__log.debug("Plugin messages initialised")
 
     def deactivate_plugin_signals(self):
         receivers = self.get_receiver()

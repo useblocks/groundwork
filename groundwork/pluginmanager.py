@@ -73,6 +73,7 @@ class PluginManager:
 
             plugin_class = self.classes.get(plugin_name)
             self.initialise(plugin_class.clazz, plugin_name)
+            plugin_initialised.append(plugin_name)
 
         self._log.info("Plugins initialised: %s" % ", ".join(plugin_initialised))
 
@@ -291,7 +292,7 @@ class PluginClassManager:
                 # We should not throw an exception now, because a package/entry_point can be outdated, using an old
                 # api from groundwork, tries to import unavailable packages, what ever...
                 # We just do not make it available. That's all we can do.
-                self._log.warning("Couldn't load entry_point %s. Reason: %s" % (entry_point.name, e))
+                self._log.debug("Couldn't load entry_point %s. Reason: %s" % (entry_point.name, e))
                 continue
 
             if not issubclass(entry_point_object, GwBasePattern):
