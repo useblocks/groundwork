@@ -72,6 +72,7 @@ setup(
     long_description=__doc__,
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
     include_package_data=True,
+    package_data={'': ['*.conf'], 'recipies': ['*']},
     platforms='any',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-flake8'],

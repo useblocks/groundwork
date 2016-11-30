@@ -1,0 +1,8 @@
+include Makefile CHANGES LICENSE AUTHORS
+
+global-exclude *.py[co]
+
+global-include *.conf
+
+prune docs/_build
+prune docs/_themes
