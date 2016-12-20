@@ -30,16 +30,17 @@ class App(object):
     :param strict: If true, Exceptions are thrown, if a plugin can not be initialised or activated.
     """
     def __init__(self, config_files=None, plugins=None, strict=False):
+        if config_files is None:
+            config_files = []
+
+        self.strict = strict
+
         #: logging object for sending log messages. Example::
         #:
         #:  from groundwork import App
         #:  my_app = App()
         #:  my_app.log.debug("Send debug message")
         #:  my_app.log.error("Send error....")
-
-        if config_files is None:
-            config_files = []
-
         self.log = logging.getLogger("groundwork")
 
         self._configure_logging()
@@ -75,21 +76,10 @@ class App(object):
 
         #: Instance of :class:`~groundwork.pluginmanager.PluginManager`- Provides functions to load, activate and
         # deactivate plugins.
-        self.plugins = PluginManager(app=self, strict=strict)
+        self.plugins = PluginManager(app=self)
 
         if plugins is not None:
             self.plugins.classes.register(plugins)
-
-    @property
-    def strict(self):
-        return self.plugins._strict
-
-    @strict.setter
-    def strict(self, value):
-        if not isinstance(value, bool):
-            raise TypeError("strict must be bool")
-        self.plugins._strict = value
-        self.plugins.classes._strict = value
 
     def _configure_logging(self, logger_dict=None):
         """

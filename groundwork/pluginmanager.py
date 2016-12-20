@@ -24,7 +24,7 @@ class PluginManager:
     PluginManager for searching, initialising, activating and deactivating groundwork plugins.
     """
 
-    def __init__(self, app, strict=False):
+    def __init__(self, app):
         """
         Initialises the plugin manager.
 
@@ -34,13 +34,12 @@ class PluginManager:
         :param strict: If True, problems during plugin registration/initialisation or activation will throw an exception
         """
         self._log = logging.getLogger(__name__)
-        self._strict = strict
         self._app = app
         self._plugins = {}
 
         #: Instance of :class:`~groundwork.pluginmanager.PluginClassManager`.
         #: Handles the registration of plugin classes, which can be used to create new plugins during runtime.
-        self.classes = PluginClassManager(self._app, self._strict)
+        self.classes = PluginClassManager(self._app)
 
     def initialise_by_names(self, plugins=None):
         """
@@ -90,7 +89,7 @@ class PluginManager:
                     plugin_instance.name = name
             except Exception as e:
                 self._log.warning("Plugin class %s could not be initialised" % clazz.__name__)
-                if self._strict:
+                if self._app.strict:
                     raise PluginNotInitialisableException("Plugin class %s could not be initialised" % clazz.__name__) \
                         from e
 
@@ -114,7 +113,7 @@ class PluginManager:
 
         if not issubclass(clazz, GwBasePattern):
             self._log.warn("Can not load %s. Plugin is not based on groundwork.Plugin." % clazz.__name__)
-            if self._strict:
+            if self._app.strict:
                 raise Exception("Can not load %s. Plugin is not based on groundwork.Plugin." % clazz.__name__)
         return None
 
@@ -154,7 +153,7 @@ class PluginManager:
                     self.initialise_by_names([plugin_name])
                 except Exception as e:
                     self._log.error("Couldn't initialise plugin %s" % plugin_name)
-                    if self._strict:
+                    if self._app.strict:
                         raise Exception("Couldn't initialise plugin %s" % plugin_name) from e
                     else:
                         continue
@@ -171,7 +170,7 @@ class PluginManager:
                         plugins_activated.append(plugin_name)
                 else:
                     self._log.warning("Plugin %s got already activated." % plugin_name)
-                    if self._strict:
+                    if self._app.strict:
                         raise PluginNotInitialisableException()
 
         self._log.info("Plugins activated: %s" % ", ".join(plugins_activated))
@@ -266,10 +265,9 @@ class PluginClassManager:
     Provides functions to register new plugin classes during runtime.
     """
 
-    def __init__(self, app, strict=False):
+    def __init__(self, app):
         self._log = logging.getLogger(__name__)
         self._app = app
-        self._strict = strict
         self._classes = {}
         self._get_plugins_by_entry_points()
 
@@ -355,17 +353,17 @@ class PluginClassManager:
 
         if not inspect.isclass(clazz) or not issubclass(clazz, GwBasePattern):
             self._log.error("Given plugin is not a subclass of groundworkPlugin.")
-            if self._strict:
+            if self._app.strict:
                 raise AttributeError("Given plugin is not a subclass of groundworkPlugin.")
 
         if isinstance(clazz, GwBasePattern):
             self._log.error("Given plugin %s is already initialised. Please provide a class not an instance.")
-            if self._strict:
+            if self._app.strict:
                 raise Exception("Given plugin %s is already initialised. Please provide a class not an instance.")
 
         if name in self._classes.keys():
             self._log.warning("Plugin %s already registered" % name)
-            if self._strict:
+            if self._app.strict:
                 raise PluginRegistrationException("Plugin %s already registered" % name)
 
         self._classes[name] = PluginClass(name, clazz, entrypoint_name, distribution_path,
