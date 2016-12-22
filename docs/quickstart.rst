@@ -113,7 +113,7 @@ different types of documentation, activating web support and much more.
 
 A plugin can inherit multiple patterns::
 
-    class MyPlugin(GwCommandPattern, GwDocumentPatter):
+    class MyPlugin(GwCommandPattern, GwDocumentPattern):
         def __init__(self, app, **kwargs):
             self.name = "My Plugin"
             super().__init__(app, **kwargs)
