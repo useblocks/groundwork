@@ -15,7 +15,7 @@ Create a file named **my_app.py** and add the following code::
         my_app.activate(["GwPluginInfo"])
         my_app.commands.start_cli()
 
-This code performs thew following actions:
+This code performs the following actions:
 
  * It creates a groundwork application app via ``my_app = App()``
  * It activates the plugin :class:`~groundwork.plugins.gw_plugin_info.GwPluginInfo`, which is part of groundwork itself.
