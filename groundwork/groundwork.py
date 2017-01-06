@@ -50,15 +50,22 @@ class App(object):
         #: Used to load different configuration files and create a common configuration object.
         self.config = ConfigManager().load(config_files)
 
+        #: Absolute application path. Is configurable by parameter "APP_PATH" of a configuration file.
+        #: If not given, the current working  directory is taken.
+        #: The path is used to calculate absolute paths for tests, documentation and much more.
+        self.path = self.config.get("APP_PATH", None)
+        if self.path is None:
+            self.path = os.getcwd()
+        elif not os.path.isabs(self.path):
+            self.path = os.path.abspath(self.path)
+            self.log.warning("Given APP_PATH is relative, calculated following, absolute path: %s" % self.path)
+        elif not os.path.exists(self.path):
+            raise NotADirectoryError("Given APP_PATH does not exist: %s" % self.path)
+
         self._configure_logging(self.config.get("GROUNDWORK_LOGGING"))
 
         #: Name of the application. Is configurable by parameter "APP_NAME" of a configuration file.
         self.name = self.config.get("APP_NAME", None) or "NoName App"
-
-        #: Absolute application path. Is configurable by parameter "APP_PATH" of a configuration file.
-        #: If not given, the current working  directory is taken.
-        #: The path is used to calculate absolute paths for tests, documentation and much more.
-        self.path = os.path.abspath(self.config.get("APP_PATH", None) or os.getcwd())
 
         #: Instance of :class:`~groundwork.signals.SignalsApplication`. Provides functions to register and fire
         # signals or receivers on application level.
