@@ -199,17 +199,10 @@ During plugin activation, groundwork does the following:
     * Read in ``self.needed_plugins``
     * For each plugin name
 
-      * Check, if a plugin with this name exists in app.plugins
+      * Check, if a plugin with this name exists in app.plugins (objects/instantiated plugins)
 
-        * If yes: activate it (if not done yet)
-        * If no: check for plugin classes with this name in app.plugin.classes
+        * If yes: activate it instantly (if not done yet)
+        * If no: check for plugin classes with this name in app.plugin.classes (classes, not instantiated)
 
-          * If yes: Initiated and activate it
-          * If now: Throw error
-
-
-
-
-
-
-
+          * If yes: Instantiate and activate it
+          * If not: Throw error

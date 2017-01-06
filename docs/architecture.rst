@@ -38,7 +38,12 @@ handling.
 A plugin uses patterns by deriving from pattern classes. Several patterns can be invoked by using multi inheritance.
 Thus, patterns are strongly coupled with related plugins during application runtime.
 
-A pattern gets automatically deactivated, if all plugins are deactivated, which inherit from the pattern.
+Patterns become automatically activated as soon as an application activates the first plugin that inherits from
+the pattern. A pattern gets automatically deactivated, if all plugins are deactivated, which inherit from the pattern.
+With plugins deriving from patterns, the plugin activation order becomes unimportant because resources provided
+by patterns will already be registered on the app if the first plugin wants to use it. This is important for
+functionality like database connections or web frameworks which are commonly only instantiated once but used
+for multiple plugins.
 
 Example
 -------
