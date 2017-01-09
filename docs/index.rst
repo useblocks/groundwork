@@ -43,7 +43,12 @@ behaviors like plugin status, used signals, registered commands and much more.
  * Static and dynamic :ref:`documents <documents>` for an overall documentation
 
 Additional, ready-to-use solutions can be easily integrated into groundwork applications by the usage of third-party
-plugins and patterns from the groundwork community.
+plugins and patterns from the groundwork community
+(like `groundwork-database <https://groundwork-database.readthedocs.io>`_
+or `groundwork-web <https://groundwork-web.readthedocs.io>`_ ). See :ref:`packages` for more information.
+
+
+
 
 Example
 -------
@@ -97,6 +102,7 @@ User's Guide
    documents
    recipes
    packaging
+   packages
    contribute
 
 API Reference
