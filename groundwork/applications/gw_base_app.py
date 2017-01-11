@@ -35,7 +35,7 @@ def start_app():  # pragma: no cover
 
 
 def register_app():
-    app = App([os.path.join(os.path.dirname(__file__), "gw_base_app.conf")])
+    app = App([os.path.join(os.path.dirname(__file__), "configuration.py")])
 
     # The following used plugins are all part of groundwork and
     # therefore already registered via entry_point

@@ -3,7 +3,9 @@ import os
 
 APP_NAME = "{{cookiecutter.project_app}}"
 APP_DESCRIPTION = "groundwork application of package {{cookiecutter.project_name}}"
-APP_PATH = os.path.dirname(__file__)
+APP_PATH = os.path.join(os.path.expanduser('~'), "{{cookiecutter.project_name}}")
+
+PLUGINS = ["{{cookiecutter.project_plugin}}", "GwPluginsInfo"]
 
 GROUNDWORK_LOGGING = {
     'version': 1,
@@ -27,7 +29,7 @@ GROUNDWORK_LOGGING = {
         'file': {
             "class": "logging.handlers.RotatingFileHandler",
             "formatter": "debug",
-            "filename": "logs/app.log",
+            "filename": os.path.join(APP_PATH, "{{cookiecutter.project_slug}}.log"),
             "maxBytes": 1024000,
             "backupCount": 3,
             'level': 'DEBUG'
