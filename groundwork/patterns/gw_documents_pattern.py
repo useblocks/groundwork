@@ -41,7 +41,7 @@ class DocumentsListPlugin:
 
     def __init__(self, plugin):
         """
-        :param plugin: The plugin, which wants to use signals
+        :param plugin: The plugin, which wants to use documents
         :type plugin: GwBasePattern
         """
         self._plugin = plugin
@@ -102,7 +102,7 @@ class DocumentsListApplication:
         :param content: Content of the document
         :type content: str
         :param name: Unique name of the document for documentation purposes.
-        :param plugin: Plugin object, under which the signals where registered
+        :param plugin: Plugin object, under which the documents where registered
         :type plugin: GwBasePattern
         """
         if name in self.documents.keys():
@@ -133,7 +133,7 @@ class DocumentsListApplication:
 
         :param document: Name of the document
         :type document: str
-        :param plugin: Plugin object, under which the document where registered
+        :param plugin: Plugin object, under which the document was registered
         :type plugin: GwBasePattern
         """
         if plugin is not None:

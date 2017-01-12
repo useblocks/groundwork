@@ -98,6 +98,7 @@ This signals are called automatically if a plugin gets activated or deactivated.
 The difference between **pre** and **post** is that **pre** is called before any action is done by the plugin.
 And **post** is called after the plugin did some action for de/activation.
 
+.. _receivers:
 
 Working with receivers
 ----------------------

@@ -6,7 +6,7 @@ def test_signal_registration(basicApp):
 
 
 def test_signal_send(basicApp):
-    answers = basicApp.signals.send("test", basicApp)
+    answers = basicApp.signals.send("test", basicApp, text="test")
     assert len(answers) == 1
     assert isinstance(answers, list)
     assert len(answers[0]) == 2

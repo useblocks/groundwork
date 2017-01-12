@@ -100,6 +100,7 @@ User's Guide
    commands
    shared_objects
    documents
+   threads
    recipes
    packaging
    packages

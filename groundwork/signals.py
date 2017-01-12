@@ -115,7 +115,7 @@ class SignalsApplication():
         if signal not in self.signals.keys():
             raise Exception("Unknown signal %s" % signal)
         self.__log.debug("Sending signal %s for %s" % (signal, plugin.name))
-        rv = self.signals[signal].send(plugin, text="test")
+        rv = self.signals[signal].send(plugin, **kwargs)
         return rv
 
     def get(self, signal=None, plugin=None):

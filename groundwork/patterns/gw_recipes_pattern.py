@@ -142,7 +142,7 @@ class RecipesListApplication:
 
         :param recipe: Name of the recipe
         :type recipe: str
-        :param plugin: Plugin object, under which the recipe where registered
+        :param plugin: Plugin object, under which the recipe was registered
         :type plugin: GwBasePattern
         """
         if plugin is not None:

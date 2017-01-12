@@ -33,10 +33,13 @@ def basicApp():
     :return: app
     """
     from groundwork import App
-    from tests.test_plugins import BasicPlugin, CommandPlugin, DocumentPlugin, SharedObjectPlugin, RecipePlugin
+    from tests.test_plugins import BasicPlugin, CommandPlugin, DocumentPlugin
+    from tests.test_plugins import SharedObjectPlugin, RecipePlugin, ThreadPlugin
 
-    app = App(plugins=[BasicPlugin, CommandPlugin, DocumentPlugin, SharedObjectPlugin, RecipePlugin], strict=True)
-    app.plugins.activate(["BasicPlugin", "CommandPlugin", "DocumentPlugin", "SharedObjectPlugin", "RecipePlugin"])
+    app = App(plugins=[BasicPlugin, CommandPlugin, DocumentPlugin, SharedObjectPlugin,
+                       RecipePlugin, ThreadPlugin], strict=True)
+    app.plugins.activate(["BasicPlugin", "CommandPlugin", "DocumentPlugin", "SharedObjectPlugin",
+                          "RecipePlugin", "ThreadPlugin"])
     return app
 
 
@@ -112,6 +115,15 @@ def DocumentPlugin():
     """
     from tests.test_plugins.documentations_plugin import DocumentPlugin
     return DocumentPlugin
+
+
+@pytest.fixture
+def ThreadPlugin():
+    """
+    :return: thread plugin class
+    """
+    from tests.test_plugins.threads_plugin import ThreadPlugin
+    return ThreadPlugin
 
 
 # See http://docs.pytest.org/en/latest/example/simple.html#incremental-testing-test-steps

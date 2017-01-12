@@ -3,3 +3,4 @@ from .gw_commands_pattern import GwCommandsPattern
 from .gw_shared_objects_pattern import GwSharedObjectsPattern
 from .gw_documents_pattern import GwDocumentsPattern
 from .gw_recipes_pattern import GwRecipesPattern
+from .gw_threads_pattern import GwThreadsPattern

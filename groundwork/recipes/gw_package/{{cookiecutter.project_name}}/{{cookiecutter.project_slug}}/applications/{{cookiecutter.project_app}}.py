@@ -2,6 +2,7 @@ import os
 from groundwork import App
 from {{cookiecutter.project_slug}}.applications.configuration import APP_PATH
 
+
 def start_app():
     # Let's be sure our APP_PATH really exists
     if not os.path.exists(APP_PATH):

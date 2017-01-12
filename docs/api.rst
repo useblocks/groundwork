@@ -132,6 +132,32 @@ GwDocumentsPattern
    :members:
    :undoc-members:
 
+GwThreadsPattern
+~~~~~~~~~~~~~~~~~~
+.. currentmodule:: groundwork.patterns.gw_threads_pattern
+
+.. autoclass:: GwThreadsPattern
+   :members:
+   :inherited-members:
+   :show-inheritance:
+   :undoc-members:
+
+.. autoclass:: ThreadsListPlugin
+   :members:
+   :undoc-members:
+
+.. autoclass:: ThreadsListApplication
+   :members:
+   :undoc-members:
+
+.. autoclass:: Thread
+   :members:
+   :undoc-members:
+
+.. autoclass:: ThreadWrapper
+   :members:
+   :undoc-members:
+
 GwRecipePattern
 ~~~~~~~~~~~~~~~
 .. automodule::  groundwork.patterns.gw_recipes_pattern
