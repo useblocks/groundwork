@@ -9,5 +9,8 @@ class {{cookiecutter.project_plugin}}(GwCommandsPattern):
     def activate(self):
         self.commands.register("hello_world", "Prints hello world", self._hello)
 
+    def deactivate(self):
+        pass
+
     def _hello(self):
         print("Hello World. It's me, {{cookiecutter.project_plugin}}!")
