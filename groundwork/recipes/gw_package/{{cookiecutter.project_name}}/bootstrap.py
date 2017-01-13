@@ -138,8 +138,7 @@ find_links = os.environ.get(
     'bootstrap-testing-find-links',
     options.find_links or
     ('http://downloads.buildout.org/'
-     if options.accept_buildout_test_releases else None)
-    )
+     if options.accept_buildout_test_releases else None))
 if find_links:
     cmd.extend(['-f', find_links])
 
