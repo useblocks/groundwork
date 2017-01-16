@@ -198,7 +198,7 @@ class Thread:
         :param kwargs: dictionary of keyword arguments
         :return:
         """
-        self.thread.run(**kwargs)
+        self.thread.start()
 
 
 class ThreadWrapper(threading.Thread):
