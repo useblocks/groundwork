@@ -47,9 +47,6 @@ plugins and patterns from the groundwork community
 (like `groundwork-database <https://groundwork-database.readthedocs.io>`_
 or `groundwork-web <https://groundwork-web.readthedocs.io>`_ ). See :ref:`packages` for more information.
 
-
-
-
 Example
 -------
 
@@ -81,7 +78,22 @@ The following commands can be used on a command line now::
 
     python my_app.py hello      # Prints 'Hello world'
     python my_app.py            # Prints a list of available commands
-    python my_app.yp hello -h   # Prints syntax help for the hello command
+    python my_app.py hello -h   # Prints syntax help for the hello command
+
+Tutorial
+--------
+For the case you wish a more use-case oriented introduction into groundwork, we have set up a
+`tutorial <https://useblocks.github.io/groundwork-tutorial>`_ with a huge amount of code examples.
+
+This tutorial starts with the groundwork basics, lets you create your first groundwork command line application, gives
+introductions how to add database support and finally ends with your own groundwork based web application.
+
+Beside groundwork itself, it also uses the community packages
+`groundwork-database <https://groundwork-database.readthedocs.io>`_
+and `groundwork-web <https://groundwork-web.readthedocs.io>`_.
+
+The tutorial is available under
+`useblocks.github.io/groundwork-tutorial <https://useblocks.github.io/groundwork-tutorial>`_.
 
 User's Guide
 ------------

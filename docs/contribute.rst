@@ -26,7 +26,7 @@ pytest and exception chains
 ---------------------------
 
 pytest seems to show the traceback of last raised exception only.
-In some cases this is not really helpful, as the location of last raised exception may not be place, where you need
+In some cases this is not really helpful, as the location of last raised exception may not be the place, where you need
 to fix something.
 
 E.g. if a plugin raises an exception during plugin activation, the pluginmanager will catch this and raises
