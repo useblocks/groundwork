@@ -31,7 +31,7 @@ If a user gets created, the GwUSerManager sends the signal "User created" and ad
 
 Both, GwEMail and GwChat, have registered receivers to the signal "User created". So GwEMail gets called, it fetches
 the e-mail address from the attached user object and sends a "Welcome" message to the user.
-GwChat gets also called and send a chat message to the chat room of the development team and informs them, that a
+GwChat gets also called and sends a chat message to the chat room of the development team and informs them that a
 new user has been created.
 
 Working with signals
@@ -57,7 +57,7 @@ of self.signals::
         def activate(self):
             self.signals.register("my_signal", "this is my first signal")
 
-You are able to get all signals, which were registered by you plugin by
+You are able to get all signals, which were registered by your plugin by
 using :func:`~groundwork.patterns.gw_base_pattern.SignalsPlugin.get`::
 
     ...
@@ -131,7 +131,7 @@ Registration of receiver is done by the function :func:`~groundwork.patterns.gw_
 The used function must accept as first parameter the sender/plugin, which send the signal.
 After this multiple, optional keyword arguments must be accepted as well.
 
-The parameter **sender** can be used during registration, do receive signals only from specific senders/plugins.
+The parameter **sender** can be used during registration to receive signals only from specific senders/plugins.
 
 Best practice: Pattern clean up
 '''''''''''''''''''''''''''''''
@@ -139,7 +139,7 @@ Best practice: Pattern clean up
 Lets say, a pattern provides a function to register web-routes. During activation, the plugin registers some of them.
 But during deactivation is forgets to unregister them, so that they are still registered and available.
 
-The pattern should register to **plugin_deactivate_post** and make sure, that everything gets unregistered.
+The pattern should register to **plugin_deactivate_post** and make sure that everything gets unregistered.
 
 Example::
 

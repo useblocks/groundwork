@@ -54,7 +54,7 @@ this mechanism for own plugins.
 Create own plugins
 ~~~~~~~~~~~~~~~~~~
 
-The easiest way for creating a groundwork plugin is by defining a class, which inherits from
+The easiest way of creating a groundwork plugin is by defining a class, which inherits from
 :class:`~groundwork.patterns.gw_base_pattern.GwBasePattern`.
 But before activation, it also needs to be registered, what can be done during application initialisation::
 

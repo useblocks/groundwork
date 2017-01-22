@@ -51,7 +51,7 @@ Realtime documentation
 ~~~~~~~~~~~~~~~~~~~~~~
 Nowadays it's really hard to get the big picture of an existing application. Normally only some kind of documentation
 and the code itself are available as information source. However, the former is rarely well maintained and the
-latter gives you a structured, but too deep view which takes hours or even days to understand.
+later gives you a structured, but too deep view which takes hours or even days to understand.
 
 groundwork tries to retrieve and provide a lot of information from the executed code directly during runtime.
 For instance, it is able to show registered and used signals or to create a list of available commands.
@@ -65,7 +65,7 @@ Technical background
 groundwork was created to glue code-snippets from various developers together and make their nested functions
 easily available.
 
-In Python, the is commonly achieved by importing modules, initialising a class of them and storing the class instance
+In Python this is commonly achieved by importing modules, initialising a class of them and storing the class instance
 in a local or global variable.
 However, these mechanism aren't really dynamic and the relationship between different classes and objects is hard-coded,
 without any chance to change it during runtime.

@@ -2,6 +2,8 @@
 
 .. _Jinja: http://jinja.pocoo.org/
 
+.. _recipes:
+
 Recipes
 =======
 

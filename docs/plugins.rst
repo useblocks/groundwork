@@ -74,7 +74,7 @@ To start the development of own plugins, simply create a new class and inherit f
 Provided variables
 ~~~~~~~~~~~~~~~~~~~
 
-The groundwork :class:`~groundwork.patterns.gw_base_pattern.GwBasePattern`:: creates the following variables for your
+The groundwork :class:`~groundwork.patterns.gw_base_pattern.GwBasePattern` creates the following variables for your
 plugin and makes them directly available:
 
 * **self.path**: The absolute path of the python-file, which contains your plugin (directory + file name)
@@ -121,12 +121,14 @@ Using patterns
 --------------
 :ref:`Patterns <patterns>` can be used to extend your plugin with new functions and objects.
 
-groundwork itself provides 4 patterns:
+groundwork itself provides 6 patterns:
 
     * :class:`~groundwork.patterns.gw_base_pattern.GwBasePattern`
     * :class:`~groundwork.patterns.gw_commands_pattern.GwCommandsPattern`
     * :class:`~groundwork.patterns.gw_documents_pattern.GwDocumentsPattern`
+    * :class:`~groundwork.patterns.gw_recipes_pattern.GwRecipesPattern`
     * :class:`~groundwork.patterns.gw_shared_objects_pattern.GwSharedObjectsPattern`
+    * :class:`~groundwork.patterns.gw_threads_pattern.GwThreadsPattern`
 
 You can load multiple patterns into your plugin::
 
@@ -143,8 +145,8 @@ You can load multiple patterns into your plugin::
             self.documents.register(...)
             self.shared_objects.register(...)
 
-For more information about these patterns, please read the related chapters: :ref:`commands`, :ref:`documents`
-and :ref:`shared_objects`.
+For more information about these patterns, please read the related chapters: :ref:`commands`, :ref:`documents`,
+:ref:`recipes`, :ref:`shared_objects` and :ref:`threads`.
 
 
 .. _plugin_logging:
@@ -184,7 +186,7 @@ Plugin dependencies
 A plugin can have dependencies to other plugins and it needs to be sure that these plugins are activated in the current
 app.
 
-Therefore a plugin can specify the names of the needed plugins and groundwork cares about their activation::
+Therefore a plugin can specify the names of needed plugins and groundwork cares about their activation::
 
     from groundwork.patterns import GwBasePattern
 
