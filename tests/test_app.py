@@ -128,7 +128,7 @@ def test_plugin_missing_name(basicApp):
 
     class MyPlugin(GwBasePattern):
         def __init__(self, app, **kwargs):
-            super().__init__(app, **kwargs)
+            super(MyPlugin, self).__init__(app, **kwargs)
 
     with pytest.raises(PluginAttributeMissing):
         MyPlugin(basicApp)
@@ -139,7 +139,7 @@ def test_plugin_missing_activate(basicApp):
     class MyPlugin(GwBasePattern):
         def __init__(self, app, **kwargs):
             self.name = "my_plugin"
-            super().__init__(app, **kwargs)
+            super(MyPlugin, self).__init__(app, **kwargs)
 
     my_plugin = MyPlugin(basicApp)
     with pytest.raises(PluginActivateMissing):
@@ -151,7 +151,7 @@ def test_plugin_missing_deactivate(basicApp):
     class MyPlugin(GwBasePattern):
         def __init__(self, app, **kwargs):
             self.name = "my_plugin"
-            super().__init__(app, **kwargs)
+            super(MyPlugin, self).__init__(app, **kwargs)
 
         def activate(self):
             pass
@@ -174,7 +174,7 @@ def test_plugin_dependency(basicApp):
         def __init__(self, app, **kwargs):
             self.name = "my_plugin_a"
             self.needed_plugins = ("my_plugin_b",)
-            super().__init__(app, **kwargs)
+            super(MyPluginA, self).__init__(app, **kwargs)
 
         def activate(self):
             pass
@@ -185,7 +185,7 @@ def test_plugin_dependency(basicApp):
     class MyPluginB(GwBasePattern):
         def __init__(self, app, **kwargs):
             self.name = "my_plugin_b"
-            super().__init__(app, **kwargs)
+            super(MyPluginB, self).__init__(app, **kwargs)
 
         def activate(self):
             pass
@@ -207,7 +207,7 @@ def test_plugin_dependency_loop(basicApp):
         def __init__(self, app, **kwargs):
             self.name = "my_plugin_a"
             self.needed_plugins = ("my_plugin_b",)
-            super().__init__(app, **kwargs)
+            super(MyPluginA, self).__init__(app, **kwargs)
 
         def activate(self):
             pass
@@ -219,7 +219,7 @@ def test_plugin_dependency_loop(basicApp):
         def __init__(self, app, **kwargs):
             self.name = "my_plugin_b"
             self.needed_plugins = ("my_plugin_a",)
-            super().__init__(app, **kwargs)
+            super(MyPluginB, self).__init__(app, **kwargs)
 
         def activate(self):
             pass

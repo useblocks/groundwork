@@ -9,12 +9,13 @@ There are two manager classes for managing plugin related objects.
 A plugin class can be reused for several plugins. The only thing to care about is the naming of a plugin.
 This plugin name must be unique inside a groundwork app and can be set during plugin initialisation/activation.
 """
-
+from __future__ import absolute_import
+from future.utils import raise_from
 from pkg_resources import iter_entry_points
 import logging
 import inspect
 
-from groundwork.patterns.gw_base_pattern import GwBasePattern
+from groundwork.patterns import GwBasePattern
 from groundwork.exceptions import PluginNotActivatableException, PluginNotInitialisableException, \
     PluginRegistrationException, PluginNotDeactivatableException
 
@@ -90,8 +91,8 @@ class PluginManager:
             except Exception as e:
                 self._log.warning("Plugin class %s could not be initialised" % clazz.__name__)
                 if self._app.strict:
-                    raise PluginNotInitialisableException("Plugin class %s could not be initialised" % clazz.__name__) \
-                        from e
+                    raise_from(
+                        PluginNotInitialisableException("Plugin class %s could not be initialised" % clazz.__name__), e)
 
             # Let's be sure, that GwBasePattern got called
             if not hasattr(plugin_instance, "_plugin_base_initialised") \
@@ -154,7 +155,7 @@ class PluginManager:
                 except Exception as e:
                     self._log.error("Couldn't initialise plugin %s" % plugin_name)
                     if self._app.strict:
-                        raise Exception("Couldn't initialise plugin %s" % plugin_name) from e
+                        raise_from(Exception("Couldn't initialise plugin %s" % plugin_name), e)
                     else:
                         continue
             if plugin_name in self._plugins.keys():
@@ -163,8 +164,9 @@ class PluginManager:
                     try:
                         self._plugins[plugin_name].activate()
                     except Exception as e:
-                        raise PluginNotActivatableException("Plugin %s could not be activated: %s" % (plugin_name,
-                                                                                                      e)) from e
+                        raise_from(
+                            PluginNotActivatableException("Plugin %s could not be activated: %s" % (plugin_name,
+                                                                                                    e)), e)
                     else:
                         self._log.debug("Plugin %s activated" % plugin_name)
                         plugins_activated.append(plugin_name)
@@ -211,7 +213,8 @@ class PluginManager:
                     try:
                         self._plugins[plugin_name].deactivate()
                     except Exception as e:
-                        raise PluginNotDeactivatableException("Plugin %s could not be deactivated" % plugin_name) from e
+                        raise_from(
+                            PluginNotDeactivatableException("Plugin %s could not be deactivated" % plugin_name), e)
                     else:
                         self._log.debug("Plugin %s deactivated" % plugin_name)
                         plugins_deactivated.append(plugin_name)

@@ -17,7 +17,7 @@ class GwThreadsPattern(GwBasePattern):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(GwThreadsPattern, self).__init__(*args, **kwargs)
 
         if not hasattr(self.app, "threads"):
             self.app.threads = ThreadsListApplication(self.app)
@@ -208,7 +208,7 @@ class ThreadWrapper(threading.Thread):
 
     """
     def __init__(self, thread):
-        super().__init__()
+        super(ThreadWrapper, self).__init__()
         self.thread = thread
         self.plugin = thread.plugin
         self.app = thread.plugin.app

@@ -47,7 +47,7 @@ class GwCommandsPattern(GwBasePattern):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(GwCommandsPattern, self).__init__(*args, **kwargs)
         if not hasattr(self.app, "commands"):
             self.app.commands = CommandsListApplication(self.app)
 

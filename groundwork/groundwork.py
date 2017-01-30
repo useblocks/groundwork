@@ -2,12 +2,13 @@
 groundwork module provides mainly the App class, which is a container for all functions and
 data related to plugins and their patterns.
 """
+from __future__ import absolute_import
 import logging
 import logging.config
 import sys
 import os
 
-from groundwork.configuration import ConfigManager
+from groundwork.configuration.configmanager import ConfigManager
 from groundwork.pluginmanager import PluginManager
 from groundwork.signals import SignalsApplication
 
@@ -103,9 +104,8 @@ class App(object):
         self.log.debug("Configure logging")
 
         # Let's be sure, that for our log no handlers are registered anymore
-        if self.log.hasHandlers():
-                for handler in self.log.handlers:
-                    self.log.removeHandler(handler)
+        for handler in self.log.handlers:
+            self.log.removeHandler(handler)
         if logger_dict is None:
             self.log.debug("No logger dictionary defined. Doing default logger configuration")
             formatter = logging.Formatter("%(name)s - %(asctime)s - [%(levelname)s] - %(module)s - %(message)s")

@@ -16,7 +16,7 @@ class GwDocumentsPattern(GwBasePattern):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(GwDocumentsPattern, self).__init__(*args, **kwargs)
 
         if not hasattr(self.app, "documents"):
             self.app.documents = DocumentsListApplication(self.app)

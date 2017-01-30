@@ -33,7 +33,7 @@ class GwCommandsInfo(GwDocumentsPattern, GwCommandsPattern):
     # So this is the way to make sure that command-functionality was set up when this plugins gets used.
     def __init__(self, *args, **kwargs):
         self.name = kwargs.get("name", self.__class__.__name__)
-        super().__init__(*args, **kwargs)
+        super(GwCommandsInfo, self).__init__(*args, **kwargs)
 
     def activate(self):
         self.documents.register(name="commands_overview",

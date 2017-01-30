@@ -19,7 +19,7 @@ class GwSharedObjectsPattern(GwBasePattern):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(GwSharedObjectsPattern, self).__init__(*args, **kwargs)
         if not hasattr(self.app, "shared_objects"):
             self.app.shared_objects = SharedObjectsListApplication(self.app)
         self.shared_objects = SharedObjectsListPlugin(self)

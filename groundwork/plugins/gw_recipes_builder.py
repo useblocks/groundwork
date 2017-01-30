@@ -30,7 +30,7 @@ class GwRecipesBuilder(GwCommandsPattern, GwRecipesPattern):
     """
     def __init__(self, *args, **kwargs):
         self.name = kwargs.get("name", self.__class__.__name__)
-        super().__init__(*args, **kwargs)
+        super(GwRecipesBuilder, self).__init__(*args, **kwargs)
 
     def activate(self):
         self.commands.register("recipe_list", "Lists all recipes", self._recipe_list)

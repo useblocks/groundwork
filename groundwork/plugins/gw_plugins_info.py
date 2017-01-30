@@ -59,7 +59,7 @@ class GwPluginsInfo(GwCommandsPattern, GwDocumentsPattern):
 
     def __init__(self, *args, **kwargs):
         self.name = kwargs.get("name", self.__class__.__name__)
-        super().__init__(*args, **kwargs)
+        super(GwPluginsInfo, self).__init__(*args, **kwargs)
 
     def activate(self):
         self.commands.register("plugin_list", "List all plugins", self._list_plugins)

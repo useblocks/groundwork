@@ -18,7 +18,7 @@ from groundwork.patterns.gw_base_pattern import GwBasePattern
 class GwRecipesPattern(GwBasePattern):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(GwRecipesPattern, self).__init__(*args, **kwargs)
 
         if not hasattr(self.app, "recipes"):
             self.app.recipes = RecipesListApplication(self.app)
