@@ -41,7 +41,7 @@ class ConfigManager:
                 raise TypeError("config_files members must be strings")
             try:
                 absolute_file = Path(file).resolve()
-            except FileNotFoundError:
+            except IOError:
                 self.log.warning("Config-file not found %s" % file)
                 continue
             else:

@@ -62,7 +62,7 @@ class App(object):
             self.path = os.path.abspath(self.path)
             self.log.warning("Given APP_PATH is relative, calculated following, absolute path: %s" % self.path)
         elif not os.path.exists(self.path):
-            raise NotADirectoryError("Given APP_PATH does not exist: %s" % self.path)
+            raise IOError("Given APP_PATH does not exist: %s" % self.path)
 
         self._configure_logging(self.config.get("GROUNDWORK_LOGGING"))
 

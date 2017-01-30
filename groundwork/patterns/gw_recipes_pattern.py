@@ -205,7 +205,7 @@ class Recipe:
         if os.path.isabs(path):
             self.path = path
         else:
-            raise FileNotFoundError("Path of recipe must be absolute. Got %s" % path)
+            raise IOError("Path of recipe must be absolute. Got %s" % path)
         self.plugin = plugin
         self.description = description
         self.final_words = final_words
