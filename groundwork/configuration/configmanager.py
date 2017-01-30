@@ -1,5 +1,5 @@
 import types
-from pathlib2 import Path
+from pathlib import Path
 import logging
 import os
 

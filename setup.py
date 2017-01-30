@@ -77,7 +77,7 @@ setup(
     platforms='any',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-flake8'],
-    install_requires=["pathlib2", "click", "blinker", "jinja2", "cookiecutter", "docutils"],
+    install_requires=["pathlib", "click", "blinker", "jinja2", "cookiecutter", "docutils"],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
