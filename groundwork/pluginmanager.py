@@ -94,7 +94,7 @@ class PluginManager:
                 if self._app.strict:
                     error = "Plugin class %s could not be initialised." % clazz.__name__
                     if sys.version_info[0] < 3:
-                        error += "Reason: %e" % e
+                        error += "Reason: %s" % e
                     raise_from(PluginNotInitialisableException(error), e)
 
             # Let's be sure, that GwBasePattern got called
@@ -160,7 +160,7 @@ class PluginManager:
                     if self._app.strict:
                         error = "Couldn't initialise plugin %s" % plugin_name
                         if sys.version_info[0] < 3:
-                            error += "Reason: %e" % e
+                            error += "Reason: %s" % e
                         raise_from(Exception(error), e)
                     else:
                         continue
