@@ -14,6 +14,7 @@ from future.utils import raise_from
 from pkg_resources import iter_entry_points
 import logging
 import inspect
+import sys
 
 from groundwork.patterns import GwBasePattern
 from groundwork.exceptions import PluginNotActivatableException, PluginNotInitialisableException, \
@@ -91,8 +92,10 @@ class PluginManager:
             except Exception as e:
                 self._log.warning("Plugin class %s could not be initialised" % clazz.__name__)
                 if self._app.strict:
-                    raise_from(
-                        PluginNotInitialisableException("Plugin class %s could not be initialised" % clazz.__name__), e)
+                    error = "Plugin class %s could not be initialised." % clazz.__name__
+                    if sys.version_info[0] < 3:
+                        error += "Reason: %e" % e
+                    raise_from(PluginNotInitialisableException(error), e)
 
             # Let's be sure, that GwBasePattern got called
             if not hasattr(plugin_instance, "_plugin_base_initialised") \
@@ -155,7 +158,10 @@ class PluginManager:
                 except Exception as e:
                     self._log.error("Couldn't initialise plugin %s" % plugin_name)
                     if self._app.strict:
-                        raise_from(Exception("Couldn't initialise plugin %s" % plugin_name), e)
+                        error = "Couldn't initialise plugin %s" % plugin_name
+                        if sys.version_info[0] < 3:
+                            error += "Reason: %e" % e
+                        raise_from(Exception(error), e)
                     else:
                         continue
             if plugin_name in self._plugins.keys():
