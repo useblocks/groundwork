@@ -25,7 +25,7 @@ setup(
     platforms='any',
     setup_requires=[],
     tests_require=[],
-    install_requires=['groundwork', 'pytest-runner', 'sphinx', 'gitpython'],
+    install_requires=['groundwork', ],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
