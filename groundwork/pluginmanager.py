@@ -92,7 +92,7 @@ class PluginManager:
             except Exception as e:
                 self._log.warning("Plugin class %s could not be initialised" % clazz.__name__)
                 if self._app.strict:
-                    error = "Plugin class %s could not be initialised." % clazz.__name__
+                    error = "Plugin class %s could not be initialised: %s" % (clazz.__name__, e.message)
                     if sys.version_info[0] < 3:
                         error += "Reason: %s" % e
                     raise_from(PluginNotInitialisableException(error), e)
