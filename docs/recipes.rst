@@ -1,3 +1,5 @@
+{% raw %}
+
 .. _cookiecutter: https://cookiecutter.readthedocs.io/en/latest/
 
 .. _Jinja: http://jinja.pocoo.org/
@@ -119,7 +121,6 @@ Structure
 ~~~~~~~~~
 A recipe must follow the rules of `cookiecutter`_. Therefore it needs to have the following structure::
 
-    {% raw %}
     /
     |-- cookiecutter.json
     |
@@ -128,7 +129,6 @@ A recipe must follow the rules of `cookiecutter`_. Therefore it needs to have th
     |   |-- other directories/files, which will be copied.
     |
     |-- other direcotries/files, which will NOT be copied
-    {% endraw %}
 
 .. note::
 
@@ -146,7 +146,6 @@ Structure
 `````````
 The following example for a **cookiecutter.json** file comes from the RecipeBuilder plugin::
 
- {% raw %}
  {
   "full_name": "My Name",
   "github_user" : "{{cookiecutter.full_name.lower().replace(' ', '_') }}",
@@ -162,7 +161,6 @@ The following example for a **cookiecutter.json** file comes from the RecipeBuil
   "version": "0.1.0",
   "license": ["MIT license", "BSD license", "ISC license", "Apache Software License 2.0", "GNU General Public License v3", "Not open source"]
  }
- {% endraw %}
 
 Usage
 `````
@@ -186,7 +184,6 @@ Using Jinja
 `Jinja`_ statements can be used to manipulate/modify inputs or make decisions out of them.
 For instance: Based on the chosen license, the content of a file called *LICENSE* could be changed by::
 
-    {% raw %}
     {% if cookiecutter.license == MIT %}
     Using MTI license
 
@@ -197,6 +194,6 @@ For instance: Based on the chosen license, the content of a file called *LICENSE
     Using a private license
 
     {% endif %}
-    {% endraw %}
 
 
+{% endraw %}
