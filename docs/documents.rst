@@ -41,13 +41,14 @@ and call the :func:`~groundwork.patterns.gw_documents_pattern.DocumentsListPlugi
             my_content = """
             My Plugin
             =========
-
+            {% raw %}
             Application name: {{app.name}}
             Plugin name: {{plugin.name}}
             """
             self.documents.register(name="my_document",
                                     content=my_content,
                                     description="Provides information about 'My Plugin'")
+            {% endraw %}
 
 Unregister document
 -------------------
@@ -74,6 +75,7 @@ groundwork provides the application object as ``app`` and the plugin object, whi
 
     # JINJA template
 
+    {% raw %}
     Application name: {{ app.name }}
 
     {% if app.plugins.get()|count > 5 %}
@@ -86,6 +88,7 @@ groundwork provides the application object as ``app`` and the plugin object, whi
     {% for key, plugin in app.plugins.get().items() %}
         name: plugin.name
     {% endfor %}
+    {% endraw %}
 
 The template engine must be executed by the plugin, which provides a viewer to these documents. And the execution
 should be done directly before the document gets presented to the user.
