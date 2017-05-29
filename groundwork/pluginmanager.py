@@ -90,12 +90,11 @@ class PluginManager:
                 if plugin_instance.name != name:
                     plugin_instance.name = name
             except Exception as e:
-                self._log.warning("Plugin class %s could not be initialised" % clazz.__name__)
-                if self._app.strict:
-                    error = "Plugin class %s could not be initialised: %s" % (clazz.__name__, e.message)
-                    if sys.version_info[0] < 3:
-                        error += "Reason: %s" % e
-                    raise_from(PluginNotInitialisableException(error), e)
+                self._log.warning("Plugin class %s could not be initialised. Reason %s" % (clazz.__name__, e))
+                error = "Plugin class %s could not be initialised: %s" % (clazz.__name__, e)
+                if sys.version_info[0] < 3:
+                    error += "Reason: %s" % e
+                raise_from(PluginNotInitialisableException(error), e)
 
             # Let's be sure, that GwBasePattern got called
             if not hasattr(plugin_instance, "_plugin_base_initialised") \
@@ -156,7 +155,7 @@ class PluginManager:
                 try:
                     self.initialise_by_names([plugin_name])
                 except Exception as e:
-                    self._log.error("Couldn't initialise plugin %s" % plugin_name)
+                    self._log.error("Couldn't initialise plugin %s. Reason %s" % (plugin_name, e))
                     if self._app.strict:
                         error = "Couldn't initialise plugin %s" % plugin_name
                         if sys.version_info[0] < 3:
