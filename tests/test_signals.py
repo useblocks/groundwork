@@ -88,7 +88,7 @@ def test_multi_plugin_deactivations(basicApp, EmptyPlugin):
     assert plugin.active is True
 
 
-def test_signal_registration(basicApp, EmptyPlugin):
+def test_signal_handling(basicApp, EmptyPlugin):
     from blinker import NamedSignal
     from groundwork.signals import UnknownSignal
 
