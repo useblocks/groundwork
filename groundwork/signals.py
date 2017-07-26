@@ -1,8 +1,14 @@
 import logging
-from blinker import WeakNamespace
+
+# from blinker import Namespace
+
+# Used in groundwork <= 0.1.11
+# Used WeakNamespace could also be Namespace.
+# But doc says, Weaknamespace gets clean up, if no reference exists anymore.
+from blinker import WeakNamespace as Namespace
 
 
-class SignalsApplication():
+class SignalsApplication:
     """
     Signal and Receiver management class on application level.
     This class is initialised once per groundwork application object.
@@ -32,11 +38,9 @@ class SignalsApplication():
         # How to use namespace in blinker? See:
         # http://flask.pocoo.org/docs/0.11/signals/#creating-signals for blinker namespace usage
         # https://github.com/jek/blinker/blob/master/blinker/base.py#L432
-        # Used WeakNamespace could also be Namespace.
-        # But doc says, Weaknamespace gets clean up, if no reference exists anymore.
         #: Used blinker namespace object to register signals only for the context of a single groundwork application
         #: instance
-        self.__namespace = WeakNamespace()
+        self._namespace = Namespace()
 
         self.__log.info("Application signals initialised")
 
@@ -52,7 +56,7 @@ class SignalsApplication():
         if signal in self.signals.keys():
             raise Exception("Signal %s was already registered by %s" % (signal, self.signals[signal].plugin.name))
 
-        self.signals[signal] = Signal(signal, plugin, self.__namespace, description)
+        self.signals[signal] = Signal(signal, plugin, self._namespace, description)
         self.__log.debug("Signal %s registered by %s" % (signal, plugin.name))
         return self.signals[signal]
 
@@ -86,7 +90,7 @@ class SignalsApplication():
         if receiver in self.receivers.keys():
             raise Exception("Receiver %s was already registered by %s" % (receiver,
                                                                           self.receivers[receiver].plugin.name))
-        self.receivers[receiver] = Receiver(receiver, signal, function, plugin, self.__namespace, description, sender)
+        self.receivers[receiver] = Receiver(receiver, signal, function, plugin, self._namespace, description, sender)
         self.__log.debug("Receiver %s registered for signal %s" % (receiver, signal))
         return self.receivers[receiver]
 
@@ -113,7 +117,7 @@ class SignalsApplication():
         :type plugin: GwBasePattern
         """
         if signal not in self.signals.keys():
-            raise Exception("Unknown signal %s" % signal)
+            raise UnknownSignal("Unknown signal %s" % signal)
         self.__log.debug("Sending signal %s for %s" % (signal, plugin.name))
         rv = self.signals[signal].send(plugin, **kwargs)
         return rv
@@ -153,7 +157,7 @@ class SignalsApplication():
 
     def get_receiver(self, receiver=None, plugin=None):
         """
-        Get one or more signals.
+        Get one or more receivers.
 
         :param receiver: Name of the signal
         :type receiver: str
@@ -249,3 +253,7 @@ class Receiver:
 
     def disconnect(self):
         self.namespace.signal(self.signal).disconnect(self.function)
+
+
+class UnknownSignal(Exception):
+    pass
