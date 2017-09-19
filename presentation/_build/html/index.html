@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>groundwork &mdash; groundwork 1.0 documentation</title>
+
+    
+
+    
+<link rel="stylesheet" href="_static/css/reveal.css">
+<link rel="stylesheet" href="_static/css/theme/black.css" id="theme">
+<link rel="stylesheet" href="_static/lib/css/zenburn.css">
+<link rel="stylesheet" href="_static/revealjs.css" type="text/css" />
+<link rel="stylesheet" href="_static/css/gw_custom.css" type="text/css" />
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+        if(window.location.search.match(/print-pdf/gi)) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = '_static/css/print/pdf.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="_static/lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        
+  <div class="section" id="groundwork">
+<h1>groundwork<a class="headerlink" href="#groundwork" title="Permalink to this headline">¶</a></h1>
+<section>
+<img alt="_images/gw_slogan.png" class="first last" src="_images/gw_slogan.png" />
+</section>
+<section>
+<section class="first">
+<h2>Fast development and high functional quality</h2>
+<h3>Get things done!</h3>
+That’s it.</section>
+<section class="last">
+<h2>How groundwork supports you</h2>
+<div class="first last line-block">
+<div class="line">Support for command line, web, desktop, …</div>
+<div class="line"><br /></div>
+<div class="line">groundwork extensions</div>
+<div class="line">(web, database, users, … )</div>
+<div class="line"><br /></div>
+<div class="line">Clean, focused architecture</div>
+<div class="line">(app, plugins, patterns)</div>
+<div class="line"><br /></div>
+<div class="line">Common techniques for for common problems</div>
+<div class="line">(templates, signals, commands, …)</div>
+<div class="line"><br /></div>
+<div class="line">Focused on functions, not layout or design</div>
+</div>
+</section>
+</section>
+<section>
+<section class="first">
+<h2>Clean architecture, reusable components</h2>
+<h3>Stop starting from scratch</h3>
+</section>
+<section>
+<h2>How groundwork structures your code</h2>
+<table border="1" class="first last docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>A</strong></td>
+<td>Application</td>
+<td>Bundles plugins to an usable function set</td>
+</tr>
+<tr class="row-even"><td><strong>P</strong></td>
+<td>Plugins</td>
+<td>Provides use case specific functions</td>
+</tr>
+<tr class="row-odd"><td><strong>P</strong></td>
+<td>Patterns</td>
+<td>Provides technical interfaces</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section class="last">
+<h2>Groundwork Architecture</h2>
+<h3>Example</h3>
+<p class="first last plantuml">
+<img src="_images/plantuml-f13405a6d641e696675fe943abfcea433fa2d0bc.png" alt="&#64;startuml
+skinparam backgroundColor transparent
+skinparam shadowing false
+
+scale 1000 width
+
+object &quot;Application JenkinsGate&quot; as app
+
+object &quot;plugin ViewDatabase&quot; as pa
+object &quot;plugin ViewJenkinsData&quot; as pb
+object &quot;plugin InformTeam&quot; as pc
+
+object &quot;pattern GwSQL&quot; as pta
+object &quot;pattern MyJenkins&quot; as ptb
+
+app : Provides easy overviews for JenkinsData
+
+pa : View raw database data
+pb : Store and view data from jenkins
+pc : Inform teams on jenkins changes
+
+pta : Connection to SQL-DB\nfrom groundwork-database
+ptb : Connection to internal Jenkins server
+
+app &lt;-- pa
+app &lt;-- pb
+app &lt;-- pc
+
+pa &lt;-- pta
+pb &lt;-- pta
+pb &lt;-- ptb
+pc &lt;-- ptb
+
+
+
+&#64;enduml" />
+</p>
+</section>
+</section>
+</div>
+
+
+      </div>
+    </div>
+    
+<script src="_static/js/jquery.min.js"></script>
+<script src="_static/lib/js/head.min.js"></script>
+<script src="_static/js/reveal.js"></script>
+    <script>
+
+      // change DOM for reveal.js
+      $("div.section h1").remove();
+      var content = $("div.section").html();
+      $("div.section").remove();
+      $("div.slides").html(content);
+
+      Reveal.initialize({
+        width: 1500,
+        height: 900,
+
+        margin: 0.1,
+
+        minScale: 0.2,
+        maxScale: 1.0,
+
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        keyboard : true,
+        overview: true,
+        touch: true,
+        loop: false,
+        rtl: false,
+        fragments: true,
+
+        autoSlide: 0,
+        mouseWheel: false,
+        rollingLinks: false,
+        previewLinks: false,
+
+        transitionSpeed: "default",
+        backgroundTransition: "default",
+
+        slideNumber: false,
+        embedded: false,
+        autoSlideStoppable: true,
+        hideAddressBar: true,
+
+        parallaxBackgroundImage: "",
+        parallaxBackgroundSize: "",
+
+        focusBodyOnPageVisiblityChange: true,
+
+        viewDistance: 3,
+
+        transition: Reveal.getQueryHash().transition || "default",
+
+        
+
+        dependencies: [
+           { src: '_static/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+           { src: '_static/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+           { src: '_static/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+           { src: '_static/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+           { src: '_static/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+           { src: '_static/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });
+    </script>
+    
+  </body>
+</html>

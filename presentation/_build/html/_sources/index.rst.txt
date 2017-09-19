@@ -1,0 +1,93 @@
+groundwork
+==========
+
+.. revealjs::
+
+    .. image:: _static/gw_slogan.png
+
+.. revealjs::
+
+    .. revealjs:: Fast development and high functional quality
+        :subtitle: Get things done!
+
+        That's it.
+
+    .. revealjs:: How groundwork supports you
+
+        | Support for command line, web, desktop, ...
+        |
+        | groundwork extensions
+        | (web, database, users, ... )
+        |
+        | Clean, focused architecture
+        | (app, plugins, patterns)
+        |
+        | Common techniques for for common problems
+        | (templates, signals, commands, ...)
+        |
+        | Focused on functions, not layout or design
+
+
+.. revealjs::
+
+    .. revealjs:: Clean architecture, reusable components
+       :subtitle: Stop starting from scratch
+
+    .. revealjs:: How groundwork structures your code
+
+        .. list-table::
+            :header-rows: 0
+
+            * - **A**
+              - Application
+              - Bundles plugins to an usable function set
+            * - **P**
+              - Plugins
+              - Provides use case specific functions
+            * - **P**
+              - Patterns
+              - Provides technical interfaces
+
+    .. revealjs:: Groundwork Architecture
+        :subtitle: Example
+
+        .. uml::
+
+            @startuml
+            skinparam backgroundColor transparent
+            skinparam shadowing false
+
+            scale 1000 width
+
+            object "Application JenkinsGate" as app
+
+            object "plugin ViewDatabase" as pa
+            object "plugin ViewJenkinsData" as pb
+            object "plugin InformTeam" as pc
+
+            object "pattern GwSQL" as pta
+            object "pattern MyJenkins" as ptb
+
+            app : Provides easy overviews for JenkinsData
+
+            pa : View raw database data
+            pb : Store and view data from jenkins
+            pc : Inform teams on jenkins changes
+
+            pta : Connection to SQL-DB\nfrom groundwork-database
+            ptb : Connection to internal Jenkins server
+
+            app <-- pa
+            app <-- pb
+            app <-- pc
+
+            pa <-- pta
+            pb <-- pta
+            pb <-- ptb
+            pc <-- ptb
+
+
+
+            @enduml
+
+

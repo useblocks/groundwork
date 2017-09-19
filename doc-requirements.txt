@@ -1,0 +1,3 @@
+sphinx
+sphinxcontrib-plantuml
+sphinxjp.themes.revealjs
