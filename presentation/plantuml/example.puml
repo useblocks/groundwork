@@ -1,0 +1,38 @@
+@startuml
+    skinparam backgroundColor transparent
+    skinparam arrowColor #ffffff
+    skinparam objectBackgroundColor #333
+    skinparam objectBorderColor #fff
+    skinparam objectAttributeFontColor #fff
+    skinparam objectFontColor #fff
+    skinparam shadowing false
+
+    scale 1000 width
+
+    object "Application JenkinsGate" as app
+
+    object "plugin ViewDatabase" as pa
+    object "plugin ViewJenkinsData" as pb
+    object "plugin InformTeam" as pc
+
+    object "pattern GwSqlPattern" as pta
+    object "pattern MyJenkins" as ptb
+
+    app : Provides easy overviews for Jenkins job data
+
+    pa : View raw database data
+    pb : Store and view data from jenkins
+    pc : Inform teams on Jenkins changes
+
+    pta : Connection to SQL-DB\nfrom groundwork-database
+    ptb : Connection to internal Jenkins server
+
+    app <-- pa
+    app <-- pb
+    app <-- pc
+
+    pa <-- pta
+    pb <-- pta
+    pb <-- ptb
+    pc <-- ptb
+@enduml
