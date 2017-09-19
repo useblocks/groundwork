@@ -43,6 +43,7 @@ def setup(app):
         print("Missing _static/css/gw_custom.css")
         sys.exit()
 
+
 # PLANTUML config
 cwd = os.getcwd()
 plantuml = 'java -jar %s' % os.path.join(cwd, "utils/plantuml.jar")
@@ -202,6 +203,3 @@ texinfo_documents = [
      author, 'groundwork', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-

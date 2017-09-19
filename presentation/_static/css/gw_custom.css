@@ -1,5 +1,41 @@
+/* IMAGE */
 .reveal section img {
     border: none;
     background: none;
     box-shadow: none;
+}
+
+/* NAVIGATION ARROWS*/
+.reveal .controls div.navigate-up, .reveal .controls div.navigate-up.enabled {
+    border-bottom-color: #ffcc00;
+}
+
+.reveal .controls div.navigate-down, .reveal .controls div.navigate-down.enabled {
+    border-top-color: #ffcc00;
+}
+
+.reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+    border-left-color: #ffcc00;
+}
+
+.reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+    border-right-color: #ffcc00;
+}
+
+.reveal .controls div.navigate-left.enabled:hover {
+    border-right-color: rgba(255, 204, 0, 0.61);
+}
+
+/* PROGRESSBAR*/
+.reveal .progress span {
+    background: #ffcc00;
+}
+
+/* LINKS */
+.reveal a {
+    color: #ffcc00;
+    text-decoration: none;
+    -webkit-transition: color 0.15s ease;
+    -moz-transition: color 0.15s ease;
+    transition: color 0.15s ease;
 }
