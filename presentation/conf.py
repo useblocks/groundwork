@@ -120,7 +120,7 @@ html_theme_options = {
     "height": 900,
 
     # Factor of the display size that should remain empty around the content
-    "margin": 0.1,
+    "margin": 0.05,
 
     # Bounds for smallest/largest possible scale to apply to content
     "min_scale": 0.2,
