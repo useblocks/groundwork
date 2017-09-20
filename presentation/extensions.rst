@@ -11,6 +11,8 @@
 
         groundwork-validation
 
+        groundwork-spreadsheets
+
 
     .. revealjs:: groundwork-database
 
@@ -89,6 +91,7 @@
         .. image:: _static/web_user_example.png
             :height: 400px
 
+
     .. revealjs:: groundwork-validation
 
         Documentation: `groundwork-validation.readthedocs.io <https://groundwork-validation.readthedocs.io/en/latest/>`_
@@ -98,3 +101,10 @@
         Validations can be based on hashes or expected content of return values
 
         Developed to support `ISO 26262 <https://en.wikipedia.org/wiki/ISO_26262>`_
+
+
+    .. revealjs:: groundwork-spreadsheets
+
+        Documentation: `groundwork-spreadsheets.readthedocs.io <https://groundwork-spreadsheets.readthedocs.io/en/latest/>`_
+
+        Reads and validates Excel documents and provides its data as easy accessible dictionary
