@@ -124,7 +124,7 @@ html_theme_options = {
 
     # Bounds for smallest/largest possible scale to apply to content
     "min_scale": 0.2,
-    "max_scale": 1.0,
+    "max_scale": 2.0,
 
     # Hides the address bar on mobile devices
     "hide_address_bar": True,
