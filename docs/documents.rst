@@ -1,5 +1,3 @@
-{% raw %}
-
 .. _documents:
 
 Documents
@@ -194,5 +192,3 @@ to a ``.. toctree::`` of your index.rst.
 
     The output filename of a document is the document name in lowercase. Also all whitespaces are removed.
     For instance: "My Great Document" becomes "mygreatdocument.rst"
-
-{% endraw %}

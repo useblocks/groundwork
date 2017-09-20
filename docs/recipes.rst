@@ -1,5 +1,3 @@
-{% raw %}
-
 .. _cookiecutter: https://cookiecutter.readthedocs.io/en/latest/
 
 .. _Jinja: http://jinja.pocoo.org/
@@ -128,7 +126,7 @@ A recipe must follow the rules of `cookiecutter`_. Therefore it needs to have th
     |   |
     |   |-- other directories/files, which will be copied.
     |
-    |-- other direcotries/files, which will NOT be copied
+    |-- other directories/files, which will NOT be copied
 
 .. note::
 
@@ -194,6 +192,3 @@ For instance: Based on the chosen license, the content of a file called *LICENSE
     Using a private license
 
     {% endif %}
-
-
-{% endraw %}
