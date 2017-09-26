@@ -43,6 +43,11 @@ def setup(app):
         print("Missing _static/css/gw_custom.css")
         sys.exit()
 
+    # try:
+
+    # except Exception:
+    #     print("Missing _static/css/pygments_vim.css. Using default config")
+
 
 # PLANTUML config
 cwd = os.getcwd()
