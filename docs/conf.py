@@ -139,6 +139,9 @@ html_theme = 'groundwork'
 # documentation.
 #
 html_theme_options = {
+    "sidebar_width": '220px',
+    "stickysidebar": True,
+    "stickysidebarscrollable": True,
     "contribute": True,
     "github_fork": "useblocks/groundwork",
     "github_ribbon_color": "white_ffffff",
@@ -193,6 +196,7 @@ html_static_path = ['_static']
 # Custom sidebar templates, maps document names to template names.
 #
 # html_sidebars = {}
+html_sidebars = {'**': ['globaltoc.html', 'searchbox.html',], }
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
