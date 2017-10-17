@@ -51,7 +51,7 @@ After application initialisation, the configuration can be used. For instance to
     from groundwork import APP
 
     my_app = App(config_files=["config1.py"])
-    my_app.activate(my_app.config.get("APP_PLUGINS"))
+    my_app.plugins.activate(my_app.config.get("APP_PLUGINS"))
 
 
 
@@ -93,7 +93,7 @@ They can be activated after app initialisation::
   from groundwork import App
 
   my_app = App()
-  my_app.activate(["GwPluginInfo", "GwSignalInfo"])
+  my_app.plugins.activate(["GwPluginInfo", "GwSignalInfo"])
 
 
 Registration of own plugins
@@ -122,7 +122,7 @@ the application developer. This can be done during application initialisation or
     my_app.plugins.classes.register([AnotherPlugin])
 
     # Activation
-    my_app.activate(["My Plugin", "AnotherPlugin"])
+    my_app.plugins.activate(["My Plugin", "AnotherPlugin"])
 
 
 
@@ -154,7 +154,7 @@ Here is an example, which demonstrates both ways::
 
     # Activation by application
     my_app = App(plugins=[MyPlugin])                        # Registration
-    my_app.activate(["My Plugin"])                          # Activation
+    my_app.plugins.activate(["My Plugin"])                  # Activation
 
     # Activation by plugin
     my_plugin2 = MyPlugin(app=my_app, name="MyPlugin2")     # Registration
