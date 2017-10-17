@@ -1,3 +1,4 @@
 sphinx
 sphinxcontrib-plantuml
 sphinxjp.themes.revealjs
+groundwork-sphinx-theme

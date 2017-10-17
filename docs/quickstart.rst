@@ -12,7 +12,7 @@ Create a file named **my_app.py** and add the following code::
 
     if __name__ == "__main__":
         my_app = App()
-        my_app.activate(["GwPluginInfo"])
+        my_app.plugins.activate(["GwPluginInfo"])
         my_app.commands.start_cli()
 
 This code performs the following actions:
@@ -72,7 +72,7 @@ But before activation, it also needs to be registered, what can be done during a
 
 
     my_app = App(plugins=[MyPlugin])    # Register your plugin class
-    my_app.activate(["My Plugin"])      # And activate it
+    my_app.plugins.activate(["My Plugin"])      # And activate it
 
 You can also use the plugin object itself to perform the activation::
 
