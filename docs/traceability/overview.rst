@@ -1,31 +1,23 @@
 Overview
 --------
-..
-    All user stories
-    ~~~~~~~~~~~~~~~~
 
-    .. needfilter::
-        :types: story
-        :show_status:
-        :show_tags:
-        :sort_by: id
-        :layout: table
+All user stories
+~~~~~~~~~~~~~~~~
 
-    Test cases
-    ~~~~~~~~~~
+.. needfilter::
+    :types: story
+    :show_status:
+    :show_tags:
+    :sort_by: id
+    :layout: table
 
-    .. needfilter::
-        :types: test
-        :show_status:
-        :show_tags:
-        :sort_by: id
-        :layout: table
+Test cases
+~~~~~~~~~~
 
-    Diagram
-    ~~~~~~~
+.. needfilter::
+    :types: test
+    :show_status:
+    :show_tags:
+    :sort_by: id
+    :layout: table
 
-    .. needfilter::
-        :types: story;test
-        :show_status:
-        :show_tags:
-        :layout: diagram

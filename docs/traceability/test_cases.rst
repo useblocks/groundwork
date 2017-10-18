@@ -1,10 +1,10 @@
 Test cases
 ----------
 
-..
-    .. automodule:: test_app.py
-        :members:
+.. automodule:: test_app
+    :members:
 
+..
     .. automodule:: test_apps.py
         :members:
 
