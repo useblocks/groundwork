@@ -2,3 +2,4 @@ sphinx
 sphinxcontrib-plantuml
 sphinxjp.themes.revealjs
 groundwork-sphinx-theme
+sphinxcontrib-needs>=0.1.35,<2
