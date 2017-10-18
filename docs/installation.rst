@@ -1,6 +1,8 @@
 Installation
 ============
 
+.. TODO 17-10-mh This has changed
+
 .. warning::
 
     | groundwork does currently support Python3.4 or higher only.
@@ -39,3 +41,4 @@ After that your virtual environment is installed and activated.
 Now you can install groundwork::
 
     pip install groundwork
+

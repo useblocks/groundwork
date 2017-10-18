@@ -25,3 +25,4 @@ It also has some patterns to easily create admin or REST interfaces based on giv
 
 Visit https://groundwork-web.readthedocs.io for more information.
 
+.. TODO 17-10-mh Missing: groundwork-spreadsheets, groundwork-validation, groundwork-users
