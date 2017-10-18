@@ -38,9 +38,9 @@ sys.path.append(os.path.abspath('../tests'))
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    # 'sphinx.ext.viewcode',
-    # 'sphinxcontrib.plantuml',
-    # 'sphinxcontrib.needs'
+    'sphinx.ext.viewcode',
+    'sphinxcontrib.plantuml',
+    'sphinxcontrib.needs'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
