@@ -1,24 +1,22 @@
 .. image:: https://img.shields.io/pypi/l/groundwork.svg
-   :target: https://pypi.python.org/pypi/groundwork
-   :alt: License
+    :target: https://pypi.python.org/pypi/groundwork
+    :alt: License
 .. image:: https://img.shields.io/pypi/pyversions/groundwork.svg
-   :target: https://pypi.python.org/pypi/groundwork
-   :alt: Supported versions
+    :target: https://pypi.python.org/pypi/groundwork
+    :alt: Supported versions
 .. image:: https://readthedocs.org/projects/groundwork/badge/?version=latest
-   :target: https://readthedocs.org/projects/groundwork/
+    :target: https://readthedocs.org/projects/groundwork/
 .. image:: https://travis-ci.org/useblocks/groundwork.svg?branch=master
-   :target: https://travis-ci.org/useblocks/groundwork
-   :alt: Travis-CI Build Status
+    :target: https://travis-ci.org/useblocks/groundwork
+    :alt: Travis-CI Build Status
 .. image:: https://coveralls.io/repos/github/useblocks/groundwork/badge.svg?branch=master
-   :target: https://coveralls.io/github/useblocks/groundwork?branch=master
+    :target: https://coveralls.io/github/useblocks/groundwork?branch=master
 .. image:: https://img.shields.io/scrutinizer/g/useblocks/groundwork.svg
-   :target: https://scrutinizer-ci.com/g/useblocks/groundwork/
-   :alt: Code quality
+    :target: https://scrutinizer-ci.com/g/useblocks/groundwork/
+    :alt: Code quality
 .. image:: https://img.shields.io/pypi/v/groundwork.svg
-   :target: https://pypi.python.org/pypi/groundwork
-   :alt: PyPI Package latest release
-
-
+    :target: https://pypi.python.org/pypi/groundwork
+    :alt: PyPI Package latest release
 
 .. image:: _static/gw_slogan.png
 
@@ -99,30 +97,23 @@ User's Guide
 ------------
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   foreword
-   installation
-   quickstart
-   architecture
-   application
-   plugins
-   patterns
-   signals
-   commands
-   shared_objects
-   documents
-   threads
-   recipes
-   packaging
-   packages
-   contribute
+    foreword
+    installation
+    quickstart
+    concepts/index
+    packages
+    contribute
+    traceability/index
+    changelog
+
 
 API Reference
 -------------
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   api
+    api
 

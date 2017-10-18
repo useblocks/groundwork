@@ -54,7 +54,7 @@ The following image shows an application example for a weather web service. The 
  * Allow user registration, in which users are stored to the database and then receive a welcome email.
  * Error handling. Service administrators shall get emails if problems occur.
 
-.. image:: _static/groundwork_architecture.png
+.. image:: ../_static/groundwork_architecture.png
    :width: 100%
    :align: center
    :alt: groundwork architecture
