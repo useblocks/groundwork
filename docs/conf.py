@@ -21,7 +21,11 @@ import os
 import sys
 import pkg_resources
 from datetime import datetime
+
 sys.path.append(os.path.abspath('_themes'))
+
+# Needed to autodocument test cases
+sys.path.append(os.path.abspath('../tests'))
 
 # -- General configuration ------------------------------------------------
 
@@ -34,6 +38,9 @@ sys.path.append(os.path.abspath('_themes'))
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    # 'sphinx.ext.viewcode',
+    # 'sphinxcontrib.plantuml',
+    # 'sphinxcontrib.needs'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -147,6 +154,14 @@ html_theme_options = {
     "github_ribbon_color": "white_ffffff",
     "github_user": "useblocks",
 }
+
+# sphinxcontrib.needs configuration
+needs_types = [
+    dict(directive="story", title="User Story", prefix="US_", color="#BFD8D2", style="node"),
+    dict(directive="test", title="Test Case", prefix="TC_", color="#DCB239", style="node")
+]
+needs_id_required = True  # Don't auto-generate tracking object IDs
+
 
 # Add any paths that contain custom themes here, relative to this directory.
 html_theme_path = ['_themes']
