@@ -77,6 +77,7 @@ setup(
     platforms='any',
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'pytest-flake8'],
+    # TODO 17-10-11-mh Future is missing here
     install_requires=["pathlib", "click", "blinker", "jinja2", "cookiecutter", "docutils"],
     classifiers=[
         'Development Status :: 3 - Alpha',
