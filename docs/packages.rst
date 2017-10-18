@@ -1,7 +1,7 @@
 .. _packages:
 
-Additional Packages for groundwork
-==================================
+Additional packages
+===================
 
 groundwork-database
 -------------------
