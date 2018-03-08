@@ -47,7 +47,7 @@ def _gw_logging_cfg(log_file):
 
 
 def test_logging_file(basicApp, tmpdir):
-    log_file = os.path.join(tmpdir, "test.log")
+    log_file = os.path.join(str(tmpdir), "test.log")
     app = basicApp
     # set up logging in the config, with log level INFO
     app.config.set('GROUNDWORK_LOGGING', _gw_logging_cfg(log_file))
@@ -68,7 +68,7 @@ def test_logging_file(basicApp, tmpdir):
 
 
 def test_logging_console(basicApp, tmpdir, capsys):
-    log_file = os.path.join(tmpdir, "test.log")
+    log_file = os.path.join(str(tmpdir), "test.log")
     app = basicApp
     # set up logging in the config, with log level INFO
     app.config.set('GROUNDWORK_LOGGING', _gw_logging_cfg(log_file))
