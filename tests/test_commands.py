@@ -1,9 +1,11 @@
 """
 For ideas how to test commands based on clicks, see http://click.pocoo.org/5/testing/#basic-testing
 """
+import click
 import pytest
+from click import Argument, Option
 from click.testing import CliRunner
-from click import Option
+
 from groundwork.patterns.gw_commands_pattern import CommandExistException
 
 
@@ -68,3 +70,204 @@ def test_command_multi_plugin_registration(basicApp, EmptyCommandPlugin):
     assert len(basicApp.commands.get()) == 1
     assert len(plugin.commands.get()) == 1
     assert len(plugin2.commands.get()) == 0
+
+
+def test_command_mandatory_argument(basicApp):
+    """
+    This test case registers a command with a mandatory argument. Then it calls that command twice: first with the
+    mandatory argument there; then with it missing.
+
+    It is asserted, that the first call returns 0, the second one 2 as exit code.
+    """
+    def _test_command(*args, **kwargs):
+        print(args)
+        print(kwargs)
+
+    plugin = basicApp.plugins.get("CommandPlugin")
+    plugin.commands.unregister("test")
+    # register a command with a mandatory argument
+    plugin.commands.register("test", "my test command", _test_command, params=[Argument(("man_arg",), required=True)])
+    # call command with argument -> expect ok
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, ["arg"])
+    assert result.exit_code == 0
+
+    # call command with no argument -> expect error
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, [])
+    assert result.exit_code == 2
+
+
+def test_command_optional_argument(basicApp):
+    """
+    This test case registers a command with an optional argument. Then it calls that command twice: first with the
+    optional argument there; then with it missing.
+
+    It is asserted, that both calls return 0 exit code.
+    """
+    def _test_command(*args, **kwargs):
+        print(args)
+        print(kwargs)
+
+    plugin = basicApp.plugins.get("CommandPlugin")
+    plugin.commands.unregister("test")
+    # register a command with an optional argument
+    plugin.commands.register("test", "my test command", _test_command, params=[Argument(("opt_arg",), required=False)])
+    # call command with argument -> expect ok
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, ["arg"])
+    assert result.exit_code == 0
+
+    # call command with no argument -> expect ok
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, [])
+    assert result.exit_code == 0
+
+
+def test_command_mandatory_option(basicApp):
+    """
+    This test case registers a command with a mandatory option. Then it calls that command twice: first with the
+    mandatory option there; then with it missing.
+
+    It is asserted, that the first call returns 0, the second one 2 as exit code.
+    """
+    def _test_command(*args, **kwargs):
+        print(args)
+        print(kwargs)
+
+    plugin = basicApp.plugins.get("CommandPlugin")
+    plugin.commands.unregister("test")
+    # register a command with a mandatory option
+    plugin.commands.register("test", "my test command", _test_command, params=[Option(["--man-opt"], required=True)])
+    # call command with option --man-opt -> expect ok
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, ["--man-opt", 123])
+    assert result.exit_code == 0
+
+    # call command with no option -> expect error
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, [])
+    assert result.exit_code == 2
+
+
+def test_command_optional_option(basicApp):
+    """
+    This test case registers a command with an optional option. Then it calls that command twice: first with the
+    optional option there; then with it missing.
+
+    It is asserted, that both calls return 0 exit code.
+    """
+    def _test_command(*args, **kwargs):
+        print(args)
+        print(kwargs)
+
+    plugin = basicApp.plugins.get("CommandPlugin")
+    plugin.commands.unregister("test")
+    # register a command with a mandatory option
+    plugin.commands.register("test", "my test command", _test_command, params=[Option(["--opt-opt"], required=False)])
+    # call command with option --opt-opt -> expect ok
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, ["--opt-opt", 123])
+    assert result.exit_code == 0
+
+    # call command with no option -> expect ok
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, [])
+    assert result.exit_code == 0
+
+
+def test_command_path_argument(basicApp):
+    """
+    This test case registers a command with a path argument that need to exist.
+    Then it calls that command twice: first with an existing path (the path of this source file); then with a
+    non-existent one.
+
+    It is asserted, that the first call returns 0, the second one 2 as exit code.
+    """
+    def _test_command(*args, **kwargs):
+        print(args)
+        print(kwargs)
+
+    plugin = basicApp.plugins.get("CommandPlugin")
+    plugin.commands.unregister("test")
+    # register a command with a path argument, that must exist
+    plugin.commands.register("test", "my test command", _test_command, params=[Argument(("man_arg",),
+                                                                                        type=click.Path(exists=True))])
+    # call command with existing path as argument -> expect ok
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, [__file__])
+    assert result.exit_code == 0
+
+    # call command with non-existing path as argument -> expect error
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, ['no such path'])
+    assert result.exit_code == 2
+
+
+def test_command_path_option(basicApp):
+    """
+    This test case registers a command with a path option that need to exist.
+    Then it calls that command twice: first with an existing path (the path of this source file); then with a
+    non-existent one.
+
+    It is asserted, that the first call returns 0, the second one 2 as exit code.
+    """
+    def _test_command(*args, **kwargs):
+        print(args)
+        print(kwargs)
+
+    plugin = basicApp.plugins.get("CommandPlugin")
+    plugin.commands.unregister("test")
+    # register a command with a path option, that must exist
+    plugin.commands.register("test", "my test command", _test_command, params=[Option(["--path"],
+                                                                                      type=click.Path(exists=True))])
+    # call command with existing path as option -> expect ok
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, ['--path', __file__])
+    assert result.exit_code == 0
+
+    # call command with non-existing path as option -> expect error
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, ['--path', 'no such path'])
+    assert result.exit_code == 2
+
+
+def test_command_flag_on_off(basicApp):
+    """
+    This test case registers a command with a flag option. The assigned command handler throws an exception if
+    the flag is not set.
+    Then it calls that command twice: fist with the flag set; then with the flag not set.
+
+    It is asserted, that the first call returns 0, the second one -1 - as that is exit code click's CliRunner returns
+    in case an unhandled exception has been thrown in the command handler.
+    """
+    def _test_command(*args, **kwargs):
+        print(args)
+        print(kwargs)
+        if not kwargs['flag_on']:
+            raise Exception
+
+    plugin = basicApp.plugins.get("CommandPlugin")
+    plugin.commands.unregister("test")
+    # register a command with an on/off flag; command throws exception if flag is off
+    plugin.commands.register("test", "my test command", _test_command, params=[Option(["--flag-on/--flag-off"])])
+
+    # call command with --flag-on (True) -> expect ok
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, ['--flag-on'])
+    assert result.exit_code == 0
+
+    # call command with --flag-off (False)  -> expect error
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, ['--flag-off'])
+    assert result.exit_code == -1
+
+
+def test_command_flag_count(basicApp):
+    """
+    This test case registers a command with a countable flag option.
+    The assigned command handler throws an exception if the flag count is not equal to 3.
+    Then it calls that command with the flag multiplied 3 times.
+
+    It is asserted, that the first call returns 0, thus proving that flag count was passed correctly to the handler,
+    otherwise it would have thrown an exception resulting in exit code -1 from the CliRunner.
+    """
+    def _test_command(*args, **kwargs):
+        print(args)
+        print(kwargs)
+        assert kwargs['flag'] == 3
+
+    plugin = basicApp.plugins.get("CommandPlugin")
+    plugin.commands.unregister("test")
+    # register a command with a countable flag
+    plugin.commands.register("test", "my test command", _test_command, params=[Option(["-f", "--flag"], count=True)])
+
+    # call command with --fff -> count == 3 is asserted in the command handler
+    result = CliRunner().invoke(basicApp.commands.get("test").click_command, ['-fff'])
+    assert result.exit_code == 0
