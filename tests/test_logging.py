@@ -47,6 +47,13 @@ def _gw_logging_cfg(log_file):
 
 
 def test_logging_file(basicApp, tmpdir):
+    """
+    The test case sets up a Groundwork application with logging to file with log level ``INFO``.
+    The application is then called to log a debug and an info message.
+
+    The generated logfile is then parsed and asserted, that only the info message can be found,
+    the debug message cannot.
+    """
     log_file = os.path.join(str(tmpdir), "test.log")
     app = basicApp
     # set up logging in the config, with log level INFO
@@ -68,6 +75,13 @@ def test_logging_file(basicApp, tmpdir):
 
 
 def test_logging_console(basicApp, tmpdir, capsys):
+    """
+    The test case sets up a Groundwork application with logging to stdout with log level ``INFO``.
+    The application is then called to log a debug and an info message.
+
+    The captured stdout is then parsed and asserted, that only the info message can be found,
+    the debug message cannot.
+    """
     log_file = os.path.join(str(tmpdir), "test.log")
     app = basicApp
     # set up logging in the config, with log level INFO

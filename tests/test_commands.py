@@ -73,6 +73,12 @@ def test_command_multi_plugin_registration(basicApp, EmptyCommandPlugin):
 
 
 def test_command_mandatory_argument(basicApp):
+    """
+    This test case registers a command with a mandatory argument. Then it calls that command twice: first with the
+    mandatory argument there; then with it missing.
+
+    It is asserted, that the first call returns 0, the second one 2 as exit code.
+    """
     def _test_command(*args, **kwargs):
         print(args)
         print(kwargs)
@@ -91,6 +97,12 @@ def test_command_mandatory_argument(basicApp):
 
 
 def test_command_optional_argument(basicApp):
+    """
+    This test case registers a command with an optional argument. Then it calls that command twice: first with the
+    optional argument there; then with it missing.
+
+    It is asserted, that both calls return 0 exit code.
+    """
     def _test_command(*args, **kwargs):
         print(args)
         print(kwargs)
@@ -109,6 +121,12 @@ def test_command_optional_argument(basicApp):
 
 
 def test_command_mandatory_option(basicApp):
+    """
+    This test case registers a command with a mandatory option. Then it calls that command twice: first with the
+    mandatory option there; then with it missing.
+
+    It is asserted, that the first call returns 0, the second one 2 as exit code.
+    """
     def _test_command(*args, **kwargs):
         print(args)
         print(kwargs)
@@ -127,6 +145,12 @@ def test_command_mandatory_option(basicApp):
 
 
 def test_command_optional_option(basicApp):
+    """
+    This test case registers a command with an optional option. Then it calls that command twice: first with the
+    optional option there; then with it missing.
+
+    It is asserted, that both calls return 0 exit code.
+    """
     def _test_command(*args, **kwargs):
         print(args)
         print(kwargs)
@@ -145,6 +169,13 @@ def test_command_optional_option(basicApp):
 
 
 def test_command_path_argument(basicApp):
+    """
+    This test case registers a command with a path argument that need to exist.
+    Then it calls that command twice: first with an existing path (the path of this source file); then with a
+    non-existent one.
+
+    It is asserted, that the first call returns 0, the second one 2 as exit code.
+    """
     def _test_command(*args, **kwargs):
         print(args)
         print(kwargs)
@@ -164,6 +195,13 @@ def test_command_path_argument(basicApp):
 
 
 def test_command_path_option(basicApp):
+    """
+    This test case registers a command with a path option that need to exist.
+    Then it calls that command twice: first with an existing path (the path of this source file); then with a
+    non-existent one.
+
+    It is asserted, that the first call returns 0, the second one 2 as exit code.
+    """
     def _test_command(*args, **kwargs):
         print(args)
         print(kwargs)
@@ -183,6 +221,14 @@ def test_command_path_option(basicApp):
 
 
 def test_command_flag_on_off(basicApp):
+    """
+    This test case registers a command with a flag option. The assigned command handler throws an exception if
+    the flag is not set.
+    Then it calls that command twice: fist with the flag set; then with the flag not set.
+
+    It is asserted, that the first call returns 0, the second one -1 - as that is exit code click's CliRunner returns
+    in case an unhandled exception has been thrown in the command handler.
+    """
     def _test_command(*args, **kwargs):
         print(args)
         print(kwargs)
@@ -204,6 +250,14 @@ def test_command_flag_on_off(basicApp):
 
 
 def test_command_flag_count(basicApp):
+    """
+    This test case registers a command with a countable flag option.
+    The assigned command handler throws an exception if the flag count is not equal to 3.
+    Then it calls that command with the flag multiplied 3 times.
+
+    It is asserted, that the first call returns 0, thus proving that flag count was passed correctly to the handler,
+    otherwise it would have thrown an exception resulting in exit code -1 from the CliRunner.
+    """
     def _test_command(*args, **kwargs):
         print(args)
         print(kwargs)
