@@ -99,3 +99,4 @@ docs.zip
 
 
 _build/
+.pytest_cache/
