@@ -3,7 +3,7 @@ os:
 language: python
 python:
 - '2.7'
-- '3.3'
+#- '3.3' Removed because of problems at travis with 33
 - '3.4'
 - '3.5'
 - '3.6'
