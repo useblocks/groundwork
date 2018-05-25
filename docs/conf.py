@@ -21,8 +21,11 @@ import os
 import sys
 import pkg_resources
 from datetime import datetime
-# sys.path.insert(0, os.path.abspath('.'))
+
 sys.path.append(os.path.abspath('_themes'))
+
+# Needed to autodocument test cases
+sys.path.append(os.path.abspath('../tests'))
 
 # -- General configuration ------------------------------------------------
 
@@ -35,6 +38,9 @@ sys.path.append(os.path.abspath('_themes'))
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.viewcode',
+    'sphinxcontrib.plantuml',
+    'sphinxcontrib.needs'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -134,17 +140,31 @@ todo_include_todos = False
 # a list of builtin themes.
 #
 html_theme = 'groundwork'
+# import sphinx_rtd_theme
+# html_theme = "sphinx_rtd_theme"
+# html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
 html_theme_options = {
+    "sidebar_width": '220px',
+    "stickysidebar": False,
+    "stickysidebarscrollable": False,
     "contribute": True,
     "github_fork": "useblocks/groundwork",
     "github_ribbon_color": "white_ffffff",
     "github_user": "useblocks",
 }
+
+# sphinxcontrib.needs configuration
+needs_types = [
+    dict(directive="story", title="User Story", prefix="US_", color="#BFD8D2", style="node"),
+    dict(directive="test", title="Test Case", prefix="TC_", color="#DCB239", style="node")
+]
+needs_id_required = True  # Don't auto-generate tracking object IDs
+
 
 # Add any paths that contain custom themes here, relative to this directory.
 html_theme_path = ['_themes']
@@ -194,6 +214,7 @@ html_static_path = ['_static']
 # Custom sidebar templates, maps document names to template names.
 #
 # html_sidebars = {}
+html_sidebars = {'**': ['globaltoc.html', 'searchbox.html', 'contribute.html'], }
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.

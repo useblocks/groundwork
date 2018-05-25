@@ -11,7 +11,8 @@ Minor update, no functional changes
 *   added test cases for click integration
 *   some fixes in the documentation
 
+
 0.1.12
 ------
 
-Start of the change log.
+* Start of the change log.

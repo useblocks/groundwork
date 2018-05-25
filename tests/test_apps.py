@@ -1,4 +1,5 @@
-# This file tests read-to-use applications, which are provided by groundwork.
+# This file tests ready-to-use applications, which are provided by groundwork.
+# Currently there is just one base application.
 
 from click.testing import CliRunner
 from groundwork.applications import gw_base_app

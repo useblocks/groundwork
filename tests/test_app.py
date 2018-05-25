@@ -9,11 +9,24 @@ from groundwork.patterns.exceptions import PluginDependencyLoop
 
 
 def test_app_initialisation():
+    """
+    .. test:: Additional test 1
+        :id: TC_LE_GROUNDWORK_0_1_12_0404
+
+        This test case checks
+        - if a groundwork app can be instantiated
+        - if the app path is set to the current working directory (APP_PATH is unset because no configuration is given)
+    """
     app = groundwork.App()
     assert app.path == os.getcwd()
 
 
 def test_app_initialisation_with_config():
+    """
+    This test case checks
+    - if a groundwork app can be instantiated with a configuration file
+    - if the app correctly reads the PLUGINS variable from configuration
+    """
     current_dir = os.path.dirname(os.path.abspath(__file__))
     config = os.path.join(current_dir, "static", "config.py")
     app = groundwork.App([config])
@@ -22,7 +35,14 @@ def test_app_initialisation_with_config():
     assert app.config.PLUGINS == ["PluginA", "PluginB", "NoPlugin"]
 
 
+# 17-10-16-mh TODO New test case name 'test_app_initialisation_with_config_missing_plugins'
+# 17-10-16-mh TODO Test can be improved by just writing 'app.conf.PLUGINS' - this would make the intention more clear
 def test_app_initialisation_with_config2():
+    """
+    This test case checks
+    - if a groundwork app can be instantiated with a configuration file
+    - if the app correctly reads the PLUGINS variable from configuration
+    """
     current_dir = os.path.dirname(os.path.abspath(__file__))
     config = os.path.join(current_dir, "static", "config2.py")
     app = groundwork.App([config])
