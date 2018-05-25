@@ -151,7 +151,7 @@ html_theme = 'groundwork'
 html_theme_options = {
     "sidebar_width": '220px',
     "stickysidebar": False,
-    "stickysidebarscrollable": True,
+    "stickysidebarscrollable": False,
     "contribute": True,
     "github_fork": "useblocks/groundwork",
     "github_ribbon_color": "white_ffffff",
