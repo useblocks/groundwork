@@ -5,7 +5,8 @@ import logging
 # Used in groundwork <= 0.1.11
 # Used WeakNamespace could also be Namespace.
 # But doc says, Weaknamespace gets clean up, if no reference exists anymore.
-from blinker import WeakNamespace as Namespace
+# from blinker import WeakNamespace as Namespace  # Do not use, seems to Clean up still needed parts!
+from blinker import Namespace as Namespace
 
 
 class SignalsApplication:

@@ -166,3 +166,103 @@ def test_signal_handling_via_plugins(basicApp, EmptyPlugin):
 
     return_values = plugin_send.signals.send("signal_test")
     assert len(return_values) == 2
+
+    # Send signal and check return vales
+
+
+def test_multi_plugin_sending(basicApp, EmptyPlugin):
+    """
+    Nearly some test as "test_signal_handling_via_plugins", but with an adjustable amount of plugins for sending
+    and receiving.
+
+    Registers receivers before the signal gets registers itself and afterwards.
+    Checks if all receivers get correctly called, if signal is send.
+
+    This tests will normally fail, if Weaknamespace is used in groundwork/signals.py:
+    from blinker import WeakNamespace as Namespace
+
+    So use always Namespace and if need do clean ups on groundwork site.
+    """
+
+    amount_pre_plugins = 30
+    amount_post_plugins = 10
+    amount_send_plugins = 30
+
+    def create_receiver_function(start):
+
+        def func_template(*args, **kwargs):
+            return ["data_{0}_A".format(start),
+                    "data_{0}_B".format(start)]
+
+        return func_template
+
+    # PRE receivers
+    plugin_receive_pre = []
+    for i in range(0, amount_pre_plugins):
+        plugin_receive_pre.append(EmptyPlugin(app=basicApp, name="Plugin_receive_pre_{0}".format(i)))
+        plugin_receive_pre[i].activate()
+        plugin_receive_pre[i].signals.connect("sig_reg_pre_receiver_{0}".format(i), "signal_test",
+                                              create_receiver_function(i),
+                                              "receiver signal_test_{0} for test".format(i))
+
+    # Count gw internal registered receivers
+    amount = 0
+    for receiver in basicApp.signals.receivers.keys():
+        if "sig_reg_pre_receiver" in receiver:
+            amount += 1
+    assert amount == amount_pre_plugins
+
+    # Senders
+    plugin_send = []
+    for i in range(0, amount_send_plugins):
+        plugin_send.append(EmptyPlugin(app=basicApp, name="Plugin_send_{0}".format(i)))
+        plugin_send[i].activate()
+        if i == 0:
+            # We only need to register our signal once
+            plugin_send[0].signals.register("signal_test", "signal_test")
+            assert amount_pre_plugins == len(basicApp.signals.signals["signal_test"]._signal.receivers)
+
+    # Check, if for our signal all receivers have been registered
+    print("Registered receivers for signal_test: {0}".format(
+        len(basicApp.signals.signals["signal_test"]._signal.receivers)))
+    assert amount_pre_plugins == len(basicApp.signals.signals["signal_test"]._signal.receivers)
+
+    # Send signal
+    for index, plugin in enumerate(plugin_send):
+        print(" {0} sending...".format(index))
+        return_values = plugin.signals.send("signal_test")
+
+        # check return length and content
+        assert len(return_values) == amount_pre_plugins
+        for i in range(0, amount_pre_plugins):
+            found = False
+            for value in return_values:
+                if value[1][0] == "data_{0}_A".format(i) and value[1][1] == "data_{0}_B".format(i):
+                    found = True
+                    break
+            assert found is True
+
+    # Register POST receivers
+    plugin_receive_post = []
+    for i in range(0, amount_post_plugins):
+        plugin_receive_post.append(EmptyPlugin(app=basicApp, name="Plugin_receive_post_{0}".format(i)))
+        plugin_receive_post[i].activate()
+        plugin_receive_post[i].signals.connect("sig_reg_post_receiver_{0}".format(i), "signal_test",
+                                               create_receiver_function(amount_pre_plugins + i),
+                                               "receiver signal_test_{0} for test".format(i))
+
+    # Send again a signal and check return values
+    # Send signal
+    for index, plugin in enumerate(plugin_send):
+        print(" {0} sending again...".format(index))
+        return_values = plugin.signals.send("signal_test")
+
+        # check return length and content
+        assert len(return_values) == amount_pre_plugins + amount_post_plugins
+        for i in range(0, amount_pre_plugins + amount_post_plugins):
+            found = False
+            for value in return_values:
+                if value[1][0] == "data_{0}_A".format(i) and value[1][1] == "data_{0}_B".format(i):
+                    found = True
+                    break
+            assert found is True
