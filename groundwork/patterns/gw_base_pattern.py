@@ -122,14 +122,14 @@ class GwBasePattern(object):
         """
         Must be overwritten by the plugin class itself.
         """
-        self.log.warn("No activation routine in Plugin defined. Define self.activate() in plugin %s" % self.name)
+        self.log.warning("No activation routine in Plugin defined. Define self.activate() in plugin %s" % self.name)
         raise PluginActivateMissing("plugin must provide an activation routine by itself.")
 
     def deactivate(self):
         """
         Must be overwritten by the plugin class itself.
         """
-        self.log.warn("No activation routine in Plugin defined. Define self.deactivate() in plugin %s" % self.name)
+        self.log.warning("No activation routine in Plugin defined. Define self.deactivate() in plugin %s" % self.name)
         raise PluginDeactivateMissing("plugin must provide an deactivation routine by itself.")
 
     def _pre_activate_injection(self):

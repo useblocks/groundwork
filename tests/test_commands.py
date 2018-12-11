@@ -224,9 +224,9 @@ def test_command_flag_on_off(basicApp):
     """
     This test case registers a command with a flag option. The assigned command handler throws an exception if
     the flag is not set.
-    Then it calls that command twice: fist with the flag set; then with the flag not set.
+    Then it calls that command twice: frist with the flag set; then with the flag not set.
 
-    It is asserted, that the first call returns 0, the second one -1 - as that is exit code click's CliRunner returns
+    It is asserted, that the first call returns 0, the second one 1 - as that is exit code click's CliRunner returns
     in case an unhandled exception has been thrown in the command handler.
     """
     def _test_command(*args, **kwargs):
@@ -246,7 +246,7 @@ def test_command_flag_on_off(basicApp):
 
     # call command with --flag-off (False)  -> expect error
     result = CliRunner().invoke(basicApp.commands.get("test").click_command, ['--flag-off'])
-    assert result.exit_code == -1
+    assert result.exit_code == 1
 
 
 def test_command_flag_count(basicApp):
