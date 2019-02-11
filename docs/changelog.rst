@@ -1,6 +1,12 @@
 Changelog
 =========
 
+
+0.1.14
+------
+*   fixed flake8 issues
+
+
 0.1.13
 ------
 
