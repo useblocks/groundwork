@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.1.15
+------
+
+* Remove pytest-runner dependency
+
 
 0.1.14
 ------
