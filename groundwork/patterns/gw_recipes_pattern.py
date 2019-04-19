@@ -88,13 +88,16 @@ class RecipesListPlugin:
         """
         return self.__app.recipes.get(name, self._plugin)
 
-    def build(self, recipe):
+    def build(self, recipe, no_input=False, extra_context=None):
         """
         Builds a recipe
 
         :param recipe: Name of the recipe to build.
+        :param no_input: Prompt the user at command line for manual configuration?
+        :param extra_context: A dictionary of context that overrides default
+        and user configuration
         """
-        return self.__app.recipes.build(recipe, self._plugin)
+        return self.__app.recipes.build(recipe,  no_input, extra_context, self._plugin)
 
 
 class RecipesListApplication:
@@ -169,11 +172,14 @@ class RecipesListApplication:
                 else:
                     return None
 
-    def build(self, recipe, plugin=None):
+    def build(self, recipe, no_input=False, extra_context=None, plugin=None):
         """
         Execute a recipe and creates new folder and files.
 
         :param recipe: Name of the recipe
+        :param no_input: Prompt the user at command line for manual configuration?
+        :param extra_context: A dictionary of context that overrides default
+            and user configuration
         :param plugin: Name of the plugin, to which the recipe must belong.
         """
         if recipe not in self.recipes.keys():
@@ -187,7 +193,7 @@ class RecipesListApplication:
                                                  "the app object, to retrieve the requested recipe: "
                                                  "my_app.recipes.get(%s)" % recipe)
 
-        recipe_obj.build()
+        recipe_obj.build(no_input, extra_context)
 
 
 class Recipe:
@@ -210,18 +216,23 @@ class Recipe:
         self.description = description
         self.final_words = final_words
 
-    def build(self, output_dir=None, **kwargs):
+    def build(self, no_input=False, extra_context=None, output_dir=None, **kwargs):
         """
-        Buildes the recipe and creates needed folder and files.
+        Builds the recipe and creates needed folder and files.
         May ask the user for some parameter inputs.
 
         :param output_dir: Path, where the recipe shall be build. Default is the current working directory
+        :param no_input: Prompt the user at command line for manual configuration?
+        :param extra_context: A dictionary of context that overrides default and user configuration.
         :return: location of the installed recipe
         """
         if output_dir is None:
             output_dir = os.getcwd()
 
-        target = cookiecutter(self.path, output_dir=output_dir, **kwargs)
+        no_input = no_input
+        extra_context = extra_context
+
+        target = cookiecutter(self.path, output_dir=output_dir, no_input=no_input, extra_context=extra_context, **kwargs)
 
         if self.final_words is not None and len(self.final_words) > 0:
             print("")
