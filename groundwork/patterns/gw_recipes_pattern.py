@@ -235,7 +235,6 @@ class Recipe:
 
         if no_input is True:
             if type(extra_context) is not dict and extra_context is not None:
-                print('Type of extra context is : {}'.format(type(extra_context)))
                 raise IncorrectParameterTypeException('datatype for extra_context is not correct')
 
         if no_input is False:
