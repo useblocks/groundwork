@@ -67,4 +67,4 @@ class GwRecipesBuilder(GwCommandsPattern, GwRecipesPattern):
         if recipe_obj is None:
             print("Recipe %s not found." % recipe)
         else:
-            recipe_obj.build()
+            recipe_obj.build(no_input=False, extra_context=None)

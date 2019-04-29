@@ -215,6 +215,7 @@ class Recipe:
         self.plugin = plugin
         self.description = description
         self.final_words = final_words
+        self.__log = logging.getLogger(__name__)
 
     def build(self, no_input=False, extra_context=None, output_dir=None, **kwargs):
         """
@@ -229,10 +230,25 @@ class Recipe:
         if output_dir is None:
             output_dir = os.getcwd()
 
+        if type(no_input) is not bool:
+            raise IncorrectParameterTypeException('datatype for no_input is not correct')
+
+        if no_input is True:
+            if type(extra_context) is not dict and extra_context is not None:
+                print('Type of extra context is : {}'.format(type(extra_context)))
+                raise IncorrectParameterTypeException('datatype for extra_context is not correct')
+
+        if no_input is False:
+            extra_context = None
+
         no_input = no_input
         extra_context = extra_context
 
-        target = cookiecutter(self.path, output_dir=output_dir, no_input=no_input, extra_context=extra_context, **kwargs)
+        target = cookiecutter(self.path,
+                              output_dir=output_dir,
+                              no_input=no_input,
+                              extra_context=extra_context,
+                              **kwargs)
 
         if self.final_words is not None and len(self.final_words) > 0:
             print("")
@@ -249,4 +265,8 @@ class RecipeMissingException(BaseException):
 
 
 class RecipeWrongPluginException(BaseException):
+    pass
+
+
+class IncorrectParameterTypeException(BaseException):
     pass
