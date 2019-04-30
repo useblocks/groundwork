@@ -21,7 +21,7 @@ def test_recipe_build(basicApp, tmpdir):
     basicApp.plugins.get("RecipePlugin")
     test_recipe = basicApp.recipes.get("test_recipe")
     output_folder = str(tmpdir.mkdir("output"))
-    output_data = test_recipe.build(output_dir=output_folder, no_input=True, extra_context=None)
+    output_data = test_recipe.build(output_folder, no_input=True, extra_context=None)
     assert output_data == os.path.join(output_folder, "My Package")
 
 
@@ -29,7 +29,7 @@ def test_recipe_build_missing_extra_context_parameter(basicApp, tmpdir):
     basicApp.plugins.get("RecipePlugin")
     test_recipe = basicApp.recipes.get("test_recipe")
     output_folder = str(tmpdir.mkdir("output"))
-    output_data = test_recipe.build(output_dir=output_folder, no_input=True)
+    output_data = test_recipe.build(output_folder, no_input=True)
     assert output_data == os.path.join(output_folder, "My Package")
 
 
@@ -38,7 +38,7 @@ def test_recipe_build_extra_context_parameter_userdata(basicApp, tmpdir):
     test_recipe = basicApp.recipes.get("test_recipe")
     output_folder = str(tmpdir.mkdir("output"))
     user_data = {'project_name': 'TestProject'}
-    output_data = test_recipe.build(output_dir=output_folder, no_input=True, extra_context=user_data)
+    output_data = test_recipe.build(output_folder, no_input=True, extra_context=user_data)
     assert output_data == os.path.join(output_folder, "TestProject")
 
 
@@ -47,7 +47,7 @@ def test_recipe_build_no_input_incorrect_type(basicApp, tmpdir):
     test_recipe = basicApp.recipes.get("test_recipe")
     output_folder = str(tmpdir.mkdir("output"))
     with pytest.raises(IncorrectParameterTypeException):
-        assert test_recipe.build(output_dir=output_folder, no_input="Test", extra_context=None)
+        assert test_recipe.build(output_folder, no_input="Test", extra_context=None)
 
 
 def test_recipe_build_extra_context_incorrect_type(basicApp, tmpdir):
@@ -55,14 +55,14 @@ def test_recipe_build_extra_context_incorrect_type(basicApp, tmpdir):
     test_recipe = basicApp.recipes.get("test_recipe")
     output_folder = str(tmpdir.mkdir("output"))
     with pytest.raises(IncorrectParameterTypeException):
-        assert test_recipe.build(output_dir=output_folder, no_input=True, extra_context="Test")
+        assert test_recipe.build(output_folder, no_input=True, extra_context="Test")
 
 
 def test_recipe_jinja(basicApp, tmpdir):
     basicApp.plugins.get("RecipePlugin")
     test_recipe = basicApp.recipes.get("test_recipe")
     output_folder = str(tmpdir.mkdir("output"))
-    test_recipe.build(output_dir=output_folder, no_input=True, extra_context=None)
+    test_recipe.build(output_folder, no_input=True)
     assert "My Name" in open(os.path.join(output_folder, "My Package/README.rst")).read()
 
 
