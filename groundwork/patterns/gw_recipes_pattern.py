@@ -97,7 +97,7 @@ class RecipesListPlugin:
         :param extra_context: A dictionary of context that overrides default
         and user configuration
         """
-        return self.__app.recipes.build(recipe,  no_input, extra_context, self._plugin)
+        return self.__app.recipes.build(recipe, self._plugin, no_input, extra_context)
 
 
 class RecipesListApplication:
@@ -172,7 +172,7 @@ class RecipesListApplication:
                 else:
                     return None
 
-    def build(self, recipe, no_input=False, extra_context=None, plugin=None):
+    def build(self, recipe, plugin=None, no_input=False, extra_context=None):
         """
         Execute a recipe and creates new folder and files.
 
