@@ -217,7 +217,7 @@ class Recipe:
         self.final_words = final_words
         self.__log = logging.getLogger(__name__)
 
-    def build(self, no_input=False, extra_context=None, output_dir=None, **kwargs):
+    def build(self, output_dir=None, no_input=False, extra_context=None, **kwargs):
         """
         Builds the recipe and creates needed folder and files.
         May ask the user for some parameter inputs.
