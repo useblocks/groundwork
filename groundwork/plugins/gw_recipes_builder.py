@@ -52,7 +52,9 @@ class GwRecipesBuilder(GwCommandsPattern, GwRecipesPattern):
                                           "For more information, please take a look into the README file "
                                           "to know how to go on.\n"
                                           "For help visit: https://groundwork.readthedocs.io\n\n"
-                                          "Have fun with your groundwork package.")
+                                          "Have fun with your groundwork package.",
+                              pre_build_validation=self._pre_build_validate,
+                              post_build_validation=self._post_build_validate)
 
     def deactivate(self):
         pass
@@ -63,8 +65,15 @@ class GwRecipesBuilder(GwCommandsPattern, GwRecipesPattern):
             print("  %s by plugin '%s' - %s" % (recipe.name, recipe.plugin.name, recipe.description))
 
     def _recipe_build(self, recipe):
+        print("In recipe build function")
         recipe_obj = self.app.recipes.get(recipe)
         if recipe_obj is None:
             print("Recipe %s not found." % recipe)
         else:
             recipe_obj.build(no_input=False, extra_context=None)
+
+    def _pre_build_validate(self):
+        return True
+
+    def _post_build_validate(self):
+        return True
