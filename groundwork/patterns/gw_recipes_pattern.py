@@ -125,6 +125,12 @@ class RecipesListApplication:
             raise RecipeExistsException("Recipe %s was already registered by %s" %
                                         (name, self.recipes["name"].plugin.name))
 
+        if not callable(pre_build_validation) and pre_build_validation is not None:
+            raise IncorrectParameterTypeException('Data type for pre_build_validation is not correct')
+
+        if not callable(post_build_validation) and post_build_validation is not None:
+            raise IncorrectParameterTypeException('Data type for post_build_validation is not correct')
+
         self.recipes[name] = Recipe(name, path, plugin, description,
                                     final_words, pre_build_validation, post_build_validation)
         self.__log.debug("Recipe %s registered by %s" % (name, plugin.name))
