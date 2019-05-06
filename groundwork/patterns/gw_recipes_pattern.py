@@ -125,14 +125,15 @@ class RecipesListApplication:
             raise RecipeExistsException("Recipe %s was already registered by %s" %
                                         (name, self.recipes["name"].plugin.name))
 
-        if pre_hook is not None and not callable(pre_hook):
+        if not callable(pre_hook) and pre_hook is not None:
             raise IncorrectParameterTypeException('Data type for pre_hook is not correct')
 
-        if post_hook is not None and not callable(post_hook):
+        if not callable(post_hook) and post_hook is not None:
             raise IncorrectParameterTypeException('Data type for post_hook is not correct')
 
         self.recipes[name] = Recipe(name, path, plugin, description,
                                     final_words, pre_hook, post_hook)
+
         self.__log.debug("Recipe %s registered by %s" % (name, plugin.name))
         return self.recipes[name]
 

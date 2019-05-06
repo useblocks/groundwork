@@ -2,7 +2,8 @@ import os
 
 import pytest
 
-from groundwork.patterns.gw_recipes_pattern import IncorrectParameterTypeException
+from groundwork.patterns.gw_recipes_pattern import IncorrectParameterTypeException, \
+    HooksException, RecipeMissingException
 
 
 def test_recipe_plugin_activation(basicApp):
@@ -17,7 +18,7 @@ def test_recipe_registration(basicApp):
     assert test_recipe is not None
 
 
-def test_recipe_registration_with_hooks_pass_case(basicApp):
+def test_recipe_registration_with_hooks(basicApp):
     plugin = basicApp.plugins.get("RecipePlugin")
     plugin.recipes.register("recipe_hooks",
                             os.path.join(os.path.dirname(__file__), "../recipes/gw_test_app"),
@@ -25,6 +26,54 @@ def test_recipe_registration_with_hooks_pass_case(basicApp):
                             post_hook=post_hook_test_function_positive)
     test_recipe = basicApp.recipes.get("recipe_hooks")
     assert test_recipe is not None
+
+
+def test_recipe_registration_with_hooks_parameter_none(basicApp):
+    plugin = basicApp.plugins.get("RecipePlugin")
+    plugin.recipes.register("recipe_hooks_none",
+                            os.path.join(os.path.dirname(__file__), "../recipes/gw_test_app"),
+                            "test recipe", "Installation done", pre_hook=None,
+                            post_hook=None)
+    test_recipe = basicApp.recipes.get("recipe_hooks_none")
+    assert test_recipe is not None
+
+
+def test_recipe_registration_with_hooks_incorrect_parameter_type_prehook(basicApp):
+    basicApp.plugins.get("RecipePlugin")
+    with pytest.raises(IncorrectParameterTypeException):
+        basicApp.recipes.register("test",
+                                  os.path.join(os.path.dirname(__file__), "../recipes/gw_test_app"),
+                                  "test recipe", "Installation done", pre_hook="incorrect_parameter")
+
+
+def test_recipe_registration_with_hooks_incorrect_parameter_type_posthook(basicApp):
+    basicApp.plugins.get("RecipePlugin")
+    with pytest.raises(IncorrectParameterTypeException):
+        basicApp.recipes.register("test",
+                                  os.path.join(os.path.dirname(__file__), "../recipes/gw_test_app"),
+                                  "test recipe", "Installation done", post_hook="incorrect_parameter")
+
+
+def test_recipe_build_with_pre_hook_return_false(basicApp, tmpdir):
+    plugin = basicApp.plugins.get("RecipePlugin")
+    plugin.recipes.register("recipe_hooks",
+                            os.path.join(os.path.dirname(__file__), "recipes/gw_test_app"),
+                            "test recipe", "Installation done", pre_hook=pre_hook_test_function_negative)
+    test_recipe = plugin.recipes.get("recipe_hooks")
+    output_folder = str(tmpdir.mkdir("output"))
+    with pytest.raises(HooksException):
+        test_recipe.build(output_folder, no_input=True, extra_context=None)
+
+
+def test_recipe_build_with_post_hook_return_false(basicApp, tmpdir):
+    plugin = basicApp.plugins.get("RecipePlugin")
+    plugin.recipes.register("recipe_hooks",
+                            os.path.abspath(os.path.join(os.path.dirname(__file__), "recipes/gw_test_app")),
+                            "test recipe", "Installation done", post_hook=post_hook_test_function_negative)
+    test_recipe = plugin.recipes.get("recipe_hooks")
+    output_folder = str(tmpdir.mkdir("output"))
+    with pytest.raises(HooksException):
+        test_recipe.build(output_folder, no_input=True, extra_context=None)
 
 
 def pre_hook_test_function_positive():
@@ -35,12 +84,12 @@ def post_hook_test_function_positive():
     return True
 
 
-def test_recipe_registration_with_hooks_incorrect_parameter_type(basicApp):
-    basicApp.plugins.get("RecipePlugin")
-    with pytest.raises(IncorrectParameterTypeException):
-        basicApp.recipes.register("ab",
-                                  os.path.join(os.path.dirname(__file__), "../recipes/gw_test_app"),
-                                  "test recipe", "Installation done", pre_hook="anj", post_hook="anj")
+def pre_hook_test_function_negative():
+    return False
+
+
+def post_hook_test_function_negative():
+    return False
 
 
 def test_recipe_build(basicApp, tmpdir):
@@ -116,8 +165,9 @@ def test_recipe_registered_already(basicApp):
         assert str(e.value)
 
 
-def test_get_missing_recipe(basicApp):
+def test_missing_recipe(basicApp, tmpdir):
+    output_dir = str(tmpdir.mkdir("output"))
+    os.chdir(output_dir)
     plugin = basicApp.plugins.get("RecipePlugin")
-    with pytest.raises(Exception) as e:
-        plugin.recipes.get("get_missing_recipe")
-        assert str(e.value)
+    with pytest.raises(RecipeMissingException):
+        plugin.recipes.build(recipe="missing_recipe")
