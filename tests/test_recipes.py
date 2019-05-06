@@ -17,6 +17,32 @@ def test_recipe_registration(basicApp):
     assert test_recipe is not None
 
 
+def test_recipe_registration_with_hooks_pass_case(basicApp):
+    plugin = basicApp.plugins.get("RecipePlugin")
+    plugin.recipes.register("recipe_hooks",
+                            os.path.join(os.path.dirname(__file__), "../recipes/gw_test_app"),
+                            "test recipe", "Installation done", pre_hook=pre_hook_test_function_positive,
+                            post_hook=post_hook_test_function_positive)
+    test_recipe = basicApp.recipes.get("recipe_hooks")
+    assert test_recipe is not None
+
+
+def pre_hook_test_function_positive():
+    return True
+
+
+def post_hook_test_function_positive():
+    return True
+
+
+def test_recipe_registration_with_hooks_incorrect_parameter_type(basicApp):
+    basicApp.plugins.get("RecipePlugin")
+    with pytest.raises(IncorrectParameterTypeException):
+        basicApp.recipes.register("ab",
+                                  os.path.join(os.path.dirname(__file__), "../recipes/gw_test_app"),
+                                  "test recipe", "Installation done", pre_hook="anj", post_hook="anj")
+
+
 def test_recipe_build(basicApp, tmpdir):
     basicApp.plugins.get("RecipePlugin")
     test_recipe = basicApp.recipes.get("test_recipe")

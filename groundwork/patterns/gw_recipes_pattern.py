@@ -60,7 +60,8 @@ class RecipesListPlugin:
         for recipe in recipes.keys():
             self.unregister(recipe)
 
-    def register(self, name, path, description, final_words=None):
+    def register(self, name, path, description, final_words=None,
+                 pre_hook=None, post_hook=None):
         """
         Registers a new recipe in the context of the current plugin.
 
@@ -68,8 +69,11 @@ class RecipesListPlugin:
         :param path: Absolute path of the recipe folder
         :param description: A meaningful description of the recipe
         :param final_words: A string, which gets printed after the recipe was build.
+        :param:pre_hook: Function to call before recipe installation
+        :param:post_hook: Function to call after recipe installation
         """
-        return self.__app.recipes.register(name, path, self._plugin, description, final_words)
+        return self.__app.recipes.register(name, path, self._plugin, description,
+                                           final_words, pre_hook, post_hook)
 
     def unregister(self, recipe):
         """
@@ -91,7 +95,6 @@ class RecipesListPlugin:
     def build(self, recipe, no_input=False, extra_context=None):
         """
         Builds a recipe
-
         :param recipe: Name of the recipe to build.
         :param no_input: Prompt the user at command line for manual configuration?
         :param extra_context: A dictionary of context that overrides default
@@ -113,7 +116,8 @@ class RecipesListApplication:
         self.__log = logging.getLogger(__name__)
         self.__log.info("Application recipes initialised")
 
-    def register(self, name, path, plugin, description=None, final_words=None):
+    def register(self, name, path, plugin, description=None, final_words=None,
+                 pre_hook=None, post_hook=None):
         """
         Registers a new recipe.
         """
@@ -121,7 +125,14 @@ class RecipesListApplication:
             raise RecipeExistsException("Recipe %s was already registered by %s" %
                                         (name, self.recipes["name"].plugin.name))
 
-        self.recipes[name] = Recipe(name, path, plugin, description, final_words)
+        if pre_hook is not None and not callable(pre_hook):
+            raise IncorrectParameterTypeException('Data type for pre_hook is not correct')
+
+        if post_hook is not None and not callable(post_hook):
+            raise IncorrectParameterTypeException('Data type for post_hook is not correct')
+
+        self.recipes[name] = Recipe(name, path, plugin, description,
+                                    final_words, pre_hook, post_hook)
         self.__log.debug("Recipe %s registered by %s" % (name, plugin.name))
         return self.recipes[name]
 
@@ -205,8 +216,11 @@ class Recipe:
     :param plugin: Plugin which registers the recipe
     :param description: Meaningful description of the recipe
     :param final_words: String, which gets printed after a recipe was successfully build.
+    :param:pre_hook: Function to call before recipe installation
+    :param:post_hook: Function to call after recipe installation
     """
-    def __init__(self, name, path, plugin, description="", final_words=""):
+    def __init__(self, name, path, plugin, description="", final_words="",
+                 pre_hook=None, post_hook=None):
         self.name = name
         if os.path.isabs(path):
             self.path = path
@@ -215,6 +229,8 @@ class Recipe:
         self.plugin = plugin
         self.description = description
         self.final_words = final_words
+        self.pre_hook = pre_hook
+        self.post_hook = post_hook
         self.__log = logging.getLogger(__name__)
 
     def build(self, output_dir=None, no_input=False, extra_context=None, **kwargs):
@@ -227,15 +243,16 @@ class Recipe:
         :param extra_context: A dictionary of context that overrides default and user configuration.
         :return: location of the installed recipe
         """
+
         if output_dir is None:
             output_dir = os.getcwd()
 
         if type(no_input) is not bool:
-            raise IncorrectParameterTypeException('datatype for no_input is not correct')
+            raise IncorrectParameterTypeException('Data type for no_input is not correct')
 
         if no_input is True:
             if type(extra_context) is not dict and extra_context is not None:
-                raise IncorrectParameterTypeException('datatype for extra_context is not correct')
+                raise IncorrectParameterTypeException('Data type for extra_context is not correct')
 
         if no_input is False:
             extra_context = None
@@ -243,15 +260,22 @@ class Recipe:
         no_input = no_input
         extra_context = extra_context
 
+        if self.pre_hook is not None and not self.pre_hook():
+            raise HooksException('Pre-hook failure')
+
         target = cookiecutter(self.path,
                               output_dir=output_dir,
                               no_input=no_input,
                               extra_context=extra_context,
                               **kwargs)
 
+        if self.post_hook is not None and not self.post_hook():
+            raise HooksException('Post-hook failure')
+
         if self.final_words is not None and len(self.final_words) > 0:
             print("")
             print(self.final_words)
+
         return target
 
 
@@ -268,4 +292,8 @@ class RecipeWrongPluginException(BaseException):
 
 
 class IncorrectParameterTypeException(BaseException):
+    pass
+
+
+class HooksException(BaseException):
     pass
