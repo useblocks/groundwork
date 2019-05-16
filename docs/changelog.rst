@@ -1,10 +1,15 @@
 Changelog
 =========
 
-0.1.16
+0.1.17
 ------
 
 * Added new functions for recipes: pre and post hooks
+
+0.1.16
+------
+
+*withdrawn*
 
 0.1.15
 ------
